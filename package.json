@@ -1,0 +1,15 @@
+{
+  "name": "api-mock-runner",
+  "version": "0.0.0",
+  "description": "Create mocks servers with its schemas",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ."
+  },
+  "author": "",
+  "license": "MPL-2.0",
+  "dependencies": {
+    "open-api-mocker": "github:adantoscano/open-api-mocker"
+  }
+}
