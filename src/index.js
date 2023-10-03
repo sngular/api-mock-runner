@@ -7,7 +7,10 @@ const main = async () => {
   const testRepoHTTPS = "https://gitlab.sngular.com/os3/manatee/sirenia.git"; // TODO: replace by user input
   await cloneGitRepository(testRepoSSH);
 
-  const schemas = findOasFromDir('./tests');
+  const schemas = await findOasFromDir('./tests');
+
+  console.log('Schemas found:');
+  schemas.forEach(el => console.log(`-- ${el.filePath}`));
 
   const openApiMocker = new OpenApiMocker({
     port: 5000,

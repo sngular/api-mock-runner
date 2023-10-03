@@ -1,30 +1,41 @@
 import path from 'path';
 import * as fs from 'fs';
-import nReadlines from 'n-readlines'
+import * as readline from 'readline';
 
-function isOas(filePath) {
-  const line = new nReadlines(filePath);
-  const firstLine = line.next().toString();
+async function getFirstLine(filePath) {
+  const readable = fs.createReadStream(filePath);
+  const reader = readline.createInterface({ input: readable });
+  const line = await new Promise((resolve) => {
+    reader.on('line', (line) => {
+      reader.close();
+      resolve(line);
+    });
+  });
+  readable.close();
+  return line;
+}
+
+async function isOas(filePath) {
+  const firstLine = await getFirstLine(filePath)
   const oasRegEx = /^openapi/i
   return oasRegEx.test(firstLine);
 }
 
-export default function findOasFromDir(startPath) {
+export default async function findOasFromDir(startPath) {
   if (!fs.existsSync(startPath)) {
     console.log("no dir ", startPath);
     return [];
   }
 
   const files = fs.readdirSync(startPath);
-  return files.reduce((acc, file) => {
+  return files.reduce(async (acc, file) => {
     const filePath = path.join(startPath, file);
     const stat = fs.lstatSync(filePath);
     if (stat.isDirectory()) {
-      return [...acc, ...findOasFromDir(filePath)];
+      return [...(await acc), ...(await findOasFromDir(filePath))];
     } 
-    if (file.endsWith('.yaml') && isOas(filePath)) {
-      console.log('-- found: ', filePath);
-      return [...acc, {
+    if (file.endsWith('.yaml') && (await isOas(filePath))) {
+      return [...(await acc), {
         filename: file,
         path: startPath,
         filePath,

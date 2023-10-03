@@ -11,7 +11,6 @@
   "author": "",
   "license": "MPL-2.0",
   "dependencies": {
-    "n-readlines": "^1.0.1",
     "open-api-mocker": "github:adantoscano/open-api-mocker"
   }
 }
