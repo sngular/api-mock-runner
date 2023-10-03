@@ -1,14 +1,17 @@
-const OpenApiMocker = require("open-api-mocker");
-const cloneGitRepository = require("./services/clone-git-repository");
+import OpenApiMocker from 'open-api-mocker';
+import cloneGitRepository from './services/clone-git-repository.js';
+import findOasFromDir from './services/find-oas-from-dir.js';
 
 const main = async () => {
   const testRepoSSH = "git@gitlab.sngular.com:os3/manatee/sirenia.git"; // TODO: replace by user input
   const testRepoHTTPS = "https://gitlab.sngular.com/os3/manatee/sirenia.git"; // TODO: replace by user input
   await cloneGitRepository(testRepoSSH);
 
+  const schemas = findOasFromDir('./tests');
+
   const openApiMocker = new OpenApiMocker({
     port: 5000,
-    schema: `${__dirname}/../tests/schema-examples/basic.yaml`,
+    schema: schemas[0].filePath,
     watch: true,
   });
 

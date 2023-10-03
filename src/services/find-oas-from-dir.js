@@ -26,7 +26,8 @@ export default function findOasFromDir(startPath) {
       console.log('-- found: ', filePath);
       return [...acc, {
         filename: file,
-        path: startPath
+        path: startPath,
+        filePath,
       }]
     }
     return []
