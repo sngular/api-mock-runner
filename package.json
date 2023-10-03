@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "Create mocks servers with its schemas",
   "main": "src/index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ."
@@ -10,6 +11,7 @@
   "author": "",
   "license": "MPL-2.0",
   "dependencies": {
+    "n-readlines": "^1.0.1",
     "open-api-mocker": "github:adantoscano/open-api-mocker"
   }
 }
