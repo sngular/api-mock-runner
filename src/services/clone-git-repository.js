@@ -4,11 +4,11 @@
 // - tests
 // - doc
 
-const { execSync } = require("child_process");
-const fs = require("fs");
-const path = require("path");
-const readline = require("readline");
-const process = require("process");
+import { execSync } from 'child_process';
+import * as fs from 'fs';
+import path from 'path';
+import * as readline from 'readline';
+import process from 'process';
 
 const TEMP_FOLDER_NAME = ".api-mock-runner"; // TODO: extract to configuration file?
 
@@ -59,4 +59,4 @@ async function waitUserInput() {
   );
 }
 
-module.exports = cloneSchemaRepo;
+export default cloneSchemaRepo;
