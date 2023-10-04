@@ -43,7 +43,6 @@ const findOasFromDir = async (startPath, acc) => {
       })
     }
   }
-  console.log(oasFiles);
   return oasFiles;
 };
 
