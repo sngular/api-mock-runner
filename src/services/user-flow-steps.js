@@ -17,22 +17,22 @@ import { addToGitignore, overwriteFile, verifyRemoteOrigin, TEMP_FOLDER_NAME, RC
  * @returns {Promise<Config>} A object with the initial values from the user
  */
 async function initWithConfigFile() {
-  let config;
-  const existingConfig = JSON.parse(
-    fs.readFileSync(`${process.cwd()}/${RC_FILE_NAME}`)
-  );
-  console.table(existingConfig);
-  const useExistingConfig = await confirm({
-    message: "Do you want to use the existing config?",
-  });
+	let config;
+	const existingConfig = JSON.parse(
+		fs.readFileSync(`${process.cwd()}/${RC_FILE_NAME}`)
+	);
+	console.table(existingConfig);
+	const useExistingConfig = await confirm({
+		message: "Do you want to use the existing config?",
+	});
 
-  if (useExistingConfig) {
-    config = existingConfig;
-  } else {
-    config = await getInitialValues();
-    overwriteFile(`${process.cwd()}/${RC_FILE_NAME}`, JSON.stringify(config));
-  }
-  return config;
+	if (useExistingConfig) {
+		config = existingConfig;
+	} else {
+		config = await getInitialValues();
+		overwriteFile(`${process.cwd()}/${RC_FILE_NAME}`, JSON.stringify(config));
+	}
+	return config;
 }
 
 /**
@@ -42,23 +42,23 @@ async function initWithConfigFile() {
  * @returns {Promise<Config>} A object with the initial values from the user
  */
 async function initNoConfigFile() {
-  const config = await getInitialValues();
-  // Create .apimockrc file
-  const filePath = `${process.cwd()}/${RC_FILE_NAME}`;
-  fs.writeFile(filePath, JSON.stringify(config), (err) => {
-    if (err) {
-      console.error(err);
-    } else {
-      console.log("Config saved");
-    }
-  });
-  const addRcFileToGitignore = await confirm({
-    message: `Add ${RC_FILE_NAME} to .gitignore?`,
-  });
-  if (addRcFileToGitignore) {
-    addToGitignore(RC_FILE_NAME);
-  }
-  return config;
+	const config = await getInitialValues();
+	// Create .apimockrc file
+	const filePath = `${process.cwd()}/${RC_FILE_NAME}`;
+	fs.writeFile(filePath, JSON.stringify(config), (err) => {
+		if (err) {
+			console.error(err);
+		} else {
+			console.log("Config saved");
+		}
+	});
+	const addRcFileToGitignore = await confirm({
+		message: `Add ${RC_FILE_NAME} to .gitignore?`,
+	});
+	if (addRcFileToGitignore) {
+		addToGitignore(RC_FILE_NAME);
+	}
+	return config;
 }
 
 /**
@@ -69,17 +69,17 @@ async function initNoConfigFile() {
  * @returns {Promise<Array>} An array of schemas
  */
 async function getSchemas(origin) {
-  const isOriginRemote = verifyRemoteOrigin(origin);
+	const isOriginRemote = verifyRemoteOrigin(origin);
 
-  if (isOriginRemote) {
-    await cloneGitRepository(origin);
-    addToGitignore(TEMP_FOLDER_NAME);
-  }
+	if (isOriginRemote) {
+		await cloneGitRepository(origin);
+		addToGitignore(TEMP_FOLDER_NAME);
+	}
 
-  const schemasDir = isOriginRemote ? TEMP_FOLDER_NAME : origin;
+	const schemasDir = isOriginRemote ? TEMP_FOLDER_NAME : origin;
 
-  const schemas = await findOasFromDir(schemasDir);
-  return schemas;
+	const schemas = await findOasFromDir(schemasDir);
+	return schemas;
 }
 
 /**
@@ -91,15 +91,15 @@ async function getSchemas(origin) {
  * @returns {Promise<void>}
  */
 async function startMockServer(port, schema) {
-  const openApiMocker = new OpenApiMocker({
-    port: port,
-    schema: schema,
-    watch: true,
-  });
+	const openApiMocker = new OpenApiMocker({
+		port: port,
+		schema: schema,
+		watch: true,
+	});
 
-  await openApiMocker.validate();
+	await openApiMocker.validate();
 
-  await openApiMocker.mock();
+	await openApiMocker.mock();
 }
 
 /**
@@ -108,20 +108,20 @@ async function startMockServer(port, schema) {
  * @returns {Promise<Config>} A object with the initial values from the user
  */
 async function getInitialValues() {
-  // TODO: Add input validation
-  const schemasOrigin = await input({
-    message: "Enter the repo url or relative path",
-  });
-  const initialPort = await input({
-    message: "Enter the initial port",
-    default: 1234,
-  });
+	// TODO: Add input validation
+	const schemasOrigin = await input({
+		message: "Enter the repo url or relative path",
+	});
+	const initialPort = await input({
+		message: "Enter the initial port",
+		default: 1234,
+	});
 
-  const config = {
-    schemasOrigin,
-    initialPort,
-  };
-  return config;
+	const config = {
+		schemasOrigin,
+		initialPort,
+	};
+	return config;
 }
 
 export { initWithConfigFile, initNoConfigFile, getSchemas, startMockServer }

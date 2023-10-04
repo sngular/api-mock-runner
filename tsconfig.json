@@ -1,0 +1,9 @@
+{
+  "extends": "@os3/tsconfig",
+  "compilerOptions": {
+    "outDir": "./dist-types",
+    "rootDir": "."
+  },
+  "include": ["src"],
+  "exclude": ["dist-types", "node_modules", "tests"]
+}

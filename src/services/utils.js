@@ -23,15 +23,15 @@ export const TEMP_FOLDER_NAME = ".api-mock-runner";
  * @returns {Promise<void>}
  */
 export async function addToGitignore(textToAppend) {
-  if (!(await checkStringInFile(textToAppend, `${process.cwd()}/.gitignore`))) {
-    fs.appendFile(`${process.cwd()}/.gitignore`, `\n${textToAppend}`, (err) => {
-      if (err) {
-        console.error(err);
-      } else {
-        console.log(`${textToAppend} added to .gitignore`);
-      }
-    });
-  }
+	if (!(await checkStringInFile(textToAppend, `${process.cwd()}/.gitignore`))) {
+		fs.appendFile(`${process.cwd()}/.gitignore`, `\n${textToAppend}`, (err) => {
+			if (err) {
+				console.error(err);
+			} else {
+				console.log(`${textToAppend} added to .gitignore`);
+			}
+		});
+	}
 }
 /**
  * Verify if the origin is remote
@@ -40,16 +40,16 @@ export async function addToGitignore(textToAppend) {
  * @returns {boolean} True if the origin is remote, false otherwise
  */
 export function verifyRemoteOrigin(origin) {
-  /*
+	/*
    * NOTE: Regex explanation
    * - /^(git@|https:\/\/)/: This part of the regex specifies that the string must start with either "git@" or "https://".
    * - [^\s]+: This part ensures that there is at least one or more characters after "git@" or "https://". It matches any character except whitespace.
    * - (\.git)$: The regex ends with "\.git", ensuring that the string must end with ".git".
    */
-  const isOriginRemoteRegex = /^(git@|https:\/\/)[^\s]+(\.git)$/;
+	const isOriginRemoteRegex = /^(git@|https:\/\/)[^\s]+(\.git)$/;
 
-  const isOriginRemote = isOriginRemoteRegex.test(origin);
-  return isOriginRemote;
+	const isOriginRemote = isOriginRemoteRegex.test(origin);
+	return isOriginRemote;
 }
 /**
  * Overwrites the document on a file
@@ -60,11 +60,11 @@ export function verifyRemoteOrigin(origin) {
  * @returns {Promise<void>}
  */
 export async function overwriteFile(filePath, content) {
-  fs.writeFile(filePath, content, (err) => {
-    if (err) {
-      console.error(err);
-    } else {
-      console.log("Config saved");
-    }
-  });
+	fs.writeFile(filePath, content, (err) => {
+		if (err) {
+			console.error(err);
+		} else {
+			console.log("Config saved");
+		}
+	});
 }
