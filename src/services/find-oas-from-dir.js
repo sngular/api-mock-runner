@@ -21,26 +21,30 @@ async function isOas(filePath) {
   return oasRegEx.test(firstLine);
 }
 
-export default async function findOasFromDir(startPath) {
+const findOasFromDir = async (startPath, acc) => {
   if (!fs.existsSync(startPath)) {
     console.log("no dir ", startPath);
     return [];
   }
 
   const files = fs.readdirSync(startPath);
-  return files.reduce(async (acc, file) => {
+  const oasFiles = acc || [];
+
+  for(const file of files) {
     const filePath = path.join(startPath, file);
     const stat = fs.lstatSync(filePath);
     if (stat.isDirectory()) {
-      return [...(await acc), ...(await findOasFromDir(filePath))];
-    } 
-    if (file.endsWith('.yaml') && (await isOas(filePath))) {
-      return [...(await acc), {
+      await findOasFromDir(filePath, oasFiles);
+    } else if (file.endsWith('.yaml') && (await isOas(filePath))) {
+      oasFiles.push({
         filename: file,
         path: startPath,
         filePath,
-      }]
+      })
     }
-    return []
-  }, []);
+  }
+  console.log(oasFiles);
+  return oasFiles;
 };
+
+export default findOasFromDir
