@@ -11,7 +11,7 @@
   "author": "",
   "license": "MPL-2.0",
   "dependencies": {
-    "commander": "^11.0.0",
+    "@inquirer/prompts": "^3.1.2",
     "open-api-mocker": "github:adantoscano/open-api-mocker"
   }
 }
