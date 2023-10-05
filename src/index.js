@@ -50,38 +50,52 @@ const main = async () => {
     });
     if (addRcFileToGitignore) {
       // TODO: create function that validates if is already in gitignore
-      fs.appendFile(`${process.cwd()}/.gitignore`, `\n${RC_FILE_NAME}`, (err) => {
-        if (err) {
-          console.error(err);
-        } else {
-          console.log(`${RC_FILE_NAME} added to .gitignore`);
+      fs.appendFile(
+        `${process.cwd()}/.gitignore`,
+        `\n${RC_FILE_NAME}`,
+        (err) => {
+          if (err) {
+            console.error(err);
+          } else {
+            console.log(`${RC_FILE_NAME} added to .gitignore`);
+          }
         }
-      });
+      );
     }
   }
-    /*
-     * TODO:
-     * validate path type (local or url)
-     * if remote repo, clone it, add temp dir to gitignore
-     * run findOasFromDir on the temp or local dir
-     * CLI shows the list of schemas found
-     * CLI asks for the schema to mock (select from list)
-     * Start server on selected port
-     */
+  /*
+   * TODO:
+   * validate path type (local or url) [DONE]
+   * if remote repo, clone it, add temp dir to gitignore
+   * run findOasFromDir on the temp or local dir
+   * CLI shows the list of schemas found
+   * CLI asks for the schema to mock (select from list)
+   * Start server on selected port
+   */
 
-    await cloneGitRepository(config.schemasOrigin || testRepoSSH);
+  /*
+   * NOTE: Regex explanation
+   * - /^(git@|https:\/\/)/: This part of the regex specifies that the string must start with either "git@" or "https://".
+   * - [^\s]+: This part ensures that there is at least one or more characters after "git@" or "https://". It matches any character except whitespace.
+   * - (\.git)$: The regex ends with "\.git", ensuring that the string must end with ".git".
+   */
+  const isOriginRemoteRegex = /^(git@|https:\/\/)[^\s]+(\.git)$/;
 
-    const schemas = await findOasFromDir("./tests");
+  const isOriginRemote = isOriginRemoteRegex.test(config.schemasOrigin);
 
-    const openApiMocker = new OpenApiMocker({
-      port: config.initialPort,
-      schema: schemas[0].filePath,
-      watch: true,
-    });
+  await cloneGitRepository(config.schemasOrigin);
 
-    await openApiMocker.validate();
+  const schemas = await findOasFromDir("./tests");
 
-    await openApiMocker.mock();
+  const openApiMocker = new OpenApiMocker({
+    port: config.initialPort,
+    schema: schemas[0].filePath,
+    watch: true,
+  });
+
+  await openApiMocker.validate();
+
+  await openApiMocker.mock();
 };
 
 main();
