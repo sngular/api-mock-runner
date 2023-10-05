@@ -1,4 +1,4 @@
-import { input, confirm } from "@inquirer/prompts";
+import { input, confirm, select } from "@inquirer/prompts";
 import * as fs from "node:fs";
 import OpenApiMocker from "open-api-mocker";
 import cloneGitRepository from "./services/clone-git-repository.js";
@@ -6,8 +6,10 @@ import findOasFromDir from "./services/find-oas-from-dir.js";
 
 const testRepoSSH = "git@gitlab.sngular.com:os3/manatee/sirenia.git";
 // const testRepoHTTPS = "https://gitlab.sngular.com/os3/manatee/sirenia.git"; // TODO: replace by user input
-const RC_FILE_NAME = ".apimockrc";
+// TODO: extract to configuration file?
 
+const RC_FILE_NAME = ".apimockrc";
+const TEMP_FOLDER_NAME = ".api-mock-runner";
 const main = async () => {
   let config;
 
@@ -21,6 +23,8 @@ const main = async () => {
     const useExistingConfig = await confirm({
       message: "Do you want to use the existing config?",
     });
+
+    // TODO: ask values to user if not using existing config
     if (useExistingConfig) config = existingConfig;
   } else {
     const schemasOrigin = await input({
@@ -66,7 +70,7 @@ const main = async () => {
   /*
    * TODO:
    * validate path type (local or url) [DONE]
-   * if remote repo, clone it, add temp dir to gitignore
+   * if remote repo, clone it, add temp dir to gitignore [DONE]
    * run findOasFromDir on the temp or local dir
    * CLI shows the list of schemas found
    * CLI asks for the schema to mock (select from list)
@@ -83,13 +87,37 @@ const main = async () => {
 
   const isOriginRemote = isOriginRemoteRegex.test(config.schemasOrigin);
 
-  await cloneGitRepository(config.schemasOrigin);
+  if (isOriginRemote) {
+    await cloneGitRepository(config.schemasOrigin);
+    // TODO: DRY, create write to .gitignore function
+    fs.appendFile(
+      `${process.cwd()}/.gitignore`,
+      `\n${TEMP_FOLDER_NAME}/$}`,
+      (err) => {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log(`${TEMP_FOLDER_NAME} added to .gitignore`);
+        }
+      }
+    );
+  }
 
-  const schemas = await findOasFromDir("./tests");
+  const schemasDir = isOriginRemote ? TEMP_FOLDER_NAME : config.schemasOrigin;
+
+  const schemas = await findOasFromDir(schemasDir);
+
+  // TODO: change to checkboxes when multiple schemas are supported
+  const selectedSchema = await select({
+    message: "Select a schema",
+    choices: schemas.map((schema) => {
+      return { name: schema.fileName, value: schema.filePath };
+    }),
+  });
 
   const openApiMocker = new OpenApiMocker({
     port: config.initialPort,
-    schema: schemas[0].filePath,
+    schema: selectedSchema,
     watch: true,
   });
 
