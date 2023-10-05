@@ -4,12 +4,11 @@ import OpenApiMocker from "open-api-mocker";
 import cloneGitRepository from "./services/clone-git-repository.js";
 import findOasFromDir from "./services/find-oas-from-dir.js";
 
-const testRepoSSH = "git@gitlab.sngular.com:os3/manatee/sirenia.git";
-// const testRepoHTTPS = "https://gitlab.sngular.com/os3/manatee/sirenia.git"; // TODO: replace by user input
 // TODO: extract to configuration file?
-
 const RC_FILE_NAME = ".apimockrc";
 const TEMP_FOLDER_NAME = ".api-mock-runner";
+
+// TODO: Refactor steps to functions
 const main = async () => {
   let config;
 
@@ -67,15 +66,6 @@ const main = async () => {
       );
     }
   }
-  /*
-   * TODO:
-   * validate path type (local or url) [DONE]
-   * if remote repo, clone it, add temp dir to gitignore [DONE]
-   * run findOasFromDir on the temp or local dir
-   * CLI shows the list of schemas found
-   * CLI asks for the schema to mock (select from list)
-   * Start server on selected port
-   */
 
   /*
    * NOTE: Regex explanation
