@@ -1,26 +1,22 @@
-import OpenApiMocker from 'open-api-mocker';
-import cloneGitRepository from './services/clone-git-repository.js';
-import findOasFromDir from './services/find-oas-from-dir.js';
+const { program } = require("commander");
 
-const main = async () => {
-  const testRepoSSH = "git@gitlab.sngular.com:os3/manatee/sirenia.git"; // TODO: replace by user input
-  const testRepoHTTPS = "https://gitlab.sngular.com/os3/manatee/sirenia.git"; // TODO: replace by user input
-  await cloneGitRepository(testRepoSSH);
+program
+  .requiredOption("-r,--repository-url <value>", "The URL of the repo or path")
+  .option(
+    "-s,--schemas-directory <value>",
+    "Path/name of the schemas directory"
+  )
+  .option("-p, --port [number]", "Port to run the server on", 3000)
+  .option(
+    "-d,--delete-repo-directory",
+    "Delete the repo directory after cloning"
+  )
+  .option("-a, --add-gitignore", "Add schemas repository to .gitignore");
 
-  const schemas = await findOasFromDir('./tests');
-
-  console.log('Schemas found:');
-  schemas.forEach(el => console.log(`-- ${el.filePath}`));
-
-  const openApiMocker = new OpenApiMocker({
-    port: 5000,
-    schema: schemas[0].filePath,
-    watch: true,
-  });
-
-  await openApiMocker.validate();
-
-  await openApiMocker.mock();
+const main = () => {
+  program.parse(process.argv);
+  const options = program.opts();
+  console.table(options);
 };
 
 main();
