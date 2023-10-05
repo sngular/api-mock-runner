@@ -1,9 +1,10 @@
-import OpenApiMocker from "open-api-mocker";
-import cloneGitRepository from "./services/clone-git-repository.js";
 import { input, confirm } from "@inquirer/prompts";
 import * as fs from "node:fs";
+import OpenApiMocker from "open-api-mocker";
 import path from "path";
 import { fileURLToPath } from "url";
+import cloneGitRepository from "./services/clone-git-repository.js";
+import findOasFromDir from "./services/find-oas-from-dir.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -35,6 +36,8 @@ const main = async () => {
   const testRepoSSH = "git@gitlab.sngular.com:os3/manatee/sirenia.git"; // TODO: replace by user input
   const testRepoHTTPS = "https://gitlab.sngular.com/os3/manatee/sirenia.git"; // TODO: replace by user input
   await cloneGitRepository(config.repoUrl || testRepoSSH);
+
+	const schemas = await findOasFromDir('./tests');
 
   const openApiMocker = new OpenApiMocker({
     port: 5000,
