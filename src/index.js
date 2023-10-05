@@ -1,14 +1,11 @@
 import { input, confirm } from "@inquirer/prompts";
 import * as fs from "node:fs";
 import OpenApiMocker from "open-api-mocker";
-import path from "path";
-import { fileURLToPath } from "url";
 import cloneGitRepository from "./services/clone-git-repository.js";
 import findOasFromDir from "./services/find-oas-from-dir.js";
 
-const __filename = fileURLToPath(import.meta.url);
-
-const __dirname = path.dirname(__filename);
+const testRepoSSH = "git@gitlab.sngular.com:os3/manatee/sirenia.git";
+const testRepoHTTPS = "https://gitlab.sngular.com/os3/manatee/sirenia.git"; // TODO: replace by user input
 
 const main = async () => {
   const config = {
@@ -23,7 +20,7 @@ const main = async () => {
   console.table(config);
 
   if (config.saveConfig) {
-    const filePath = `${__dirname}/.apimockrc`;
+    const filePath = `${process.cwd()}/.apimockrc`;
     fs.writeFile(filePath, JSON.stringify(config), (err) => {
       if (err) {
         console.error(err);
@@ -33,11 +30,9 @@ const main = async () => {
     });
   }
 
-  const testRepoSSH = "git@gitlab.sngular.com:os3/manatee/sirenia.git"; // TODO: replace by user input
-  const testRepoHTTPS = "https://gitlab.sngular.com/os3/manatee/sirenia.git"; // TODO: replace by user input
   await cloneGitRepository(config.repoUrl || testRepoSSH);
 
-	const schemas = await findOasFromDir('./tests');
+  const schemas = await findOasFromDir("./tests");
 
   const openApiMocker = new OpenApiMocker({
     port: 5000,
