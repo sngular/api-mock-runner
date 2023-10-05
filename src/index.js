@@ -5,22 +5,39 @@ import cloneGitRepository from "./services/clone-git-repository.js";
 import findOasFromDir from "./services/find-oas-from-dir.js";
 
 const testRepoSSH = "git@gitlab.sngular.com:os3/manatee/sirenia.git";
-const testRepoHTTPS = "https://gitlab.sngular.com/os3/manatee/sirenia.git"; // TODO: replace by user input
+// const testRepoHTTPS = "https://gitlab.sngular.com/os3/manatee/sirenia.git"; // TODO: replace by user input
+const RC_FILE_NAME = ".apimockrc";
 
 const main = async () => {
-  const config = {
-    repoUrl: await input({ message: "Enter the repo url" }),
-    dirPath: await input({ message: "Enter the directory path" }),
-    addToGitIgnore: await confirm({
-      message: "Do you want to add .api-mock-runner to .gitignore?",
-    }),
-    saveConfig: await confirm({ message: "Do you want to save the config?" }),
-  };
+  let config;
 
-  console.table(config);
+  const configFileExists = fs.existsSync(`${process.cwd()}/.apimockrc`);
 
-  if (config.saveConfig) {
-    const filePath = `${process.cwd()}/.apimockrc`;
+  if (configFileExists) {
+    const existingConfig = JSON.parse(
+      fs.readFileSync(`${process.cwd()}/.apimockrc`)
+    );
+    console.table(existingConfig);
+    const useExistingConfig = await confirm({
+      message: "Do you want to use the existing config?",
+    });
+    if (useExistingConfig) config = existingConfig;
+  } else {
+    const schemasOrigin = await input({
+      message: "Enter the repo url or relative path",
+    });
+    const initialPort = await input({
+      message: "Enter the initial port",
+      default: 1234,
+      transformer: (value) => parseInt(value),
+    });
+
+    config = {
+      schemasOrigin,
+      initialPort,
+    };
+    // Create .apimockrc file
+    const filePath = `${process.cwd()}/${RC_FILE_NAME}`;
     fs.writeFile(filePath, JSON.stringify(config), (err) => {
       if (err) {
         console.error(err);
@@ -28,21 +45,43 @@ const main = async () => {
         console.log("Config saved");
       }
     });
+    const addRcFileToGitignore = await confirm({
+      message: `Add ${RC_FILE_NAME} to .gitignore?`,
+    });
+    if (addRcFileToGitignore) {
+      // TODO: create function that validates if is already in gitignore
+      fs.appendFile(`${process.cwd()}/.gitignore`, `\n${RC_FILE_NAME}`, (err) => {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log(`${RC_FILE_NAME} added to .gitignore`);
+        }
+      });
+    }
   }
+    /*
+     * TODO:
+     * validate path type (local or url)
+     * if remote repo, clone it, add temp dir to gitignore
+     * run findOasFromDir on the temp or local dir
+     * CLI shows the list of schemas found
+     * CLI asks for the schema to mock (select from list)
+     * Start server on selected port
+     */
 
-  await cloneGitRepository(config.repoUrl || testRepoSSH);
+    await cloneGitRepository(config.schemasOrigin || testRepoSSH);
 
-  const schemas = await findOasFromDir("./tests");
+    const schemas = await findOasFromDir("./tests");
 
-  const openApiMocker = new OpenApiMocker({
-    port: 5000,
-    schema: schemas[0].filePath,
-    watch: true,
-  });
+    const openApiMocker = new OpenApiMocker({
+      port: config.initialPort,
+      schema: schemas[0].filePath,
+      watch: true,
+    });
 
-  await openApiMocker.validate();
+    await openApiMocker.validate();
 
-  await openApiMocker.mock();
+    await openApiMocker.mock();
 };
 
 main();
