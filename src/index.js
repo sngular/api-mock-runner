@@ -9,6 +9,7 @@ const RC_FILE_NAME = ".apimockrc";
 const TEMP_FOLDER_NAME = ".api-mock-runner";
 
 // TODO: Refactor steps to functions
+// TODO: Add input validation
 const main = async () => {
   let config;
 
@@ -23,22 +24,13 @@ const main = async () => {
       message: "Do you want to use the existing config?",
     });
 
-    // TODO: ask values to user if not using existing config
-    if (useExistingConfig) config = existingConfig;
+    if (useExistingConfig) {
+      config = existingConfig;
+    } else {
+      config = await getInitialValues();
+    }
   } else {
-    const schemasOrigin = await input({
-      message: "Enter the repo url or relative path",
-    });
-    const initialPort = await input({
-      message: "Enter the initial port",
-      default: 1234,
-      transformer: (value) => parseInt(value),
-    });
-
-    config = {
-      schemasOrigin,
-      initialPort,
-    };
+    config = await getInitialValues();
     // Create .apimockrc file
     const filePath = `${process.cwd()}/${RC_FILE_NAME}`;
     fs.writeFile(filePath, JSON.stringify(config), (err) => {
@@ -52,18 +44,7 @@ const main = async () => {
       message: `Add ${RC_FILE_NAME} to .gitignore?`,
     });
     if (addRcFileToGitignore) {
-      // TODO: create function that validates if is already in gitignore
-      fs.appendFile(
-        `${process.cwd()}/.gitignore`,
-        `\n${RC_FILE_NAME}`,
-        (err) => {
-          if (err) {
-            console.error(err);
-          } else {
-            console.log(`${RC_FILE_NAME} added to .gitignore`);
-          }
-        }
-      );
+      addToGitignore(RC_FILE_NAME);
     }
   }
 
@@ -79,18 +60,7 @@ const main = async () => {
 
   if (isOriginRemote) {
     await cloneGitRepository(config.schemasOrigin);
-    // TODO: DRY, create write to .gitignore function
-    fs.appendFile(
-      `${process.cwd()}/.gitignore`,
-      `\n${TEMP_FOLDER_NAME}/$}`,
-      (err) => {
-        if (err) {
-          console.error(err);
-        } else {
-          console.log(`${TEMP_FOLDER_NAME} added to .gitignore`);
-        }
-      }
-    );
+    addToGitignore(TEMP_FOLDER_NAME);
   }
 
   const schemasDir = isOriginRemote ? TEMP_FOLDER_NAME : config.schemasOrigin;
@@ -115,5 +85,36 @@ const main = async () => {
 
   await openApiMocker.mock();
 };
+
+async function getInitialValues() {
+  const schemasOrigin = await input({
+    message: "Enter the repo url or relative path",
+  });
+  const initialPort = await input({
+    message: "Enter the initial port",
+    default: 1234,
+  });
+
+  const config = {
+    schemasOrigin,
+    initialPort,
+  };
+  return config;
+}
+
+async function addToGitignore(textToAppend) {
+  // TODO: create function that validates if is already in gitignore
+  fs.appendFile(
+    `${process.cwd()}/.gitignore`,
+    `\n${textToAppend}/$}`,
+    (err) => {
+      if (err) {
+        console.error(err);
+      } else {
+        console.log(`${textToAppend} added to .gitignore`);
+      }
+    }
+  );
+}
 
 main();
