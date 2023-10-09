@@ -59,6 +59,7 @@ async function initWithConfigFile() {
     config = existingConfig;
   } else {
     config = await getInitialValues();
+    overwriteFile(`${process.cwd()}/${RC_FILE_NAME}`, JSON.stringify(config));
   }
   return config;
 }
@@ -193,4 +194,22 @@ function verifyRemoteOrigin(origin) {
 
   const isOriginRemote = isOriginRemoteRegex.test(origin);
   return isOriginRemote;
+}
+
+/**
+ * Overwrites the document on a file
+ * @async
+ * @function overwriteFile
+ * @param {string} filePath - The path of the file to overwrite
+ * @param {string} content - The content to overwrite
+ * @returns {Promise<void>}
+ */
+async function overwriteFile(filePath, content) {
+  fs.writeFile(filePath, content, (err) => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log("Config saved");
+    }
+  });
 }
