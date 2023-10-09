@@ -4,11 +4,10 @@
 // - tests
 // - doc
 
-import { execSync } from 'child_process';
-import * as fs from 'fs';
-import path from 'path';
-import * as readline from 'readline';
-import process from 'process';
+import { execSync } from "child_process";
+import * as fs from "fs";
+import path from "path";
+import process from "process";
 
 const TEMP_FOLDER_NAME = ".api-mock-runner"; // TODO: extract to configuration file?
 
@@ -16,7 +15,6 @@ async function cloneSchemaRepo(repositoryURL) {
   resetTempDir();
   cloneRepository(repositoryURL);
   printDirectoryContent();
-  await waitUserInput(); // FIXME: Temp until command line interface is finished
 }
 
 function resetTempDir() {
@@ -37,26 +35,9 @@ function cloneRepository(repositoryURL) {
 }
 
 function printDirectoryContent() {
-  console.log("Directory content:"); // FIXME: console.log
   fs.readdirSync(TEMP_FOLDER_NAME).forEach((file) => {
     console.log(`  - ${file}`);
   });
-}
-
-async function waitUserInput() {
-  const readLineInterface = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  const message = "Waiting user input to finish...";
-  return new Promise((resolve) =>
-    readLineInterface.question(message, answer => {
-      readLineInterface.close();
-      removeTempDir();
-      resolve(answer);
-    })
-  );
 }
 
 export default cloneSchemaRepo;
