@@ -8,8 +8,7 @@ import { execSync } from "child_process";
 import * as fs from "fs";
 import path from "path";
 import process from "process";
-
-const TEMP_FOLDER_NAME = ".api-mock-runner"; // TODO: extract to configuration file?
+import { TEMP_FOLDER_NAME } from "./utils.js";
 
 async function cloneSchemaRepo(repositoryURL) {
   resetTempDir();
