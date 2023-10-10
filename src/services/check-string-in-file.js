@@ -6,7 +6,6 @@ export default async function(stringToCheck, filePath) {
   let exists = false;
 
   for await (const line of reader) {
-    console.log(line);
     if(line===stringToCheck) {
       exists = line===stringToCheck
       break;
