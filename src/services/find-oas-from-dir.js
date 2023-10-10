@@ -3,16 +3,10 @@ import * as fs from 'fs';
 import * as readline from 'readline';
 
 async function getFirstLine(filePath) {
-  const readable = fs.createReadStream(filePath);
-  const reader = readline.createInterface({ input: readable });
-  const line = await new Promise((resolve) => {
-    reader.on('line', (line) => {
-      reader.close();
-      resolve(line);
-    });
-  });
-  readable.close();
-  return line;
+  const reader = readline.createInterface({ input: fs.createReadStream(filePath) });
+  const it = reader[Symbol.asyncIterator]();
+  const line = await it.next();
+  return line.value;
 }
 
 async function isOas(filePath) {
