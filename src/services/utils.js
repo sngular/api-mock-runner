@@ -1,4 +1,5 @@
 import * as fs from "node:fs";
+import checkStringInFile from "./check-string-in-file.js";
 
 /**
  * The name of the config file
@@ -22,14 +23,15 @@ export const TEMP_FOLDER_NAME = ".api-mock-runner";
  * @returns {Promise<void>}
  */
 export async function addToGitignore(textToAppend) {
-  // TODO: create function that validates if is already in gitignore
-  fs.appendFile(`${process.cwd()}/.gitignore`, `\n${textToAppend}`, (err) => {
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(`${textToAppend} added to .gitignore`);
-    }
-  });
+  if (!checkStringInFile(textToAppend, `${process.cwd()}/.gitignore`)) {
+    fs.appendFile(`${process.cwd()}/.gitignore`, `\n${textToAppend}`, (err) => {
+      if (err) {
+        console.error(err);
+      } else {
+        console.log(`${textToAppend} added to .gitignore`);
+      }
+    });
+  }
 }
 /**
  * Verify if the origin is remote
