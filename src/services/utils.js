@@ -23,7 +23,7 @@ export const TEMP_FOLDER_NAME = ".api-mock-runner";
  * @returns {Promise<void>}
  */
 export async function addToGitignore(textToAppend) {
-  if (await !checkStringInFile(textToAppend, `${process.cwd()}/.gitignore`)) {
+  if (!(await checkStringInFile(textToAppend, `${process.cwd()}/.gitignore`))) {
     fs.appendFile(`${process.cwd()}/.gitignore`, `\n${textToAppend}`, (err) => {
       if (err) {
         console.error(err);
