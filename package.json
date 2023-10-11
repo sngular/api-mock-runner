@@ -16,8 +16,10 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node .",
+    "test": "mocha -- test --reporter spec",
+    "test:unit": "mocha -- test/unit --reporter spec",
+    "test:integration": "mocha -- test/integration --reporter spec",
     "lint": "npm run lint:eslint",
     "lint:eslint": "eslint .",
     "format": "npm run format:eslint",
@@ -39,6 +41,13 @@
     "@os3/lint-staged-config": "^0.0.4",
     "@os3/semantic-release-config": "^0.1.1",
     "@os3/tsconfig": "^0.0.4",
-    "husky": "^8.0.0"
+    "@esm-bundle/chai": "^4.3.4-fix.0",
+    "@types/mocha": "^10.0.2",
+    "@types/sinon": "^10.0.19",
+    "@types/sinon-chai": "^3.2.10",
+    "husky": "^8.0.0",
+    "mocha": "^10.2.0",
+    "sinon": "^16.1.0",
+    "sinon-chai": "^3.7.0"
   }
 }
