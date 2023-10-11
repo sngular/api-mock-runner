@@ -1,5 +1,5 @@
 module.exports = {
-	extends: ['@os3'],
+	extends: ['@os3', 'prettier'],
 	env: {
 		mocha: true,
 	},
