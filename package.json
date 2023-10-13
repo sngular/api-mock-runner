@@ -1,57 +1,57 @@
 {
-  "name": "api-mock-runner",
-  "version": "0.0.0",
-  "description": "Create mocks servers with its schemas",
-  "main": "src/index.js",
-  "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist-types/index.d.ts",
-      "default": "./src/index.js"
-    }
-  },
-  "files": [
-    "dist-types",
-    "src",
-    "CHANGELOG.md"
-  ],
-  "scripts": {
-    "start": "node .",
-    "test": "mocha -- test --reporter spec",
-    "test:unit": "mocha -- test/unit --reporter spec",
-    "test:integration": "mocha -- test/integration --reporter spec",
-    "lint": "npm run lint:check",
-    "lint:check": "eslint .",
-    "lint:fix": "npm run lint -- --fix",
-    "format": "npm run format:check",
-    "format:check": "prettier --check .",
-    "format:fix": "prettier --write .",
-    "prepare": "npx husky install",
-    "types": "tsc --build --pretty",
-    "prepublishOnly": "npm run types",
-    "release": "npx semantic-release"
-  },
-  "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "@inquirer/prompts": "^3.1.2",
-    "open-api-mocker": "github:adantoscano/open-api-mocker"
-  },
-  "devDependencies": {
-    "@os3/commitlint-config": "^0.0.3",
-    "@os3/eslint-config": "^0.2.1",
-    "@os3/lint-staged-config": "^0.0.4",
-    "@os3/prettier-config": "^0.1.1",
-    "@os3/semantic-release-config": "^0.1.1",
-    "@os3/tsconfig": "^0.0.4",
-    "@esm-bundle/chai": "^4.3.4-fix.0",
-    "@types/mocha": "^10.0.2",
-    "@types/sinon": "^10.0.19",
-    "@types/sinon-chai": "^3.2.10",
-    "eslint-config-prettier": "^9.0.0",
-    "husky": "^8.0.0",
-    "mocha": "^10.2.0",
-    "sinon": "^16.1.0",
-    "sinon-chai": "^3.7.0"
-  }
+	"name": "api-mock-runner",
+	"version": "0.0.0",
+	"description": "Create mocks servers with its schemas",
+	"main": "src/index.js",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist-types/index.d.ts",
+			"default": "./src/index.js"
+		}
+	},
+	"files": [
+		"dist-types",
+		"src",
+		"CHANGELOG.md"
+	],
+	"scripts": {
+		"start": "node .",
+		"test": "mocha -- test --reporter spec",
+		"test:unit": "mocha -- test/unit --reporter spec",
+		"test:integration": "mocha -- test/integration --reporter spec",
+		"lint": "npm run lint:check",
+		"lint:check": "eslint .",
+		"lint:fix": "npm run lint -- --fix",
+		"format": "npm run format:check",
+		"format:check": "prettier --check .",
+		"format:fix": "prettier --write .",
+		"prepare": "npx husky install",
+		"types": "tsc --build --pretty",
+		"prepublishOnly": "npm run types",
+		"release": "npx semantic-release"
+	},
+	"author": "",
+	"license": "MIT",
+	"dependencies": {
+		"@inquirer/prompts": "^3.1.2",
+		"open-api-mocker": "github:adantoscano/open-api-mocker"
+	},
+	"devDependencies": {
+		"@os3/commitlint-config": "^0.0.3",
+		"@os3/eslint-config": "^0.2.1",
+		"@os3/lint-staged-config": "^0.0.4",
+		"@os3/prettier-config": "^0.1.1",
+		"@os3/semantic-release-config": "^0.1.1",
+		"@os3/tsconfig": "^0.0.4",
+		"@esm-bundle/chai": "^4.3.4-fix.0",
+		"@types/mocha": "^10.0.2",
+		"@types/sinon": "^10.0.19",
+		"@types/sinon-chai": "^3.2.10",
+		"eslint-config-prettier": "^9.0.0",
+		"husky": "^8.0.0",
+		"mocha": "^10.2.0",
+		"sinon": "^16.1.0",
+		"sinon-chai": "^3.7.0"
+	}
 }

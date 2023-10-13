@@ -1,9 +1,9 @@
-import { input, confirm } from "@inquirer/prompts";
-import * as fs from "node:fs";
-import OpenApiMocker from "open-api-mocker";
-import cloneGitRepository from "../services/clone-git-repository.js";
-import findOasFromDir from "../services/find-oas-from-dir.js";
-import { addToGitignore, overwriteFile, verifyRemoteOrigin, TEMP_FOLDER_NAME, RC_FILE_NAME } from "./utils.js";
+import { input, confirm } from '@inquirer/prompts';
+import * as fs from 'node:fs';
+import OpenApiMocker from 'open-api-mocker';
+import cloneGitRepository from '../services/clone-git-repository.js';
+import findOasFromDir from '../services/find-oas-from-dir.js';
+import { addToGitignore, overwriteFile, verifyRemoteOrigin, TEMP_FOLDER_NAME, RC_FILE_NAME } from './utils.js';
 /**
  * @typedef {Object} Config
  * @property {string} schemasOrigin - The origin of the schemas (local or remote)
@@ -18,12 +18,10 @@ import { addToGitignore, overwriteFile, verifyRemoteOrigin, TEMP_FOLDER_NAME, RC
  */
 async function initWithConfigFile() {
 	let config;
-	const existingConfig = JSON.parse(
-		fs.readFileSync(`${process.cwd()}/${RC_FILE_NAME}`)
-	);
+	const existingConfig = JSON.parse(fs.readFileSync(`${process.cwd()}/${RC_FILE_NAME}`));
 	console.table(existingConfig);
 	const useExistingConfig = await confirm({
-		message: "Do you want to use the existing config?",
+		message: 'Do you want to use the existing config?',
 	});
 
 	if (useExistingConfig) {
@@ -49,7 +47,7 @@ async function initNoConfigFile() {
 		if (err) {
 			console.error(err);
 		} else {
-			console.log("Config saved");
+			console.log('Config saved');
 		}
 	});
 	const addRcFileToGitignore = await confirm({
@@ -110,10 +108,10 @@ async function startMockServer(port, schema) {
 async function getInitialValues() {
 	// TODO: Add input validation
 	const schemasOrigin = await input({
-		message: "Enter the repo url or relative path",
+		message: 'Enter the repo url or relative path',
 	});
 	const initialPort = await input({
-		message: "Enter the initial port",
+		message: 'Enter the initial port',
 		default: 1234,
 	});
 
@@ -124,4 +122,4 @@ async function getInitialValues() {
 	return config;
 }
 
-export { initWithConfigFile, initNoConfigFile, getSchemas, startMockServer }
+export { initWithConfigFile, initNoConfigFile, getSchemas, startMockServer };

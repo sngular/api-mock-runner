@@ -18,7 +18,7 @@ cache:
   - key: &global_cache_node_mods
       files:
         - package-lock.json
-      prefix: "node_modules"
+      prefix: 'node_modules'
     paths:
       - node_modules/
     policy: pull # prevent subsequent jobs from modifying cache
@@ -43,7 +43,7 @@ install:
     - key:
         files:
           - package-lock.json
-        prefix: "node_modules"
+        prefix: 'node_modules'
       paths:
         - node_modules/
         - .husky/

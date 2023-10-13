@@ -1,5 +1,5 @@
-import * as fs from "node:fs";
-import checkStringInFile from "./check-string-in-file.js";
+import * as fs from 'node:fs';
+import checkStringInFile from './check-string-in-file.js';
 
 /**
  * The name of the config file
@@ -7,14 +7,14 @@ import checkStringInFile from "./check-string-in-file.js";
  * @type {string}
  * @default
  */
-export const RC_FILE_NAME = ".apimockrc";
+export const RC_FILE_NAME = '.apimockrc';
 /**
  * The name of the temporary folder
  * @constant
  * @type {string}
  * @default
  */
-export const TEMP_FOLDER_NAME = ".api-mock-runner";
+export const TEMP_FOLDER_NAME = '.api-mock-runner';
 /**
  * Append text to .gitignore
  * @async
@@ -41,11 +41,11 @@ export async function addToGitignore(textToAppend) {
  */
 export function verifyRemoteOrigin(origin) {
 	/*
-   * NOTE: Regex explanation
-   * - /^(git@|https:\/\/)/: This part of the regex specifies that the string must start with either "git@" or "https://".
-   * - [^\s]+: This part ensures that there is at least one or more characters after "git@" or "https://". It matches any character except whitespace.
-   * - (\.git)$: The regex ends with "\.git", ensuring that the string must end with ".git".
-   */
+	 * NOTE: Regex explanation
+	 * - /^(git@|https:\/\/)/: This part of the regex specifies that the string must start with either "git@" or "https://".
+	 * - [^\s]+: This part ensures that there is at least one or more characters after "git@" or "https://". It matches any character except whitespace.
+	 * - (\.git)$: The regex ends with "\.git", ensuring that the string must end with ".git".
+	 */
 	const isOriginRemoteRegex = /^(git@|https:\/\/)[^\s]+(\.git)$/;
 
 	const isOriginRemote = isOriginRemoteRegex.test(origin);
@@ -64,7 +64,7 @@ export async function overwriteFile(filePath, content) {
 		if (err) {
 			console.error(err);
 		} else {
-			console.log("Config saved");
+			console.log('Config saved');
 		}
 	});
 }

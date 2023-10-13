@@ -10,21 +10,21 @@ async function getFirstLine(filePath) {
 }
 
 async function isOas(filePath) {
-	const firstLine = await getFirstLine(filePath)
-	const oasRegEx = /^openapi/i
+	const firstLine = await getFirstLine(filePath);
+	const oasRegEx = /^openapi/i;
 	return oasRegEx.test(firstLine);
 }
 
 const findOasFromDir = async (startPath, acc) => {
 	if (!fs.existsSync(startPath)) {
-		console.log("no dir ", startPath);
+		console.log('no dir ', startPath);
 		return [];
 	}
 
 	const files = fs.readdirSync(startPath);
 	const oasFiles = acc || [];
 
-	for(const file of files) {
+	for (const file of files) {
 		const filePath = path.join(startPath, file);
 		const stat = fs.lstatSync(filePath);
 		if (stat.isDirectory()) {
@@ -34,10 +34,10 @@ const findOasFromDir = async (startPath, acc) => {
 				filename: file,
 				path: startPath,
 				filePath,
-			})
+			});
 		}
 	}
 	return oasFiles;
 };
 
-export default findOasFromDir
+export default findOasFromDir;

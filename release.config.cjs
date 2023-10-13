@@ -1,1 +1,1 @@
-module.exports = require("@os3/semantic-release-config");
+module.exports = require('@os3/semantic-release-config');

@@ -1,7 +1,7 @@
-import assert from "assert";
+import assert from 'assert';
 
-describe("Simple integration test", () => {
-	it("should return true", () => {
+describe('Simple integration test', () => {
+	it('should return true', () => {
 		assert.equal(true, true);
 	});
 });

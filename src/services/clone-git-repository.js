@@ -4,11 +4,11 @@
 // - tests
 // - doc
 
-import { execSync } from "child_process";
-import * as fs from "fs";
-import path from "path";
-import process from "process";
-import { TEMP_FOLDER_NAME } from "./utils.js";
+import { execSync } from 'child_process';
+import * as fs from 'fs';
+import path from 'path';
+import process from 'process';
+import { TEMP_FOLDER_NAME } from './utils.js';
 
 /**
  * Clone a git repository into a temporary folder
