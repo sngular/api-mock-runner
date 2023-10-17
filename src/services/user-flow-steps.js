@@ -3,7 +3,7 @@ import * as fs from 'node:fs';
 import OpenApiMocker from 'open-api-mocker';
 import cloneGitRepository from '../services/clone-git-repository.js';
 import findOasFromDir from '../services/find-oas-from-dir.js';
-import { addToGitignore, overwriteFile, verifyRemoteOrigin, TEMP_FOLDER_NAME, RC_FILE_NAME } from './utils.js';
+import { addToGitignore, verifyRemoteOrigin, TEMP_FOLDER_NAME, RC_FILE_NAME } from './utils.js';
 /**
  * @typedef {Object} Config
  * @property {string} schemasOrigin - The origin of the schemas (local or remote)
@@ -17,20 +17,13 @@ import { addToGitignore, overwriteFile, verifyRemoteOrigin, TEMP_FOLDER_NAME, RC
  * @returns {Promise<Config>} A object with the initial values from the user
  */
 async function initWithConfigFile() {
-	let config;
 	const existingConfig = JSON.parse(fs.readFileSync(`${process.cwd()}/${RC_FILE_NAME}`));
 	console.table(existingConfig);
 	const useExistingConfig = await confirm({
 		message: 'Do you want to use the existing config?',
 	});
 
-	if (useExistingConfig) {
-		config = existingConfig;
-	} else {
-		config = await getInitialValues();
-		overwriteFile(`${process.cwd()}/${RC_FILE_NAME}`, JSON.stringify(config));
-	}
-	return config;
+	return useExistingConfig ? existingConfig : initNoConfigFile();
 }
 
 /**
@@ -41,20 +34,12 @@ async function initWithConfigFile() {
  */
 async function initNoConfigFile() {
 	const config = await getInitialValues();
-	// Create .apimockrc file
-	const filePath = `${process.cwd()}/${RC_FILE_NAME}`;
-	fs.writeFile(filePath, JSON.stringify(config), (err) => {
-		if (err) {
-			console.error(err);
-		} else {
-			console.log('Config saved');
-		}
-	});
+
 	const addRcFileToGitignore = await confirm({
 		message: `Add ${RC_FILE_NAME} to .gitignore?`,
 	});
 	if (addRcFileToGitignore) {
-		addToGitignore(RC_FILE_NAME);
+		await addToGitignore(RC_FILE_NAME);
 	}
 	return config;
 }
@@ -71,7 +56,7 @@ async function getSchemas(origin) {
 
 	if (isOriginRemote) {
 		await cloneGitRepository(origin);
-		addToGitignore(TEMP_FOLDER_NAME);
+		await addToGitignore(TEMP_FOLDER_NAME);
 	}
 
 	const schemasDir = isOriginRemote ? TEMP_FOLDER_NAME : origin;

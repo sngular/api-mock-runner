@@ -20,18 +20,14 @@ export const TEMP_FOLDER_NAME = '.api-mock-runner';
  * @async
  * @function addToGitignore
  * @param {string} textToAppend - The text to append to .gitignore
- * @returns {Promise<void>}
+ * @returns {Promise<boolean>}
  */
 export async function addToGitignore(textToAppend) {
 	if (!(await checkStringInFile(textToAppend, `${process.cwd()}/.gitignore`))) {
-		fs.appendFile(`${process.cwd()}/.gitignore`, `\n${textToAppend}`, (err) => {
-			if (err) {
-				console.error(err);
-			} else {
-				console.log(`${textToAppend} added to .gitignore`);
-			}
-		});
+		fs.appendFileSync(`${process.cwd()}/.gitignore`, `\n${textToAppend}`);
+		return true;
 	}
+	return false;
 }
 /**
  * Verify if the origin is remote
@@ -50,21 +46,4 @@ export function verifyRemoteOrigin(origin) {
 
 	const isOriginRemote = isOriginRemoteRegex.test(origin);
 	return isOriginRemote;
-}
-/**
- * Overwrites the document on a file
- * @async
- * @function overwriteFile
- * @param {string} filePath - The path of the file to overwrite
- * @param {string} content - The content to overwrite
- * @returns {Promise<void>}
- */
-export async function overwriteFile(filePath, content) {
-	fs.writeFile(filePath, content, (err) => {
-		if (err) {
-			console.error(err);
-		} else {
-			console.log('Config saved');
-		}
-	});
 }

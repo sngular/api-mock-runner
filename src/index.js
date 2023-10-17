@@ -10,26 +10,29 @@ import { RC_FILE_NAME } from './services/utils.js';
  * @returns {Promise<void>}
  */
 const main = async () => {
-	let config;
-
 	const configFileExists = fs.existsSync(`${process.cwd()}/${RC_FILE_NAME}`);
 
-	if (configFileExists) {
-		config = await initWithConfigFile();
-	} else {
-		config = await initNoConfigFile();
-	}
+	const config = configFileExists ? await initWithConfigFile() : await initNoConfigFile();
 
 	const schemas = await getSchemas(config.schemasOrigin);
 
-	// TODO: change to checkboxes when multiple schemas are supported
-	const selectedSchema = await select({
-		message: 'Select a schema',
-		choices: schemas.map((schema) => {
-			return { name: schema.fileName, value: schema.filePath };
-		}),
-	});
+	if (schemas.length > 0) {
+		// TODO: change to checkboxes when multiple schemas are supported
+		const selectedSchema = await select({
+			message: 'Select a schema',
+			choices: schemas.map((schema) => {
+				return { name: schema.fileName, value: schema.filePath };
+			}),
+		});
 
-	await startMockServer(config.initialPort, selectedSchema);
+		// Create .apimockrc file
+		const filePath = `${process.cwd()}/${RC_FILE_NAME}`;
+		fs.writeFileSync(filePath, JSON.stringify(config));
+
+		await startMockServer(config.initialPort, selectedSchema);
+	} else {
+		console.log(`No OpenApi schemas found at ${config.schemasOrigin}`);
+	}
 };
+
 main();
