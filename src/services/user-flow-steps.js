@@ -55,7 +55,7 @@ async function getSchemas(origin) {
 	const isOriginRemote = verifyRemoteOrigin(origin);
 
 	if (isOriginRemote) {
-		await cloneGitRepository(origin);
+		cloneGitRepository(origin, TEMP_FOLDER_NAME);
 		await addToGitignore(TEMP_FOLDER_NAME);
 	}
 
