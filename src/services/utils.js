@@ -47,3 +47,20 @@ export function verifyRemoteOrigin(origin) {
 	const isOriginRemote = isOriginRemoteRegex.test(origin);
 	return isOriginRemote;
 }
+/**
+ * Overwrites the document on a file
+ * @async
+ * @function overwriteFile
+ * @param {string} filePath - The path of the file to overwrite
+ * @param {string} content - The content to overwrite
+ * @returns {Promise<void>}
+ */
+export function overwriteFile(filePath, content) {
+	fs.writeFileSync(filePath, content, (err) => {
+		if (err) {
+			console.error(err);
+		} else {
+			console.log('Config saved');
+		}
+	});
+}
