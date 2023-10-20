@@ -70,21 +70,24 @@ async function getSchemas(origin) {
  * @async
  * @function startMockServer
  * @param {number} port - The port to start the mock server
- * @param {string} schema - The schema to mock
+ * @param {string[]} schemas - An array of schemas
  * @returns {Promise<void>}
  */
-async function startMockServer(port, schema) {
-	const openApiMocker = new OpenApiMocker({
-		port: port,
-		schema: schema,
-		watch: true,
-	});
+async function startMockServer(port, schemas) {
+	let currentPort = port;
+	for (const schema of schemas) {
+		const openApiMocker = new OpenApiMocker({
+			port: currentPort,
+			schema: schema,
+			watch: true,
+		});
 
-	await openApiMocker.validate();
+		await openApiMocker.validate();
 
-	await openApiMocker.mock();
+		await openApiMocker.mock();
+		currentPort++;
+	}
 }
-
 /**
  * get initial values from user
  * @async
