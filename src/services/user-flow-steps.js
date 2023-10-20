@@ -3,11 +3,12 @@ import * as fs from 'node:fs';
 import OpenApiMocker from 'open-api-mocker';
 import cloneGitRepository from '../services/clone-git-repository.js';
 import findOasFromDir from '../services/find-oas-from-dir.js';
-import { addToGitignore, verifyRemoteOrigin, TEMP_FOLDER_NAME, RC_FILE_NAME, overwriteFile } from './utils.js';
+import { addToGitignore, verifyRemoteOrigin, TEMP_FOLDER_NAME, RC_FILE_NAME } from './utils.js';
 /**
  * @typedef {Object} Config
  * @property {string} schemasOrigin - The origin of the schemas (local or remote)
- * @property {number} initialPort - The initial port to start the mock server
+ * @property {string[]} selectedSchemas - An array of schemas
+ * @property {number[]} ports - The initial port to start the mock server
  */
 
 /**
@@ -17,35 +18,30 @@ import { addToGitignore, verifyRemoteOrigin, TEMP_FOLDER_NAME, RC_FILE_NAME, ove
  * @returns {Promise<Config>} A object with the initial values from the user
  */
 async function initWithConfigFile() {
-	let config;
 	const existingConfig = JSON.parse(fs.readFileSync(`${process.cwd()}/${RC_FILE_NAME}`));
 	console.log(existingConfig);
 	const useExistingConfig = await confirm({
 		message: 'Do you want to use the existing config?',
 	});
-	if (useExistingConfig) {
-		config = existingConfig;
-	} else {
-		config = await startFlow();
-	}
-	return config;
+	return useExistingConfig ? existingConfig : await init();
 }
 
 /**
- * User flow when the config file doesn't exist
+ * first step when the config file doesn't exist
  * @async
  * @function initNoConfigFile
- * @returns {Promise<Config>} A object with the initial values from the user
+ * @returns {Promise<string>} path or url of the schemas
  */
-async function initNoConfigFile() {
-	const config = await getInitialValues();
+async function startNewFlow() {
+	const schemasOrigin = await getOrigin();
 	const addRcFileToGitignore = await confirm({
 		message: `Add ${RC_FILE_NAME} to .gitignore?`,
 	});
 	if (addRcFileToGitignore) {
 		await addToGitignore(RC_FILE_NAME);
 	}
-	return config;
+
+	return schemasOrigin;
 }
 
 /**
@@ -73,74 +69,89 @@ async function getSchemas(origin) {
  * Start the mock server
  * @async
  * @function startMockServer
- * @param {number[]} ports - ports for each schema
- * @param {string[]} schemas - An array of schemas
+ * @param {Schema[]} selectedSchemas - An array of schemas
  * @returns {Promise<void>}
  */
-async function startMockServer(ports, schemas) {
-	for (let i = 0; i < schemas.length; i++) {
+async function startMockServer(selectedSchemas) {
+	for (let currentSchema of selectedSchemas) {
 		const openApiMocker = new OpenApiMocker({
-			port: ports[i],
-			schema: schemas[i],
+			port: currentSchema.port,
+			schema: currentSchema.path,
 			watch: true,
 		});
-
 		await openApiMocker.validate();
 
 		await openApiMocker.mock();
+		console.log();
 	}
 }
 /**
  * get initial values from user
  * @async
- * @returns {Promise<Config>} A object with the initial values from the user
+ * @function getOrigin
+ * @returns {Promise<string>} The origin of the schemas (local or remote)
  */
-async function getInitialValues() {
+async function getOrigin() {
 	// TODO: Add input validation
 	const schemasOrigin = await input({
 		message: 'Enter the repo url or relative path',
 	});
-
-	const config = {
-		schemasOrigin,
-	};
-	return config;
+	return schemasOrigin;
 }
+/**
+ * Start flow without config
+ * @async
+ * @function init
+ * @returns {Promise<Config>} A object with the complete config
+ */
+async function init() {
+	const schemasOrigin = await startNewFlow();
 
-async function startFlow() {
-	let config;
-	config = await initNoConfigFile();
+	const schemas = await getSchemas(schemasOrigin);
 
-	const schemas = await getSchemas(config.schemasOrigin);
-
-	const selectedSchemas = await checkbox({
+	const schemasToMock = await checkbox({
 		message: 'Select a schema',
 		choices: schemas.map((schema) => {
 			return { name: schema.fileName, value: schema.filePath };
 		}),
 	});
 
-	config.selectedSchemas = selectedSchemas;
-	const ports = await askForPorts(selectedSchemas);
-	config.ports = ports;
+	const selectedSchemas = await askForPorts(schemasToMock);
+	const config = { schemasOrigin, selectedSchemas };
 
-	overwriteFile(`${process.cwd()}/${RC_FILE_NAME}`, JSON.stringify(config));
+	fs.writeFileSync(`${process.cwd()}/${RC_FILE_NAME}`, JSON.stringify(config, null, '\t'));
+	console.log(config);
+
 	return config;
 }
 
-async function askForPorts(selectedSchemas) {
-	let ports = [];
+/**
+ * @typedef {Object} Schema
+ * @property {string} path - The path of the schema
+ * @property {number} port - The port for the schema
+ */
+
+/**
+ * Ask for ports for each schema
+ * @async
+ * @function askForPorts
+ * @param {string[]} schemaPaths - An array of schemas
+ * @returns {Promise<Schema[]>} An array of selected Schemas
+ */
+async function askForPorts(schemaPaths) {
+	const selectedSchemas = [];
 	let suggestedPort = 1234;
-	for (const schema of selectedSchemas) {
+	for (const schemaPath of schemaPaths) {
 		const port = await input({
-			message: `Select a port for ${schema}`,
+			message: `Select a port for ${schemaPath}`,
 			default: suggestedPort,
 		});
-		ports.push(port);
+		const portNumber = parseInt(port);
+		const schema = { path: schemaPath, port: portNumber };
+		selectedSchemas.push(schema);
 		suggestedPort++;
 	}
-
-	return ports;
+	return selectedSchemas;
 }
 
-export { initWithConfigFile, initNoConfigFile, getSchemas, startMockServer, startFlow };
+export { initWithConfigFile, startMockServer, init };
