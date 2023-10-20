@@ -30,7 +30,8 @@
 		"prepare": "npx husky install",
 		"types": "tsc --build --pretty",
 		"prepublishOnly": "npm run types",
-		"release": "npx semantic-release"
+		"release": "npx semantic-release",
+		"reset": "rm -rf .apimockrc && rm -rf .api-mock-runner"
 	},
 	"author": "",
 	"license": "MIT",

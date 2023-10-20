@@ -1,9 +1,11 @@
-import { input, confirm, checkbox } from '@inquirer/prompts';
+import { checkbox, confirm, input } from '@inquirer/prompts';
 import * as fs from 'node:fs';
 import OpenApiMocker from 'open-api-mocker';
 import cloneGitRepository from '../services/clone-git-repository.js';
 import findOasFromDir from '../services/find-oas-from-dir.js';
-import { addToGitignore, verifyRemoteOrigin, TEMP_FOLDER_NAME, RC_FILE_NAME } from './utils.js';
+import { originValidator, portValidator } from './inquirer-validators.js';
+import { RC_FILE_NAME, TEMP_FOLDER_NAME, addToGitignore, verifyRemoteOrigin } from './utils.js';
+
 /**
  * @typedef {Object} Config
  * @property {string} schemasOrigin - The origin of the schemas (local or remote)
@@ -15,7 +17,7 @@ import { addToGitignore, verifyRemoteOrigin, TEMP_FOLDER_NAME, RC_FILE_NAME } fr
  * User flow when the config file already exists
  * @async
  * @function initWithConfigFile
- * @returns {Promise<Config>} A object with the initial values from the user
+ * @returns {Promise<Config>} An object with the initial values from the user
  */
 async function initWithConfigFile() {
 	const existingConfig = JSON.parse(fs.readFileSync(`${process.cwd()}/${RC_FILE_NAME}`));
@@ -85,6 +87,7 @@ async function startMockServer(selectedSchemas) {
 		console.log();
 	}
 }
+
 /**
  * get initial values from user
  * @async
@@ -92,17 +95,18 @@ async function startMockServer(selectedSchemas) {
  * @returns {Promise<string>} The origin of the schemas (local or remote)
  */
 async function getOrigin() {
-	// TODO: Add input validation
 	const schemasOrigin = await input({
-		message: 'Enter the repo url or relative path',
+		message: 'Enter a remote origin (https:// or git@) or local path',
+		validate: originValidator,
 	});
 	return schemasOrigin;
 }
+
 /**
  * Start flow without config
  * @async
  * @function init
- * @returns {Promise<Config>} A object with the complete config
+ * @returns {Promise<Config>} An object with the complete config
  */
 async function init() {
 	const schemasOrigin = await startNewFlow();
@@ -114,6 +118,7 @@ async function init() {
 		choices: schemas.map((schema) => {
 			return { name: schema.fileName, value: schema.filePath };
 		}),
+		// TODO: pending validation to ensure that at least one schema is selected. Waiting next inquirer release.
 	});
 
 	const selectedSchemas = await askForPorts(schemasToMock);
@@ -145,6 +150,7 @@ async function askForPorts(schemaPaths) {
 		const port = await input({
 			message: `Select a port for ${schemaPath}`,
 			default: suggestedPort,
+			validate: (input) => portValidator(input, selectedSchemas),
 		});
 		const portNumber = parseInt(port);
 		const schema = { path: schemaPath, port: portNumber };
@@ -154,4 +160,4 @@ async function askForPorts(schemaPaths) {
 	return selectedSchemas;
 }
 
-export { initWithConfigFile, startMockServer, init };
+export { init, initWithConfigFile, startMockServer };

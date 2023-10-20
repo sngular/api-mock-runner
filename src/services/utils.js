@@ -47,3 +47,10 @@ export function verifyRemoteOrigin(origin) {
 	const isOriginRemote = isOriginRemoteRegex.test(origin);
 	return isOriginRemote;
 }
+
+export default {
+	RC_FILE_NAME,
+	TEMP_FOLDER_NAME,
+	addToGitignore,
+	verifyRemoteOrigin,
+};
