@@ -1,6 +1,6 @@
 import { checkbox, confirm, input } from '@inquirer/prompts';
 import * as fs from 'node:fs';
-import OpenApiMocker from 'open-api-mocker';
+import OpenApiMocker from '@os3/open-api-mocker';
 import cloneGitRepository from '../services/clone-git-repository.js';
 import findOasFromDir from '../services/find-oas-from-dir.js';
 import { originValidator, portValidator } from './inquirer-validators.js';
