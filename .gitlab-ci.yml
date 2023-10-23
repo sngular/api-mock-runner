@@ -21,6 +21,7 @@ cache:
       prefix: 'node_modules'
     paths:
       - node_modules/
+      - .husky/
     policy: pull # prevent subsequent jobs from modifying cache
 
 install:
