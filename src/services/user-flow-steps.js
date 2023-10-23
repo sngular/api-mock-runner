@@ -1,6 +1,7 @@
 import { checkbox, confirm, input } from '@inquirer/prompts';
 import * as fs from 'node:fs';
 import OpenApiMocker from '@os3/open-api-mocker';
+import { OpenApiSchemaNotFoundError } from '../errors/openapi-schema-not-found-error.js';
 import cloneGitRepository from '../services/clone-git-repository.js';
 import findOasFromDir from '../services/find-oas-from-dir.js';
 import { originValidator, portValidator } from './inquirer-validators.js';
@@ -106,13 +107,16 @@ async function getOrigin() {
  * Start flow without config
  * @async
  * @function init
- * @returns {Promise<Config>} An object with the complete config
+ * @returns {Promise<Config>} A object with the complete config
+ * @throws {OpenApiSchemaNotFoundError} When no schemas are found in the given directory
  */
 async function init() {
 	const schemasOrigin = await startNewFlow();
 
 	const schemas = await getSchemas(schemasOrigin);
-
+	if (!schemas.length) {
+		throw new OpenApiSchemaNotFoundError();
+	}
 	const schemasToMock = await checkbox({
 		message: 'Select a schema',
 		choices: schemas.map((schema) => {
