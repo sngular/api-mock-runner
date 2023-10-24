@@ -2,7 +2,7 @@ import { checkbox, confirm, input } from '@inquirer/prompts';
 import * as fs from 'node:fs';
 import { OpenApiSchemaNotFoundError } from '../errors/openapi-schema-not-found-error.js';
 import cloneGitRepository from '../services/clone-git-repository.js';
-import findOasFromDir from '../services/find-oas-from-dir.js';
+import { findOasFromDir, findOasFromDirRecursive } from '../services/find-oas-from-dir.js';
 import addToGitignore from './gitignore.js';
 import { originValidator, portValidator } from './inquirer-validators.js';
 import { RC_FILE_NAME, TEMP_FOLDER_NAME, verifyRemoteOrigin } from './utils.js';
@@ -45,9 +45,7 @@ async function getSchemas(origin) {
 		await addToGitignore(TEMP_FOLDER_NAME);
 	}
 
-	const schemasDir = isOriginRemote ? TEMP_FOLDER_NAME : origin;
-
-	const schemas = await findOasFromDir(schemasDir);
+	const schemas = isOriginRemote ? await findOasFromDirRecursive(TEMP_FOLDER_NAME) : await findOasFromDir(origin);
 	return schemas;
 }
 
