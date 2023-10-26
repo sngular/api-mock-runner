@@ -1,6 +1,5 @@
 import { checkbox, confirm, input } from '@inquirer/prompts';
 import * as fs from 'node:fs';
-import OpenApiMocker from '@os3/open-api-mocker';
 import { OpenApiSchemaNotFoundError } from '../errors/openapi-schema-not-found-error.js';
 import cloneGitRepository from '../services/clone-git-repository.js';
 import findOasFromDir from '../services/find-oas-from-dir.js';
@@ -69,27 +68,6 @@ async function getSchemas(origin) {
 }
 
 /**
- * Start the mock server
- * @async
- * @function startMockServer
- * @param {Schema[]} selectedSchemas - An array of schemas
- * @returns {Promise<void>}
- */
-async function startMockServer(selectedSchemas) {
-	for (let currentSchema of selectedSchemas) {
-		const openApiMocker = new OpenApiMocker({
-			port: currentSchema.port,
-			schema: currentSchema.path,
-			watch: true,
-		});
-		await openApiMocker.validate();
-
-		await openApiMocker.mock();
-		console.log();
-	}
-}
-
-/**
  * get initial values from user
  * @async
  * @function getOrigin
@@ -107,26 +85,55 @@ async function getOrigin() {
  * Start flow without config
  * @async
  * @function init
+ * @property {Options} options - cli options
  * @returns {Promise<Config>} A object with the complete config
  * @throws {OpenApiSchemaNotFoundError} When no schemas are found in the given directory
  */
-async function init() {
-	const schemasOrigin = await startNewFlow();
-
+async function init({ origin, schemaPaths, ports } = {}) {
+	const schemasOrigin = origin || (await startNewFlow());
 	const schemas = await getSchemas(schemasOrigin);
 	if (!schemas.length) {
 		throw new OpenApiSchemaNotFoundError();
 	}
-	const schemasToMock = await checkbox({
-		message: 'Select a schema',
-		choices: schemas.map((schema) => {
-			return { name: schema.fileName, value: schema.filePath };
-		}),
-		// TODO: pending validation to ensure that at least one schema is selected. Waiting next inquirer release.
-	});
 
-	const selectedSchemas = await askForPorts(schemasToMock);
+	const schemasFilePaths = schemas.map((s) => s.filePath);
+	const schemaPathsAreAvailable = schemaPaths?.every((path) => schemasFilePaths.includes(path));
+
+	const schemasToMock = schemaPathsAreAvailable
+		? schemaPaths
+		: await checkbox({
+				message: 'Select a schema',
+				choices: schemas.map((schema) => {
+					return { value: schema.filePath };
+				}),
+				// TODO: pending validation to ensure that at least one schema is selected. Waiting next inquirer release.
+		  });
+
+	const selectedSchemas = ports?.length ? assignPorts(schemasToMock, ports) : await askForPorts(schemasToMock);
 	const config = { schemasOrigin, selectedSchemas };
+
+	fs.writeFileSync(`${process.cwd()}/${RC_FILE_NAME}`, JSON.stringify(config, null, '\t'));
+	console.log(config);
+
+	return config;
+}
+
+/**
+ * @typedef {Object} Options
+ * @property {string[]} schemaPaths - Local schema paths
+ * @property {string[]} ports - An array of ports
+ */
+
+/**
+ * Start flow without config
+ * @async
+ * @function init
+ * @property {Options} options - cli options
+ * @returns {Promise<Config>} A object with the complete config
+ */
+async function initWithSchemaPaths({ schemaPaths, ports } = {}) {
+	const selectedSchemas = ports?.length ? assignPorts(schemaPaths, ports) : await askForPorts(schemaPaths);
+	const config = { selectedSchemas };
 
 	fs.writeFileSync(`${process.cwd()}/${RC_FILE_NAME}`, JSON.stringify(config, null, '\t'));
 	console.log(config);
@@ -164,4 +171,18 @@ async function askForPorts(schemaPaths) {
 	return selectedSchemas;
 }
 
-export { init, initWithConfigFile, startMockServer };
+/**
+ * Assigns ports for each schema
+ * @function assignPorts
+ * @param {string[]} schemaPaths - An array of schemas
+ * @param {string[]} ports - An array of ports
+ * @returns {Schema[]} An array of selected Schemas
+ */
+function assignPorts(schemaPaths, ports) {
+	return schemaPaths.map((schemaPath, i) => {
+		const portNumber = Number.parseInt(ports[i]) || Number.parseInt(ports[ports.length - 1]) + (i + 1 - ports.length);
+		return { path: schemaPath, port: portNumber };
+	});
+}
+
+export { initWithConfigFile, initWithSchemaPaths, init };

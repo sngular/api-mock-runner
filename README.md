@@ -13,8 +13,27 @@ npm ci
 
 ## Usage
 
+To start a guided configuration:
+
 ```sh
-npm start
+npx api-mock-runner
+```
+
+To explore options:
+
+```sh
+npx api-mock-runner -h
+```
+
+```sh
+Usage: api-mock-runner [options]
+
+Options:
+  -o, --origin <origin>          path or repo containing schemas
+  -s, --schema [schemaPaths...]  path to schemas
+  -p, --port [ports...]          port to serve each schema
+  -r, --run-config               use saved config
+  -h, --help                     display help for command
 ```
 
 ### Response selection

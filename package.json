@@ -3,6 +3,7 @@
 	"version": "0.0.0",
 	"description": "Create mocks servers with its schemas",
 	"main": "src/index.js",
+	"bin": "src/index.js",
 	"type": "module",
 	"exports": {
 		".": {
@@ -37,7 +38,8 @@
 	"license": "MIT",
 	"dependencies": {
 		"@inquirer/prompts": "^3.1.2",
-		"@os3/open-api-mocker": "^2.1.0"
+		"@os3/open-api-mocker": "^2.1.0",
+		"commander": "^11.1.0"
 	},
 	"devDependencies": {
 		"@esm-bundle/chai": "^4.3.4-fix.0",

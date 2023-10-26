@@ -31,7 +31,7 @@ const findOasFromDir = async (startPath, acc) => {
 			await findOasFromDir(filePath, oasFiles);
 		} else if ((file.endsWith('.yaml') || file.endsWith('.yml')) && (await isOas(filePath))) {
 			oasFiles.push({
-				filename: file,
+				fileName: file,
 				path: startPath,
 				filePath,
 			});
