@@ -1,7 +1,7 @@
 import OpenApiMocker from '@os3/open-api-mocker';
 
 /**
- * @typedef {import('./user-flow-steps.js').Schema} Schema
+ * @typedef {import('../types/schema.js').Schema} Schema
  */
 
 /**

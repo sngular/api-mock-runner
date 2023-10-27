@@ -7,10 +7,9 @@ import addToGitignore from './gitignore.js';
 import { originValidator, portValidator } from './inquirer-validators.js';
 import { RC_FILE_NAME, TEMP_FOLDER_NAME, verifyRemoteOrigin } from './utils.js';
 /**
- * @typedef {Object} Config
- * @property {string} schemasOrigin - The origin of the schemas (local or remote)
- * @property {string[]} selectedSchemas - An array of schemas
- * @property {number[]} ports - The initial port to start the mock server
+ * @typedef {import('../types/types.js').Config} Config
+ * @typedef {import('../types/types.js').Options} Options
+ * @typedef {import('../types/types.js').Schema} Schema
  */
 
 /**
@@ -67,7 +66,7 @@ async function getOrigin() {
  * Start flow without config
  * @async
  * @function init
- * @property {Options} options - cli options
+ * @param {Options} options - cli options
  * @returns {Promise<Config>} A object with the complete config
  * @throws {OpenApiSchemaNotFoundError} When no schemas are found in the given directory
  */
@@ -102,16 +101,10 @@ async function init({ origin, schemaPaths, ports } = {}) {
 }
 
 /**
- * @typedef {Object} Options
- * @property {string[]} schemaPaths - Local schema paths
- * @property {string[]} ports - An array of ports
- */
-
-/**
  * Start flow without config
  * @async
  * @function init
- * @property {Options} options - cli options
+ * @param {Options} options - cli options
  * @returns {Promise<Config>} A object with the complete config
  */
 async function initWithSchemaPaths({ schemaPaths, ports } = {}) {
@@ -123,12 +116,6 @@ async function initWithSchemaPaths({ schemaPaths, ports } = {}) {
 
 	return config;
 }
-
-/**
- * @typedef {Object} Schema
- * @property {string} path - The path of the schema
- * @property {number} port - The port for the schema
- */
 
 /**
  * Ask for ports for each schema

@@ -2,7 +2,7 @@ import fs from 'fs';
 import { verifyRemoteOrigin } from './utils.js';
 
 /**
- * @typedef {import('./user-flow-steps.js').Schema} Schema
+ * @typedef {import('../types/schema.js').Schema} Schema
  */
 
 export const errorMessages = Object.freeze({
