@@ -1,6 +1,3 @@
-import * as fs from 'node:fs';
-import checkStringInFile from './check-string-in-file.js';
-
 /**
  * The name of the config file
  * @constant
@@ -8,27 +5,15 @@ import checkStringInFile from './check-string-in-file.js';
  * @default
  */
 export const RC_FILE_NAME = '.apimockrc';
+
 /**
  * The name of the temporary folder
  * @constant
  * @type {string}
  * @default
  */
-export const TEMP_FOLDER_NAME = '.api-mock-runner';
-/**
- * Append text to .gitignore
- * @async
- * @function addToGitignore
- * @param {string} textToAppend - The text to append to .gitignore
- * @returns {Promise<boolean>}
- */
-export async function addToGitignore(textToAppend) {
-	if (!(await checkStringInFile(textToAppend, `${process.cwd()}/.gitignore`))) {
-		fs.appendFileSync(`${process.cwd()}/.gitignore`, `\n${textToAppend}`);
-		return true;
-	}
-	return false;
-}
+export const TEMP_FOLDER_NAME = '.api-mock-runner/';
+
 /**
  * Verify if the origin is remote
  * @function verifyRemoteOrigin
@@ -51,6 +36,5 @@ export function verifyRemoteOrigin(origin) {
 export default {
 	RC_FILE_NAME,
 	TEMP_FOLDER_NAME,
-	addToGitignore,
 	verifyRemoteOrigin,
 };

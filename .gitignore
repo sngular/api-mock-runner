@@ -1,6 +1,6 @@
 node_modules/
 dist-types/
-.api-mock-runner
+.api-mock-runner/
 .apimockrc
 coverage/
 .DS_Store

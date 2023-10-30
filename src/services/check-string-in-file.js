@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as readline from 'readline';
 
-export default async function (stringToCheck, filePath) {
+async function check(stringToCheck, filePath) {
 	const reader = readline.createInterface({ input: fs.createReadStream(filePath) });
 	let exists = false;
 
@@ -14,3 +14,4 @@ export default async function (stringToCheck, filePath) {
 
 	return exists;
 }
+export const checkStringInFile = { check };

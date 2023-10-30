@@ -3,9 +3,9 @@ import * as fs from 'node:fs';
 import { OpenApiSchemaNotFoundError } from '../errors/openapi-schema-not-found-error.js';
 import cloneGitRepository from '../services/clone-git-repository.js';
 import findOasFromDir from '../services/find-oas-from-dir.js';
+import addToGitignore from './gitignore.js';
 import { originValidator, portValidator } from './inquirer-validators.js';
-import { RC_FILE_NAME, TEMP_FOLDER_NAME, addToGitignore, verifyRemoteOrigin } from './utils.js';
-
+import { RC_FILE_NAME, TEMP_FOLDER_NAME, verifyRemoteOrigin } from './utils.js';
 /**
  * @typedef {Object} Config
  * @property {string} schemasOrigin - The origin of the schemas (local or remote)
@@ -26,24 +26,6 @@ async function initWithConfigFile() {
 		message: 'Do you want to use the existing config?',
 	});
 	return useExistingConfig ? existingConfig : await init();
-}
-
-/**
- * first step when the config file doesn't exist
- * @async
- * @function initNoConfigFile
- * @returns {Promise<string>} path or url of the schemas
- */
-async function startNewFlow() {
-	const schemasOrigin = await getOrigin();
-	const addRcFileToGitignore = await confirm({
-		message: `Add ${RC_FILE_NAME} to .gitignore?`,
-	});
-	if (addRcFileToGitignore) {
-		await addToGitignore(RC_FILE_NAME);
-	}
-
-	return schemasOrigin;
 }
 
 /**
@@ -90,7 +72,7 @@ async function getOrigin() {
  * @throws {OpenApiSchemaNotFoundError} When no schemas are found in the given directory
  */
 async function init({ origin, schemaPaths, ports } = {}) {
-	const schemasOrigin = origin || (await startNewFlow());
+	const schemasOrigin = origin || (await getOrigin());
 	const schemas = await getSchemas(schemasOrigin);
 	if (!schemas.length) {
 		throw new OpenApiSchemaNotFoundError();
@@ -114,6 +96,7 @@ async function init({ origin, schemaPaths, ports } = {}) {
 
 	fs.writeFileSync(`${process.cwd()}/${RC_FILE_NAME}`, JSON.stringify(config, null, '\t'));
 	console.log(config);
+	await addToGitignore(RC_FILE_NAME);
 
 	return config;
 }
