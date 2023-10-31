@@ -24,7 +24,7 @@ async function initWithConfigFile() {
 	const useExistingConfig = await confirm({
 		message: 'Do you want to use the existing config?',
 	});
-	return useExistingConfig ? existingConfig : await init();
+	return useExistingConfig ? existingConfig : init();
 }
 
 /**
