@@ -6,6 +6,9 @@ import findOasFromDir from '../services/find-oas-from-dir.js';
 import addToGitignore from './gitignore.js';
 import { originValidator, portValidator } from './inquirer-validators.js';
 import { RC_FILE_NAME, TEMP_FOLDER_NAME, verifyRemoteOrigin } from './utils.js';
+import Logger from '../utils/logger.js';
+import { messages } from '../utils/messages.js';
+
 /**
  * @typedef {import('../types/types.js').Config} Config
  * @typedef {import('../types/types.js').Options} Options
@@ -20,7 +23,7 @@ import { RC_FILE_NAME, TEMP_FOLDER_NAME, verifyRemoteOrigin } from './utils.js';
  */
 async function initWithConfigFile() {
 	const existingConfig = JSON.parse(fs.readFileSync(`${process.cwd()}/${RC_FILE_NAME}`));
-	console.log(existingConfig);
+	Logger.info(messages.CURRENT_CONFIG, existingConfig);
 	const useExistingConfig = await confirm({
 		message: 'Do you want to use the existing config?',
 	});
@@ -94,7 +97,7 @@ async function init({ origin, schemaPaths, ports } = {}) {
 	const config = { schemasOrigin, selectedSchemas };
 
 	fs.writeFileSync(`${process.cwd()}/${RC_FILE_NAME}`, JSON.stringify(config, null, '\t'));
-	console.log(config);
+	Logger.info(messages.SAVED_CONFIG, config);
 	await addToGitignore(RC_FILE_NAME);
 
 	return config;
@@ -112,7 +115,7 @@ async function initWithSchemaPaths({ schemaPaths, ports } = {}) {
 	const config = { selectedSchemas };
 
 	fs.writeFileSync(`${process.cwd()}/${RC_FILE_NAME}`, JSON.stringify(config, null, '\t'));
-	console.log(config);
+	Logger.info(messages.USING_PROVIDED_CONFIG, config);
 
 	return config;
 }

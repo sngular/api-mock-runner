@@ -5,6 +5,8 @@ import { program } from 'commander';
 import startMockServer from './services/start-mock-server.js';
 import { initWithConfigFile, initWithSchemaPaths, init } from './services/user-flow-steps.js';
 import { RC_FILE_NAME } from './services/utils.js';
+import Logger from './utils/logger.js';
+import { messages } from './utils/messages.js';
 
 /**
  * Main function to start the mock server
@@ -24,7 +26,7 @@ const main = async () => {
 	const options = program.opts();
 	const configFileExists = fs.existsSync(`${process.cwd()}/${RC_FILE_NAME}`);
 	if (options.runConfig && !configFileExists) {
-		console.log('no config file found');
+		Logger.warn(messages.CONFIG_FILE_NOT_FOUND, RC_FILE_NAME);
 		const config = await init();
 		return startMockServer(config.selectedSchemas);
 	}

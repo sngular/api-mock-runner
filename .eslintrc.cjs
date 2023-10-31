@@ -6,5 +6,6 @@ module.exports = {
 	ignorePatterns: ['*.tmp', '*.tmp.*', '/docs', '/coverage', '/types'],
 	rules: {
 		'@typescript-eslint/no-var-requires': 'off',
+		'no-console': 'warn',
 	},
 };

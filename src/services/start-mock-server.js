@@ -1,6 +1,8 @@
 import fs from 'fs';
 import OpenApiMocker from '@os3/open-api-mocker';
+import Logger from '../utils/logger.js';
 import { init } from './user-flow-steps.js';
+import { messages } from '../utils/messages.js';
 
 /**
  * @typedef {import('../types/schema.js').Schema} Schema
@@ -24,8 +26,8 @@ async function startMockServer(schemas) {
 
 		await openApiMocker.validate();
 		await openApiMocker.mock();
-		// Separate each server with a empty line
-		console.log();
+		// Separate each server execution with an empty line
+		Logger.emptyLine();
 	}
 }
 
@@ -42,7 +44,7 @@ async function validateSchemas(schemas) {
 		true
 	);
 	if (!allSchemasExists) {
-		console.log('Any schema does not exists');
+		Logger.warn(messages.SOME_SCHEMA_DOES_NOT_EXIST);
 		const config = await init();
 		return config.selectedSchemas;
 	}

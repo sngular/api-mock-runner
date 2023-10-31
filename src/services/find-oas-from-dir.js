@@ -1,6 +1,8 @@
 import path from 'path';
 import * as fs from 'fs';
 import * as readline from 'readline';
+import Logger from '../utils/logger.js';
+import { messages } from '../utils/messages.js';
 
 async function getFirstLine(filePath) {
 	const reader = readline.createInterface({ input: fs.createReadStream(filePath) });
@@ -17,7 +19,7 @@ async function isOas(filePath) {
 
 const findOasFromDir = async (startPath, acc) => {
 	if (!fs.existsSync(startPath)) {
-		console.log('no dir ', startPath);
+		Logger.warn(messages.DIRECTORY_NOT_FOUND, startPath);
 		return [];
 	}
 
