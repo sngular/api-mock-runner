@@ -1,28 +1,45 @@
 # Welcome to api-mock-runner 👋
 
-![Version](https://img.shields.io/badge/version-0.0.0-blue.svg?cacheSeconds=2592000)
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> Create mocks servers with its schemas
+Run multiple mock servers from one or more [OpenAPI Specification](https://www.openapis.org/).
 
-## Install
+Schemas could be provided from remote origin (https:// or git@) or local path.
 
-```sh
-npm ci
-```
+Remote and circular references are allowed.
 
 ## Usage
 
-To start a guided configuration:
+You can use api-mock-runner in a three different ways. All of them starts a CLI guided journey:
+
+### 1. NPX (No installation needed)
 
 ```sh
-npx api-mock-runner
+npx @os3/api-mock-runner
 ```
 
-To explore options:
+### 2. Globally
 
 ```sh
-npx api-mock-runner -h
+sudo npm install --global @os3/api-mock-runner
+```
+
+To use: type `api-mock-runner` in the terminal.
+
+### 3. Current project dev dependency
+
+```sh
+npm i --save-dev @os3/api-mock-runner
+```
+
+### Manual options
+
+You could avoid CLI interaction by using `api-mock-runner` with flags.
+To explore manual options, use -h flag:
+
+```sh
+npx @os3/api-mock-runner -h
 ```
 
 ```sh
@@ -38,7 +55,7 @@ Options:
 
 ### Response selection
 
-The application will return the first response by default. To use another existing response, use `prefer` header with the content `statusCode=XXX` in the request.
+The application will return the first response found in the schema by default. To use another existing response, use `prefer` header with the content `statusCode=XXX` in the request.
 
 ```
 prefer: statusCode=500
