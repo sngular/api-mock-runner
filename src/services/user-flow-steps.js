@@ -88,7 +88,7 @@ async function init({ origin, schemaPaths, ports } = {}) {
 				choices: schemas.map((schema) => {
 					return { value: schema.filePath };
 				}),
-				// TODO: pending validation to ensure that at least one schema is selected. Waiting next inquirer release.
+				required: true,
 		  });
 
 	const selectedSchemas = ports?.length ? assignPorts(schemasToMock, ports) : await askForPorts(schemasToMock);

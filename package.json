@@ -37,7 +37,7 @@
 	"author": "",
 	"license": "MIT",
 	"dependencies": {
-		"@inquirer/prompts": "^3.1.2",
+		"@inquirer/prompts": "^3.3.0",
 		"@os3/open-api-mocker": "^2.1.0",
 		"commander": "^11.1.0"
 	},
