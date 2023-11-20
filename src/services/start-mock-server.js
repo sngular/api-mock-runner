@@ -39,10 +39,8 @@ async function startMockServer(schemas) {
  * @returns {Promise<Schema[]>}
  */
 async function validateSchemas(schemas) {
-	const allSchemasExists = schemas.reduce(
-		(acc, schema) => (fs.existsSync(`${process.cwd()}/${schema.path}`) ? acc : false),
-		true
-	);
+	const allSchemasExists = schemas.every((schema) => fs.existsSync(schema.path));
+
 	if (!allSchemasExists) {
 		Logger.warn(messages.SOME_SCHEMA_DOES_NOT_EXIST);
 		const config = await init();

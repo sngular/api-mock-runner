@@ -1,5 +1,6 @@
 import { checkbox, confirm, input } from '@inquirer/prompts';
 import * as fs from 'node:fs';
+import path from 'node:path';
 import { OpenApiSchemaNotFoundError } from '../errors/openapi-schema-not-found-error.js';
 import cloneGitRepository from '../services/clone-git-repository.js';
 import { findOasFromDir, findOasFromDirRecursive } from '../services/find-oas-from-dir.js';
@@ -50,17 +51,18 @@ async function getSchemas(origin) {
 }
 
 /**
- * get initial values from user
+ * Get the schemas origin from the user
  * @async
  * @function getOrigin
- * @returns {Promise<string>} The origin of the schemas (local or remote)
+ * @returns {Promise<string>} The origin of the schemas (local absolute path or remote origin)
  */
 async function getOrigin() {
 	const schemasOrigin = await input({
 		message: 'Enter a remote origin (https:// or git@) or local path',
 		validate: originValidator,
 	});
-	return schemasOrigin;
+
+	return verifyRemoteOrigin(schemasOrigin) ? schemasOrigin : path.resolve(schemasOrigin);
 }
 
 /**
