@@ -1,11 +1,21 @@
 import { expect, use } from 'chai';
 import fs from 'node:fs';
-import { restore, stub } from 'sinon';
+import esmock from 'esmock';
+import { restore, stub, match } from 'sinon';
 import sinonChai from 'sinon-chai';
 import { checkStringInFile } from '../../../src/services/check-string-in-file.js';
-import { cli } from '../../../src/services/cli.js';
-import addToGitignore, { GITIGNORE_PATH } from '../../../src/services/gitignore.js';
 use(sinonChai);
+
+let confirmStub = stub();
+const { default: addToGitignore, GITIGNORE_PATH } = await esmock(
+	'../../../src/services/gitignore.js',
+	import.meta.url,
+	{
+		'@inquirer/prompts': {
+			confirm: (...args) => confirmStub(...args),
+		},
+	}
+);
 
 describe('unit:addToGitignore', () => {
 	const gitignoreContentNoNewline = 'fileContentTest';
@@ -13,14 +23,13 @@ describe('unit:addToGitignore', () => {
 	const lineToAdd = `${fileNameTest}\n`;
 	let appendFileSyncStub;
 	let checkStringInFileStub;
-	let confirmStub;
 	let existsSyncStub;
 	let readFileSyncStub;
 
 	beforeEach(() => {
 		appendFileSyncStub = stub(fs, 'appendFileSync');
 		checkStringInFileStub = stub(checkStringInFile, 'check');
-		confirmStub = stub(cli, 'confirmAddToGitignore');
+		confirmStub = stub();
 		existsSyncStub = stub(fs, 'existsSync');
 		readFileSyncStub = stub(fs, 'readFileSync');
 	});
@@ -42,7 +51,7 @@ describe('unit:addToGitignore', () => {
 
 	it('should not add filename when user refuses', async () => {
 		existsSyncStub.returns(false);
-		confirmStub.returns(false);
+		confirmStub.resolves(false);
 		await addToGitignore(fileNameTest);
 		expect(existsSyncStub).to.have.been.called;
 		expect(confirmStub).to.have.been.called;
@@ -52,11 +61,11 @@ describe('unit:addToGitignore', () => {
 
 	it('should add newline and filename to existing .gitignore when user accepts', async () => {
 		existsSyncStub.returns(true);
-		confirmStub.returns(true);
+		confirmStub.resolves(true);
 		readFileSyncStub.returns(gitignoreContentNoNewline);
 		await addToGitignore(fileNameTest);
 		expect(existsSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH);
-		expect(confirmStub).to.have.been.calledOnceWith(fileNameTest);
+		expect(confirmStub).to.have.been.calledOnceWith(match({ message: `Add ${fileNameTest} to .gitignore?` }));
 		expect(readFileSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH, 'utf8');
 		expect(appendFileSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH, `\n${lineToAdd}`);
 	});
@@ -67,7 +76,7 @@ describe('unit:addToGitignore', () => {
 		readFileSyncStub.returns(`${gitignoreContentNoNewline}\n`);
 		await addToGitignore(fileNameTest);
 		expect(existsSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH);
-		expect(confirmStub).to.have.been.calledOnceWith(fileNameTest);
+		expect(confirmStub).to.have.been.calledOnceWith(match({ message: `Add ${fileNameTest} to .gitignore?` }));
 		expect(readFileSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH, 'utf8');
 		expect(appendFileSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH, `${lineToAdd}`);
 	});
@@ -77,7 +86,7 @@ describe('unit:addToGitignore', () => {
 		confirmStub.returns(true);
 		await addToGitignore(fileNameTest);
 		expect(existsSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH);
-		expect(confirmStub).to.have.been.calledOnceWith(fileNameTest);
+		expect(confirmStub).to.have.been.calledOnceWith(match({ message: `Add ${fileNameTest} to .gitignore?` }));
 		expect(readFileSyncStub).to.not.have.been.called;
 		expect(appendFileSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH, `${lineToAdd}`);
 	});
