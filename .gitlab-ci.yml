@@ -21,7 +21,6 @@ cache:
       prefix: 'node_modules'
     paths:
       - node_modules/
-      - .husky/
     policy: pull # prevent subsequent jobs from modifying cache
 
 install:
@@ -47,7 +46,6 @@ install:
         prefix: 'node_modules'
       paths:
         - node_modules/
-        - .husky/
       when: on_success
       policy: pull-push
   tags:
@@ -56,7 +54,6 @@ install:
     - npm config set -- //$CI_SERVER_HOST/api/v4/packages/npm/:_authToken=$CI_JOB_TOKEN
     - npm config set @os3:registry https://$CI_SERVER_HOST/api/v4/packages/npm/
     - git fetch --tags --force
-    - rm -f .git/hooks/*
   script:
     - npm ci --cache .npm --ignore-scripts  --prefer-offline
 
