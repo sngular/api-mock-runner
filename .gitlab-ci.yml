@@ -65,6 +65,14 @@ lint:
     - node
   script: npm run lint
 
+test:
+  stage: test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+  tags:
+    - node
+  script: npm run test
+
 release:
   stage: deploy
   rules:
