@@ -24,7 +24,7 @@
 		"test:coverage": "c8 --all --src ./src --reporter=html --reporter=text --reporter=cobertura npm run test",
 		"lint": "npm run lint:check",
 		"lint:check": "eslint .",
-		"lint:fix": "npm run lint -- --fix",
+		"lint:fix": "eslint . --fix",
 		"format": "npm run format:check",
 		"format:check": "prettier --check .",
 		"format:fix": "prettier --write .",
