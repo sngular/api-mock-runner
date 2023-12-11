@@ -1,8 +1,10 @@
 import path from 'node:path';
 import fs from 'node:fs';
-import { stub, restore } from 'sinon';
+import { stub, spy, restore } from 'sinon';
 import { findOasFromDir, findOasFromDirRecursive, oasUtils } from '../../../src/services/find-oas-from-dir.js';
 import { expect } from 'chai';
+import readline from 'node:readline';
+import mockFs from 'mock-fs';
 
 describe('unit: find-oas-from-dir', () => {
 	describe('findOasFromDir', () => {
@@ -120,6 +122,92 @@ describe('unit: find-oas-from-dir', () => {
 			joinStub.returns('foo/bar.yaml');
 			const result = await findOasFromDirRecursive('path/to/dir');
 			expect(result).to.be.an('array').that.has.lengthOf(1);
+		});
+
+		it('should skip files starting with dot', async () => {
+			existsSyncStub.returns(true);
+			readdirSyncStub.returns(['.hidden.yaml', 'valid.yaml']);
+			lstatSyncStub.returns({ isDirectory: () => false });
+			isOasStub.returns(true);
+			joinStub.returns('path/to/valid.yaml');
+			const result = await findOasFromDirRecursive('path/to/dir');
+			expect(result).to.be.an('array').that.has.lengthOf(1);
+			expect(result[0]).to.deep.equal({
+				fileName: 'valid.yaml',
+				path: 'path/to/dir',
+				filePath: 'path/to/valid.yaml',
+			});
+		});
+	});
+
+	describe('isOas', () => {
+		let getFirstLineStub;
+		const filePath = 'path/to/file.yaml';
+
+		beforeEach(() => {
+			getFirstLineStub = stub(oasUtils, 'getFirstLine');
+		});
+
+		afterEach(() => {
+			restore();
+		});
+
+		it('should return true if the first line starts with "openapi"', async () => {
+			getFirstLineStub.resolves('openapi 3.0.0');
+			const result = await oasUtils.isOas(filePath);
+			expect(result).to.be.true;
+		});
+
+		it('should return false if the first line does not start with "openapi"', async () => {
+			getFirstLineStub.resolves('swagger: "2.0"');
+			const result = await oasUtils.isOas(filePath);
+			expect(result).to.be.false;
+		});
+
+		it('should return false if the first line is empty', async () => {
+			getFirstLineStub.resolves('');
+			const result = await oasUtils.isOas(filePath);
+			expect(result).to.be.false;
+		});
+	});
+
+	describe('getFirstLine', () => {
+		const firstLine = 'This is the first line';
+		const filePath = 'path/to/file.txt';
+		const emptyFilePath = 'path/to/empty-file.txt';
+		let createInterfaceStub;
+		let createReadStreamStub;
+		before(() => {
+			mockFs({
+				[filePath]: `${firstLine}\nSome other line`,
+				[emptyFilePath]: '',
+			});
+			createInterfaceStub = spy(readline, 'createInterface');
+			createReadStreamStub = spy(fs, 'createReadStream');
+		});
+		after(() => {
+			mockFs.restore();
+			createInterfaceStub.restore();
+			createReadStreamStub.restore();
+		});
+
+		afterEach(() => {
+			createReadStreamStub.resetHistory();
+			createInterfaceStub.resetHistory();
+		});
+
+		it('should return the first line of the file', async () => {
+			const result = await oasUtils.getFirstLine(filePath);
+			expect(result).to.equal(firstLine);
+			expect(createReadStreamStub).to.have.been.calledOnceWithExactly(filePath);
+			expect(createInterfaceStub).to.have.been.calledOnce;
+		});
+
+		it('should return undefined if the file is empty', async () => {
+			const result = await oasUtils.getFirstLine(emptyFilePath);
+			expect(result).to.be.undefined;
+			expect(createReadStreamStub).to.have.been.calledOnceWithExactly(emptyFilePath);
+			expect(createInterfaceStub).to.have.been.calledOnce;
 		});
 	});
 });

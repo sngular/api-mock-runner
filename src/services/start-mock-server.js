@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import OpenApiMocker from '@os3/open-api-mocker';
 import Logger from '../utils/logger.js';
 import { userFlowSteps } from './user-flow-steps.js';
@@ -36,7 +36,7 @@ async function run(schemas) {
  * @async
  * @function validateSchemas
  * @param {Schema[]} schemas - An array of schemas
- * @returns {Promise<Schema[]>}
+ * @returns {Promise<Schema[]>} - An array of validated schemas
  */
 async function validateSchemas(schemas) {
 	const allSchemasExists = schemas.every((schema) => fs.existsSync(schema.path));

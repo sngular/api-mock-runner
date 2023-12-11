@@ -1,4 +1,4 @@
-import * as fs from 'node:fs';
+import fs from 'node:fs';
 import { program } from 'commander';
 import { startMockServer } from './services/start-mock-server.js';
 import { userFlowSteps } from './services/user-flow-steps.js';
@@ -12,7 +12,7 @@ import { messages } from './utils/messages.js';
  * @function main
  * @returns {Promise<void>}
  */
-const main = async () => {
+export const main = async () => {
 	program
 		.option('-o, --origin <origin>', 'path or repo containing schemas')
 		.option('-s, --schema [schemaPaths...]', 'path to schemas')
@@ -54,5 +54,3 @@ const main = async () => {
 	const config = await userFlowSteps.init();
 	return startMockServer.run(config.selectedSchemas);
 };
-
-export { main };

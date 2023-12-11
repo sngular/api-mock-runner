@@ -1,6 +1,6 @@
 import path from 'node:path';
 import fs from 'node:fs';
-import * as readline from 'readline';
+import readline from 'node:readline';
 import Logger from '../utils/logger.js';
 import { messages } from '../utils/messages.js';
 
@@ -12,7 +12,7 @@ async function getFirstLine(filePath) {
 }
 
 async function isOas(filePath) {
-	const firstLine = await getFirstLine(filePath);
+	const firstLine = await oasUtils.getFirstLine(filePath);
 	const oasRegEx = /^openapi/i;
 	return oasRegEx.test(firstLine);
 }

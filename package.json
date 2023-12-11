@@ -19,7 +19,7 @@
 	"scripts": {
 		"start": "node .",
 		"test": "mocha --loader=esmock -- test --reporter spec",
-		"test:coverage": "c8 --all --src ./src --reporter=html --reporter=text --reporter=cobertura npm run test",
+		"test:coverage": "c8 --all --include=src --exclude=src/types --exclude=src/index.js --reporter=html --reporter=text --reporter=cobertura npm run test",
 		"lint": "npm run lint:check",
 		"lint:check": "eslint .",
 		"lint:fix": "eslint . --fix",
@@ -30,7 +30,8 @@
 		"types": "tsc --build --pretty",
 		"prepublishOnly": "npm run types",
 		"release": "npx semantic-release",
-		"reset": "rm -rf .apimockrc && rm -rf .api-mock-runner"
+		"reset": "rm -rf .apimockrc && rm -rf .api-mock-runner",
+		"check": "npm run lint:check && npm run format:check && npm test"
 	},
 	"author": "",
 	"license": "MIT",
@@ -55,6 +56,7 @@
 		"esmock": "^2.6.0",
 		"husky": "^8.0.0",
 		"mocha": "^10.2.0",
+		"mock-fs": "^5.2.0",
 		"sinon": "^16.1.0",
 		"sinon-chai": "^3.7.0"
 	}

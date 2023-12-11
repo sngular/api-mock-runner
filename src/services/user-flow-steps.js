@@ -1,5 +1,5 @@
 import { checkbox, confirm, input } from '@inquirer/prompts';
-import * as fs from 'node:fs';
+import fs from 'node:fs';
 import path from 'node:path';
 import { OpenApiSchemaNotFoundError } from '../errors/openapi-schema-not-found-error.js';
 import cloneGitRepository from '../services/clone-git-repository.js';
