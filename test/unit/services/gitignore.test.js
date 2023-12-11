@@ -17,7 +17,7 @@ const { default: addToGitignore, GITIGNORE_PATH } = await esmock(
 	}
 );
 
-describe('unit:addToGitignore', () => {
+describe('unit: addToGitignore', () => {
 	const gitignoreContentNoNewline = 'fileContentTest';
 	const fileNameTest = 'fileNameTest';
 	const lineToAdd = `${fileNameTest}\n`;

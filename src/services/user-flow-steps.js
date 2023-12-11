@@ -28,7 +28,7 @@ async function initWithConfigFile() {
 	const useExistingConfig = await confirm({
 		message: 'Do you want to use the existing config?',
 	});
-	return useExistingConfig ? existingConfig : init();
+	return useExistingConfig ? existingConfig : userFlowSteps.init();
 }
 
 /**
@@ -157,5 +157,4 @@ function assignPorts(schemaPaths, ports) {
 		return { path: schemaPath, port: portNumber };
 	});
 }
-
-export { initWithConfigFile, initWithSchemaPaths, init };
+export const userFlowSteps = { initWithConfigFile, initWithSchemaPaths, init };

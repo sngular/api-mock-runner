@@ -7,7 +7,7 @@ import cloneGitRepository from '../../../src/services/clone-git-repository.js';
 
 use(sinonChai);
 
-describe('unit:clone-git-repository mocking git clone and fs I/O', () => {
+describe('unit: clone-git-repository mocking git clone and fs I/O', () => {
 	const dirName = '';
 	const repositoryURL = '';
 	let execSyncStub;

@@ -5,7 +5,7 @@ import Logger from '../../../src/utils/logger.js';
 
 use(sinonChai);
 
-describe('Logger', () => {
+describe('unit: logger', () => {
 	let consoleSpy;
 
 	beforeEach(() => {

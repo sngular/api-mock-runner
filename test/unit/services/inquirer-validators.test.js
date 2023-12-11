@@ -6,7 +6,7 @@ import { errorMessages, originValidator, portValidator } from '../../../src/serv
 
 use(sinonChai);
 
-describe('unit:inquirer-validators', () => {
+describe('unit: inquirer-validators', () => {
 	describe('originValidator', () => {
 		const validRemoteHttpsOrigin = 'https://github.com/user/repo.git';
 		const validRemoteGitOrigin = 'git@github.com:user/repo.git';

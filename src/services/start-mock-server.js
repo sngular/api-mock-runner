@@ -1,7 +1,7 @@
 import fs from 'fs';
 import OpenApiMocker from '@os3/open-api-mocker';
 import Logger from '../utils/logger.js';
-import { init } from './user-flow-steps.js';
+import { userFlowSteps } from './user-flow-steps.js';
 import { messages } from '../utils/messages.js';
 
 /**
@@ -11,11 +11,11 @@ import { messages } from '../utils/messages.js';
 /**
  * Start the mock server
  * @async
- * @function startMockServer
+ * @function run
  * @param {Schema[]} schemas - An array of schemas
  * @returns {Promise<void>}
  */
-async function startMockServer(schemas) {
+async function run(schemas) {
 	const validatedSchemas = await validateSchemas(schemas);
 	for (const schema of validatedSchemas) {
 		const openApiMocker = new OpenApiMocker({
@@ -43,10 +43,10 @@ async function validateSchemas(schemas) {
 
 	if (!allSchemasExists) {
 		Logger.warn(messages.SOME_SCHEMA_DOES_NOT_EXIST);
-		const config = await init();
+		const config = await userFlowSteps.init();
 		return config.selectedSchemas;
 	}
 	return schemas;
 }
 
-export default startMockServer;
+export const startMockServer = { run };

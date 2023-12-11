@@ -19,8 +19,6 @@
 	"scripts": {
 		"start": "node .",
 		"test": "mocha --loader=esmock -- test --reporter spec",
-		"test:unit": "mocha --loader=esmock -- test/unit --reporter spec",
-		"test:integration": "mocha --loader=esmock -- test/integration --reporter spec",
 		"test:coverage": "c8 --all --src ./src --reporter=html --reporter=text --reporter=cobertura npm run test",
 		"lint": "npm run lint:check",
 		"lint:check": "eslint .",

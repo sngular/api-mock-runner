@@ -4,7 +4,7 @@ import { stub, restore } from 'sinon';
 import { findOasFromDir, findOasFromDirRecursive, oasUtils } from '../../../src/services/find-oas-from-dir.js';
 import { expect } from 'chai';
 
-describe('unit:find-oas-from-dir', () => {
+describe('unit: find-oas-from-dir', () => {
 	describe('findOasFromDir', () => {
 		let existsSyncStub;
 		let readdirSyncStub;
