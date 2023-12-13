@@ -4,7 +4,7 @@ import * as fs from 'node:fs';
 import { program } from 'commander';
 import startMockServer from './services/start-mock-server.js';
 import { initWithConfigFile, initWithSchemaPaths, init } from './services/user-flow-steps.js';
-import { RC_FILE_NAME } from './services/utils.js';
+import { RC_FILE_NAME , MockRunnerError } from './services/utils.js';
 import Logger from './utils/logger.js';
 import { messages } from './utils/messages.js';
 
@@ -56,5 +56,11 @@ const main = async () => {
 	const config = await init();
 	return startMockServer(config.selectedSchemas);
 };
-
-main();
+(async () => {
+	try {
+		await main();
+	} catch (e) {
+		const err = new MockRunnerError(e.message, 500, 1, this.constructor.name);
+		err.showError();
+	}
+})();
