@@ -3,7 +3,7 @@ import fs from 'fs';
 import { verifyRemoteOrigin } from './utils.js';
 
 /**
- * @typedef {import('../types/schema.js').Schema} Schema
+ * @typedef {import('../types/types.d.js').Schema} Schema
  */
 
 export const errorMessages = Object.freeze({
@@ -39,7 +39,7 @@ export function originValidator(value) {
 export function portValidator(input, selectedSchemas) {
 	const numericInput = Number(input);
 	const isInteger = Number.isInteger(numericInput);
-	if (!isInteger || input < 0 || input > 65535) {
+	if (!isInteger || numericInput < 0 || numericInput > 65535) {
 		return errorMessages.port.INVALID;
 	}
 	const isPortAlreadySelected = selectedSchemas.some((schema) => schema.port === numericInput);

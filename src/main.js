@@ -8,6 +8,12 @@ import Logger from './utils/logger.js';
 import { messages } from './utils/messages.js';
 
 /**
+ * @typedef {import('./types/types.d.js').Config} Config
+ * @typedef {import('./types/types.d.js').Options} Options
+ * @typedef {import('./types/types.d.js').ProgramOptions} ProgramOptions
+ */
+
+/**
  * Main function to start the mock server.
  * @async
  * @function main
@@ -22,6 +28,7 @@ export const main = async () => {
 
 	program.parse();
 
+	/** @type {ProgramOptions} */
 	const options = program.opts();
 	const configFileExists = fs.existsSync(`${process.cwd()}/${RC_FILE_NAME}`);
 	if (options.runConfig && !configFileExists) {
@@ -30,7 +37,8 @@ export const main = async () => {
 		return startMockServer.run(config.selectedSchemas);
 	}
 	if (options.runConfig) {
-		const config = JSON.parse(fs.readFileSync(`${process.cwd()}/${RC_FILE_NAME}`));
+		const config =
+			/** @type {Config} */ (JSON.parse(fs.readFileSync(`${process.cwd()}/${RC_FILE_NAME}`, 'utf-8'))) || {};
 		return startMockServer.run(config.selectedSchemas);
 	}
 	if (options?.origin) {

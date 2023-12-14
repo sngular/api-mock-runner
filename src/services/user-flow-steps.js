@@ -12,9 +12,10 @@ import Logger from '../utils/logger.js';
 import { messages } from '../utils/messages.js';
 
 /**
- * @typedef {import('../types/types.js').Config} Config
- * @typedef {import('../types/types.js').Options} Options
- * @typedef {import('../types/types.js').Schema} Schema
+ * @typedef {import('../types/types.d.js').Config} Config
+ * @typedef {import('../types/types.d.js').Options} Options
+ * @typedef {import('../types/types.d.js').Schema} Schema
+ * @typedef {import('../types/types.d.js').OasFile} OasFile
  */
 
 /**
@@ -24,7 +25,9 @@ import { messages } from '../utils/messages.js';
  * @returns {Promise<Config>} An object with the initial values from the user.
  */
 async function initWithConfigFile() {
-	const existingConfig = JSON.parse(fs.readFileSync(`${process.cwd()}/${RC_FILE_NAME}`));
+	const configFilePath = `${process.cwd()}/${RC_FILE_NAME}`;
+	const fileContent = fs.readFileSync(configFilePath, 'utf-8');
+	const existingConfig = /** @type {Config} */ (JSON.parse(fileContent)) || {};
 	Logger.info(messages.CURRENT_CONFIG, existingConfig);
 	const useExistingConfig = await confirm({
 		message: 'Do you want to use the existing config?',
@@ -37,7 +40,7 @@ async function initWithConfigFile() {
  * @async
  * @function getSchemas
  * @param {string} origin - The origin of the schemas (local or remote).
- * @returns {Promise<Array>} An array of schemas.
+ * @returns {Promise<OasFile[]>} An array of schemas.
  */
 async function getSchemas(origin) {
 	const isOriginRemote = verifyRemoteOrigin(origin);
@@ -70,11 +73,11 @@ async function getOrigin() {
  * Start flow without config.
  * @async
  * @function init
- * @param {Options} options - Cli options.
+ * @param {Options} [options] - Cli options.
  * @returns {Promise<Config>} A object with the complete config.
  * @throws {OpenApiSchemaNotFoundError} When no schemas are found in the given directory.
  */
-async function init({ origin, schemaPaths, ports } = {}) {
+async function init({ origin, schemaPaths, ports } = { schemaPaths: [], ports: [] }) {
 	const schemasOrigin = origin || (await getOrigin());
 	const schemas = await getSchemas(schemasOrigin);
 	if (!schemas.length) {
@@ -95,6 +98,7 @@ async function init({ origin, schemaPaths, ports } = {}) {
 		  });
 
 	const selectedSchemas = ports?.length ? assignPorts(schemasToMock, ports) : await askForPorts(schemasToMock);
+	/** @type {Config} */
 	const config = { schemasOrigin, selectedSchemas };
 
 	fs.writeFileSync(`${process.cwd()}/${RC_FILE_NAME}`, JSON.stringify(config, null, '\t'));
@@ -111,7 +115,7 @@ async function init({ origin, schemaPaths, ports } = {}) {
  * @param {Options} options - Cli options.
  * @returns {Promise<Config>} A object with the complete config.
  */
-async function initWithSchemaPaths({ schemaPaths, ports } = {}) {
+async function initWithSchemaPaths({ schemaPaths, ports } = { schemaPaths: [], ports: [] }) {
 	const selectedSchemas = ports?.length ? assignPorts(schemaPaths, ports) : await askForPorts(schemaPaths);
 	const config = { selectedSchemas };
 
@@ -129,12 +133,13 @@ async function initWithSchemaPaths({ schemaPaths, ports } = {}) {
  * @returns {Promise<Schema[]>} An array of selected Schemas.
  */
 async function askForPorts(schemaPaths) {
+	/** @type {Schema[]} */
 	const selectedSchemas = [];
 	let suggestedPort = 1234;
 	for (const schemaPath of schemaPaths) {
 		const port = await input({
 			message: `Select a port for ${schemaPath}`,
-			default: suggestedPort,
+			default: suggestedPort.toString(),
 			validate: (input) => portValidator(input, selectedSchemas),
 		});
 		const portNumber = parseInt(port);

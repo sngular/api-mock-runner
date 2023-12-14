@@ -61,7 +61,6 @@ export default class Logger {
 	 * @param {string} type - The type of message to log.
 	 * @param {string} message - The message to log.
 	 * @param {string|object} extra - Additional information to log.
-	 * @private
 	 */
 	static #printMessage(type, message, extra) {
 		console.log(`${type} ${message} ${this.#getExtraFormatted(extra)}`);
@@ -74,7 +73,6 @@ export default class Logger {
 	 * Private method for formatting the extra parameter.
 	 * @param {string|object} extraParameter - The extra parameter to format.
 	 * @returns {string} The formatted extra parameter.
-	 * @private
 	 */
 	static #getExtraFormatted(extraParameter) {
 		if (!extraParameter || typeof extraParameter === 'object') {

@@ -28,6 +28,7 @@
 		"format:fix": "prettier --write .",
 		"prepare": "npx husky install",
 		"types": "tsc --build --pretty",
+		"types:check": "tsc --pretty -p tsconfig.checkOnly.json",
 		"prepublishOnly": "npm run types",
 		"release": "npx semantic-release",
 		"reset": "rm -rf .apimockrc && rm -rf .api-mock-runner",

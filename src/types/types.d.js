@@ -33,4 +33,10 @@
  * @property {string} filePath The path to the file.
  */
 
+/**
+ * @typedef {object} OpenApiMockerOptions
+ * @property {number} port - The port to serve the schema.
+ * @property {string} schema - The path to the schema.
+ * @property {boolean} watch - Watch for changes in the schema.
+ */
 export {};

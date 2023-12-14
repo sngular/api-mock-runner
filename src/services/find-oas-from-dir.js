@@ -6,9 +6,9 @@ import Logger from '../utils/logger.js';
 import { messages } from '../utils/messages.js';
 
 /**
- * @typedef {import('../types/types.js').Schema} Schema
- * @typedef {import('../types/types.js').OasFile} OasFile
+ * @typedef {import('../types/types.d.js').OasFile} OasFile
  */
+
 /**
  * Get the first line of a file.
  * @param {string} filePath - The path to the file.
@@ -17,6 +17,7 @@ import { messages } from '../utils/messages.js';
 async function getFirstLine(filePath) {
 	const reader = readline.createInterface({ input: fs.createReadStream(filePath) });
 	const it = reader[Symbol.asyncIterator]();
+	/** @type {IteratorResult<string, string>} */
 	const line = await it.next();
 	return line.value;
 }
@@ -48,6 +49,7 @@ export const findOasFromDir = async (startPath) => {
 	}
 
 	const files = fs.readdirSync(startPath);
+	/** @type {OasFile[]} */
 	const oasFiles = [];
 
 	for (const file of files) {
@@ -68,17 +70,16 @@ export const findOasFromDir = async (startPath) => {
  * @async
  * @function findOasFromDirRecursive
  * @param {string} startPath - The path to the directory.
- * @param {OasFile[]} [acc] - An array of OpenAPI specifications.
+ * @param {OasFile[]} [oasFiles] - An array of OpenAPI specifications.
  * @returns {Promise<OasFile[]>} An array of OpenAPI specifications.
  */
-export const findOasFromDirRecursive = async (startPath, acc) => {
+export const findOasFromDirRecursive = async (startPath, oasFiles = []) => {
 	if (!fs.existsSync(startPath)) {
 		Logger.warn(messages.DIRECTORY_NOT_FOUND, startPath);
 		return [];
 	}
 
 	const files = fs.readdirSync(startPath);
-	const oasFiles = acc || [];
 
 	for (const file of files) {
 		if (file.startsWith('.')) continue;

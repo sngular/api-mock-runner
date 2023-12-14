@@ -5,5 +5,5 @@
 		"rootDir": "."
 	},
 	"include": ["src"],
-	"exclude": ["dist-types", "node_modules", "tests"]
+	"exclude": ["dist-types", "node_modules", "test"]
 }
