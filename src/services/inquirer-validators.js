@@ -17,10 +17,10 @@ export const errorMessages = Object.freeze({
 });
 
 /**
- * Validate if the input is a valid local path or remote origin
+ * Validate if the input is a valid local path or remote origin.
  * @function originValidator
- * @param {string} value - The value to validate
- * @returns {boolean|string} True if the value is valid, otherwise a string with the error message
+ * @param {string} value - The value to validate.
+ * @returns {boolean|string} True if the value is valid, otherwise a string with the error message.
  */
 export function originValidator(value) {
 	const isLocalPath = fs.existsSync(value);
@@ -30,11 +30,11 @@ export function originValidator(value) {
 }
 
 /**
- * Validate if the input is a valid port number
+ * Validate if the input is a valid port number.
  * @function portValidator
- * @param {string} input - The value to validate
- * @param {Schema[]} selectedSchemas - The current schema
- * @returns {boolean|string} True if the value is valid, otherwise a string with the error message
+ * @param {string} input - The value to validate.
+ * @param {Schema[]} selectedSchemas - The current schema.
+ * @returns {boolean|string} True if the value is valid, otherwise a string with the error message.
  */
 export function portValidator(input, selectedSchemas) {
 	const numericInput = Number(input);

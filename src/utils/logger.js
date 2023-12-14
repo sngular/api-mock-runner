@@ -25,7 +25,7 @@ export default class Logger {
 	/**
 	 * Logs an informational message to the console.
 	 * @param {string} message - The message to log.
-	 * @param {string|object} [extra=''] - Additional information to log.
+	 * @param {string|object} [extra] - Additional information to log.
 	 */
 	static info(message, extra = '') {
 		this.#printMessage(logType.INFO, message, extra);
@@ -34,7 +34,7 @@ export default class Logger {
 	/**
 	 * Logs a warning message to the console.
 	 * @param {string} message - The message to log.
-	 * @param {string|object} [extra=''] - Additional information to log.
+	 * @param {string|object} [extra] - Additional information to log.
 	 */
 	static warn(message, extra = '') {
 		this.#printMessage(logType.WARN, message, extra);
@@ -43,7 +43,7 @@ export default class Logger {
 	/**
 	 * Logs an error message to the console.
 	 * @param {string} message - The message to log.
-	 * @param {string|object} [extra=''] - Additional information to log.
+	 * @param {string|object} [extra] - Additional information to log.
 	 */
 	static error(message, extra = '') {
 		this.#printMessage(logType.ERROR, message, extra);

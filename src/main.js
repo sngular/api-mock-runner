@@ -8,7 +8,7 @@ import Logger from './utils/logger.js';
 import { messages } from './utils/messages.js';
 
 /**
- * Main function to start the mock server
+ * Main function to start the mock server.
  * @async
  * @function main
  * @returns {Promise<void>}

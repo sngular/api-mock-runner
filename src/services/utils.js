@@ -2,7 +2,7 @@ import { colours, paintText } from '../helpers/colours.js';
 import Logger from '../utils/logger.js';
 
 /**
- * The name of the config file
+ * The name of the config file.
  * @constant
  * @type {string}
  * @default
@@ -10,7 +10,7 @@ import Logger from '../utils/logger.js';
 export const RC_FILE_NAME = '.apimockrc';
 
 /**
- * The name of the temporary folder
+ * The name of the temporary folder.
  * @constant
  * @type {string}
  * @default
@@ -18,10 +18,10 @@ export const RC_FILE_NAME = '.apimockrc';
 export const TEMP_FOLDER_NAME = '.api-mock-runner/';
 
 /**
- * Verify if the origin is remote
+ * Verify if the origin is remote.
  * @function verifyRemoteOrigin
- * @param {string} origin - The origin to verify
- * @returns {boolean} True if the origin is remote, false otherwise
+ * @param {string} origin - The origin to verify.
+ * @returns {boolean} True if the origin is remote, false otherwise.
  */
 export function verifyRemoteOrigin(origin) {
 	/*
@@ -44,13 +44,13 @@ export default {
 
 export class MockRunnerError extends Error {
 	/**
-	 * Error class for the project
-	 * @constructor
-	 * @param {string} message - display message
-	 * @param {number} code - HTTP code for easy identification problem
-	 * @param {number} level - severity of the error [low = 0, medium = 1, critical = 2]
-	 * @param {string} emitter - name of the function origin
-	 * @param {object} opt - options default object on the Error node class
+	 * Error class for the project.
+	 * @class
+	 * @param {string} message - Display message.
+	 * @param {number} code - HTTP code for easy identification problem.
+	 * @param {number} level - Severity of the error [low = 0, medium = 1, critical = 2].
+	 * @param {string} emitter - Name of the function origin.
+	 * @param {object} opt - Options default object on the Error node class.
 	 */
 	constructor(message, code, level = 0, emitter, opt = {}) {
 		super(message);
@@ -64,9 +64,7 @@ export class MockRunnerError extends Error {
 	}
 
 	/**
-	 * Shows the error information on the log on a tidy way
-	 * @async
-	 * @return {Promise<void>}
+	 * Shows the error information on the log on a tidy way.
 	 */
 	showError() {
 		let type = '';

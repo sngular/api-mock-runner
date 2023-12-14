@@ -10,10 +10,10 @@ import { messages } from '../utils/messages.js';
  */
 
 /**
- * Start the mock server
+ * Start the mock server.
  * @async
  * @function run
- * @param {Schema[]} schemas - An array of schemas
+ * @param {Schema[]} schemas - An array of schemas.
  * @returns {Promise<void>}
  */
 async function run(schemas) {
@@ -33,11 +33,11 @@ async function run(schemas) {
 }
 
 /**
- * Validate schemas
+ * Validate schemas.
  * @async
  * @function validateSchemas
- * @param {Schema[]} schemas - An array of schemas
- * @returns {Promise<Schema[]>} - An array of validated schemas
+ * @param {Schema[]} schemas - An array of schemas.
+ * @returns {Promise<Schema[]>} - An array of valid schemas.
  */
 async function validateSchemas(schemas) {
 	const allSchemasExists = schemas.every((schema) => fs.existsSync(schema.path));

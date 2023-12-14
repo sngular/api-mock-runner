@@ -18,10 +18,10 @@ import { messages } from '../utils/messages.js';
  */
 
 /**
- * User flow when the config file already exists
+ * User flow when the config file already exists.
  * @async
  * @function initWithConfigFile
- * @returns {Promise<Config>} An object with the initial values from the user
+ * @returns {Promise<Config>} An object with the initial values from the user.
  */
 async function initWithConfigFile() {
 	const existingConfig = JSON.parse(fs.readFileSync(`${process.cwd()}/${RC_FILE_NAME}`));
@@ -33,11 +33,11 @@ async function initWithConfigFile() {
 }
 
 /**
- * Get the schemas from the origin
+ * Get the schemas from the origin.
  * @async
  * @function getSchemas
- * @param {string} origin - The origin of the schemas (local or remote)
- * @returns {Promise<Array>} An array of schemas
+ * @param {string} origin - The origin of the schemas (local or remote).
+ * @returns {Promise<Array>} An array of schemas.
  */
 async function getSchemas(origin) {
 	const isOriginRemote = verifyRemoteOrigin(origin);
@@ -52,10 +52,10 @@ async function getSchemas(origin) {
 }
 
 /**
- * Get the schemas origin from the user
+ * Get the schemas origin from the user.
  * @async
  * @function getOrigin
- * @returns {Promise<string>} The origin of the schemas (local absolute path or remote origin)
+ * @returns {Promise<string>} The origin of the schemas (local absolute path or remote origin).
  */
 async function getOrigin() {
 	const schemasOrigin = await input({
@@ -67,12 +67,12 @@ async function getOrigin() {
 }
 
 /**
- * Start flow without config
+ * Start flow without config.
  * @async
  * @function init
- * @param {Options} options - cli options
- * @returns {Promise<Config>} A object with the complete config
- * @throws {OpenApiSchemaNotFoundError} When no schemas are found in the given directory
+ * @param {Options} options - Cli options.
+ * @returns {Promise<Config>} A object with the complete config.
+ * @throws {OpenApiSchemaNotFoundError} When no schemas are found in the given directory.
  */
 async function init({ origin, schemaPaths, ports } = {}) {
 	const schemasOrigin = origin || (await getOrigin());
@@ -105,11 +105,11 @@ async function init({ origin, schemaPaths, ports } = {}) {
 }
 
 /**
- * Start flow without config
+ * Start flow without config.
  * @async
  * @function init
- * @param {Options} options - cli options
- * @returns {Promise<Config>} A object with the complete config
+ * @param {Options} options - Cli options.
+ * @returns {Promise<Config>} A object with the complete config.
  */
 async function initWithSchemaPaths({ schemaPaths, ports } = {}) {
 	const selectedSchemas = ports?.length ? assignPorts(schemaPaths, ports) : await askForPorts(schemaPaths);
@@ -122,11 +122,11 @@ async function initWithSchemaPaths({ schemaPaths, ports } = {}) {
 }
 
 /**
- * Ask for ports for each schema
+ * Ask for ports for each schema.
  * @async
  * @function askForPorts
- * @param {string[]} schemaPaths - An array of schemas
- * @returns {Promise<Schema[]>} An array of selected Schemas
+ * @param {string[]} schemaPaths - An array of schemas.
+ * @returns {Promise<Schema[]>} An array of selected Schemas.
  */
 async function askForPorts(schemaPaths) {
 	const selectedSchemas = [];
@@ -146,11 +146,11 @@ async function askForPorts(schemaPaths) {
 }
 
 /**
- * Assigns ports for each schema
+ * Assigns ports for each schema.
  * @function assignPorts
- * @param {string[]} schemaPaths - An array of schemas
- * @param {string[]} ports - An array of ports
- * @returns {Schema[]} An array of selected Schemas
+ * @param {string[]} schemaPaths - An array of schemas.
+ * @param {string[]} ports - An array of ports.
+ * @returns {Schema[]} An array of selected Schemas.
  */
 function assignPorts(schemaPaths, ports) {
 	return schemaPaths.map((schemaPath, i) => {

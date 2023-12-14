@@ -1,10 +1,9 @@
 /**
- * paints a given text with the given color and then resets the color palette
- * @param {any} text - the text to paint
- * @param {string} color - the desired color to paint the text
- * @return {string} - the painted text
+ * Paints a given text with the given color and then resets the color palette.
+ * @param {string} text - The text to paint.
+ * @param {string} color - The desired color to paint the text.
+ * @returns {string} - The painted text.
  */
-
 function paintText(text, color) {
 	return color + text + colours.reset;
 }
