@@ -1,8 +1,9 @@
 import { expect, use } from 'chai';
-import fs from 'node:fs';
 import esmock from 'esmock';
+import fs from 'node:fs';
 import { restore, stub, match } from 'sinon';
 import sinonChai from 'sinon-chai';
+
 import { checkStringInFile } from '../../../src/services/check-string-in-file.js';
 use(sinonChai);
 

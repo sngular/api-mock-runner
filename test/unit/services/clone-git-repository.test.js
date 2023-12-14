@@ -3,6 +3,7 @@ import child_process from 'child_process';
 import fs from 'fs';
 import { stub } from 'sinon';
 import sinonChai from 'sinon-chai';
+
 import cloneGitRepository from '../../../src/services/clone-git-repository.js';
 
 use(sinonChai);

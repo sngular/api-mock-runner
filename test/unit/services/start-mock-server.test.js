@@ -1,11 +1,12 @@
 import { expect, use } from 'chai';
+import esmock from 'esmock';
+import fs from 'fs';
 import { stub, spy, match } from 'sinon';
 import sinonChai from 'sinon-chai';
-import fs from 'fs';
-import esmock from 'esmock';
+
+import { userFlowSteps } from '../../../src/services/user-flow-steps.js';
 import Logger from '../../../src/utils/logger.js';
 import { messages } from '../../../src/utils/messages.js';
-import { userFlowSteps } from '../../../src/services/user-flow-steps.js';
 
 use(sinonChai);
 

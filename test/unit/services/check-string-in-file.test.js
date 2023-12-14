@@ -1,6 +1,7 @@
 import { expect, use } from 'chai';
 import mockFs from 'mock-fs';
 import sinonChai from 'sinon-chai';
+
 import { checkStringInFile } from '../../../src/services/check-string-in-file.js';
 
 use(sinonChai);

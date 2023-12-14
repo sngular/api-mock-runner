@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { match, stub } from 'sinon';
 import sinonChai from 'sinon-chai';
+
 import { OpenApiSchemaNotFoundError } from '../../../src/errors/openapi-schema-not-found-error.js';
 import Logger from '../../../src/utils/logger.js';
 

@@ -1,6 +1,7 @@
 import { expect, use } from 'chai';
 import { stub } from 'sinon';
 import sinonChai from 'sinon-chai';
+
 import Logger from '../../../src/utils/logger.js';
 
 use(sinonChai);

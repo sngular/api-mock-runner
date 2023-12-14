@@ -1,11 +1,7 @@
 module.exports = {
-	extends: ['@os3', 'prettier'],
+	extends: ['@os3/eslint-config', '@os3/eslint-config/prettier.cjs'],
 	env: {
 		mocha: true,
 	},
-	ignorePatterns: ['*.tmp', '*.tmp.*', '/docs', '/coverage', '/types'],
-	rules: {
-		'@typescript-eslint/no-var-requires': 'off',
-		'no-console': 'error',
-	},
+	ignorePatterns: ['/coverage', './dist-types'],
 };

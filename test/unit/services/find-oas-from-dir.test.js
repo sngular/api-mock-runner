@@ -1,10 +1,11 @@
-import path from 'node:path';
-import fs from 'node:fs';
-import { stub, spy, restore } from 'sinon';
-import { findOasFromDir, findOasFromDirRecursive, oasUtils } from '../../../src/services/find-oas-from-dir.js';
 import { expect } from 'chai';
-import readline from 'node:readline';
 import mockFs from 'mock-fs';
+import fs from 'node:fs';
+import path from 'node:path';
+import readline from 'node:readline';
+import { stub, spy, restore } from 'sinon';
+
+import { findOasFromDir, findOasFromDirRecursive, oasUtils } from '../../../src/services/find-oas-from-dir.js';
 
 describe('unit: find-oas-from-dir', () => {
 	describe('findOasFromDir', () => {

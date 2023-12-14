@@ -1,7 +1,8 @@
-import fs from 'node:fs';
 import OpenApiMocker from '@os3/open-api-mocker';
-import Logger from '../utils/logger.js';
+import fs from 'node:fs';
+
 import { userFlowSteps } from './user-flow-steps.js';
+import Logger from '../utils/logger.js';
 import { messages } from '../utils/messages.js';
 
 /**

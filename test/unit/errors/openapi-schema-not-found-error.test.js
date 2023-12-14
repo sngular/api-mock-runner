@@ -1,5 +1,6 @@
-import { OpenApiSchemaNotFoundError } from '../../../src/errors/openapi-schema-not-found-error.js';
 import { expect } from 'chai';
+
+import { OpenApiSchemaNotFoundError } from '../../../src/errors/openapi-schema-not-found-error.js';
 import { messages } from '../../../src/utils/messages.js';
 
 describe('unit: openapi-schema-not-found-error', () => {

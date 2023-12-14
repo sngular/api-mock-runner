@@ -1,5 +1,6 @@
-import fs from 'node:fs';
 import { program } from 'commander';
+import fs from 'node:fs';
+
 import { startMockServer } from './services/start-mock-server.js';
 import { userFlowSteps } from './services/user-flow-steps.js';
 import { RC_FILE_NAME } from './services/utils.js';

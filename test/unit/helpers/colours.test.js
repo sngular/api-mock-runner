@@ -1,5 +1,6 @@
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
+
 import { colours, paintText } from '../../../src/helpers/colours.js';
 
 use(sinonChai);
