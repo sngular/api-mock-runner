@@ -1,4 +1,4 @@
-import { colours, paintText } from '../helpers/colours';
+import { colours, paintText } from '../helpers/colours.js';
 import Logger from '../utils/logger.js';
 
 /**
