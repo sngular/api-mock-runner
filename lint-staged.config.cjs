@@ -1,4 +1,4 @@
 module.exports = {
-	'*.{js,cjs,mjs,jsx,ts,tsx}': ['prettier --write', 'eslint --fix', () => 'npm run types:check'],
-	'*.{md,html,css}': ['prettier --write'],
+	'*.{js,cjs,mjs,jsx,ts,tsx}': ['npm run format:fix', 'npm run lint:fix', () => 'npm run types:check'],
+	'*.{md,html,css}': ['npm run format:fix'],
 };
