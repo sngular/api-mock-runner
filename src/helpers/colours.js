@@ -4,11 +4,11 @@
  * @param {string} color - The desired color to paint the text.
  * @returns {string} - The painted text.
  */
-function paintText(text, color) {
-	return color + text + colours.reset;
+export function paintText(text, color) {
+	return `${color}${text}${colours.reset}`;
 }
 
-const colours = {
+export const colours = Object.freeze({
 	reset: '\x1b[0m',
 	bright: '\x1b[1m',
 	dim: '\x1b[2m',
@@ -40,5 +40,4 @@ const colours = {
 		gray: '\x1b[100m',
 		crimson: '\x1b[48m',
 	},
-};
-export { colours, paintText };
+});

@@ -79,10 +79,10 @@ export class MockRunnerError extends Error {
 				type = colours.fg.cyan;
 		}
 		Logger.error(
-			`Error of level ${paintText(this.level, type)}, type ${paintText(this.code, colours.fg.gray)} over ${paintText(
-				this.emitter,
-				colours.fg.blue
-			)}`
+			`Error of level ${paintText(this.level.toString(), type)}, type ${paintText(
+				this.code.toString(),
+				colours.fg.gray
+			)} over ${paintText(this.emitter, colours.fg.blue)}`
 		);
 		Logger.info(`${this.stack}`);
 	}
