@@ -92,6 +92,22 @@ lint:
     - node
   script: npm run lint
 
+format:
+  stage: test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+  tags:
+    - node
+  script: npm run format
+
+types:
+  stage: test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+  tags:
+    - node
+  script: npm run types:check
+
 test:
   stage: test
   rules:
