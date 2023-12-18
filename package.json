@@ -19,7 +19,8 @@
 	"scripts": {
 		"start": "node .",
 		"test": "mocha --loader=esmock -- test --reporter spec",
-		"test:coverage": "c8 --all --include=src --exclude=src/types --exclude=src/index.js --reporter=html --reporter=text --reporter=cobertura npm run test",
+		"test:coverage": "c8 --all --include=src --exclude=src/types --exclude=src/index.js --reporter=cobertura --reporter=text npm run test",
+		"test:coverage:html": "c8 --all --include=src --exclude=src/types --exclude=src/index.js --reporter=html --reporter=text npm run test",
 		"lint": "npm run lint:check",
 		"lint:check": "eslint .",
 		"lint:fix": "eslint . --fix",

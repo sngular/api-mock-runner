@@ -116,6 +116,24 @@ test:
     - node
   script: npm run test
 
+test-coverage:
+  stage: test
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  tags:
+    - node
+  script: npm run test:coverage
+  coverage: '/All files\s+\|\s+\d+(\.\d+)?/'
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - coverage/
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+
 types-build:
   stage: deploy
   rules:
