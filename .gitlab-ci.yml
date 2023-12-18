@@ -34,22 +34,24 @@ branch-up-to-date:
   before_script:
     - git fetch
   script:
-  - LATEST_ON_TARGET_BRANCH=$(git log -n 1 --pretty=format:"%H" origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME)
-  - echo "Latest commit on the target branch is $LATEST_ON_TARGET_BRANCH"
-  - COMMON_ANCESTOR=$(git merge-base origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME)
-  - echo "Common ancestor of source and target branch is $COMMON_ANCESTOR"
-  - |
-    if [[ "${LATEST_ON_TARGET_BRANCH}" = "${COMMON_ANCESTOR}" ]]; then
-      echo "The source branch is up to date with the target branch"
-    else
-      echo "The source branch is not up to date with the target branch"
-      exit 1
-    fi
+    - LATEST_ON_TARGET_BRANCH=$(git log -n 1 --pretty=format:"%H" origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME)
+    - echo "Latest commit on the target branch is $LATEST_ON_TARGET_BRANCH"
+    - COMMON_ANCESTOR=$(git merge-base origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME)
+    - echo "Common ancestor of source and target branch is $COMMON_ANCESTOR"
+    - |
+      if [[ "${LATEST_ON_TARGET_BRANCH}" = "${COMMON_ANCESTOR}" ]]; then
+        echo "The source branch is up to date with the target branch"
+      else
+        echo "The source branch is not up to date with the target branch"
+        exit 1
+      fi
 
 install:
   stage: .pre
-  needs:
-    - job: branch-up-to-date
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      needs: ['branch-up-to-date']
+    - when: on_success # Run the job in other cases
   cache:
     # store npm cache for all branches (stores download pkg.tar.gz's)
     # will not be necessary for any other job
