@@ -100,7 +100,7 @@ format:
     - node
   script: npm run format
 
-types:
+types-check:
   stage: test
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
@@ -116,8 +116,18 @@ test:
     - node
   script: npm run test
 
+types-build:
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  tags:
+    - node
+  script:
+    - npm run types:build
+
 release:
   stage: deploy
+  needs: ['types-build']
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   tags:
