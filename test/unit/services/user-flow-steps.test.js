@@ -115,6 +115,8 @@ describe('unit: user-flow-steps', () => {
 			inquirerInputStub.resolves(localSchema.port);
 			const config = await userFlowSteps.init({
 				origin: localSchema.path,
+				port: [],
+				schemaPaths: [],
 			});
 			expect(findOasFromDirStub).to.have.been.calledWith(localSchema.path);
 			expect(inquirerCheckboxStub).to.have.been.calledWith(match.object);

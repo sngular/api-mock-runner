@@ -85,7 +85,8 @@ async function init({ origin, schemaPaths, ports } = { schemaPaths: [], ports: [
 	}
 
 	const schemasFilePaths = schemas.map((s) => s.filePath);
-	const schemaPathsAreAvailable = schemaPaths?.every((path) => schemasFilePaths.includes(path));
+	const schemaPathsAreAvailable =
+		Boolean(schemaPaths.length) && schemaPaths.every((path) => schemasFilePaths.includes(path));
 
 	const schemasToMock = schemaPathsAreAvailable
 		? schemaPaths
