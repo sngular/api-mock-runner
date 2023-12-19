@@ -34,7 +34,7 @@
 		"prepublishOnly": "npm run types:build",
 		"release": "npx semantic-release",
 		"reset": "rm -rf .apimockrc && rm -rf .api-mock-runner",
-		"check": "npm run lint:check && npm run format:check && npm test"
+		"check": "npm run lint:check && npm run format:check && npm run types:check && npm test"
 	},
 	"author": "",
 	"license": "MIT",

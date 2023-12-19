@@ -123,7 +123,7 @@ test-coverage:
   tags:
     - node
   script: npm run test:coverage
-  coverage: '/All files\s+\|\s+\d+(\.\d+)?/'
+  coverage: '/All files\s+\|\s+\d+(?:\.\d+)?/'
   artifacts:
     expire_in: 1 week
     when: always
