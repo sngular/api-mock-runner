@@ -26,41 +26,41 @@ export const main = async () => {
 		.option('-s, --schema [schemaPaths...]', 'path to schemas')
 		.option('-p, --port [ports...]', 'port to serve each schema')
 		.option('-r, --run-config', 'use saved config');
-
 	program.parse();
-
-	/** @type {ProgramOptions} */
-	const options = program.opts();
+	const options = /** @type {ProgramOptions} */ (program.opts());
 	const configFileExists = fs.existsSync(path.join(process.cwd(), RC_FILE_NAME));
-	if (options.runConfig && !configFileExists) {
-		Logger.warn(messages.CONFIG_FILE_NOT_FOUND, RC_FILE_NAME);
-		const config = await userFlowSteps.init();
-		return startMockServer.run(config.selectedSchemas);
-	}
+	let config;
 	if (options.runConfig) {
-		const config =
-			/** @type {Config} */ (JSON.parse(fs.readFileSync(path.join(process.cwd(), RC_FILE_NAME), 'utf-8'))) || {};
-		return startMockServer.run(config.selectedSchemas);
-	}
-	if (options?.origin) {
-		const config = await userFlowSteps.init({
+		if (configFileExists) {
+			config = getConfigFromFile();
+		} else {
+			Logger.warn(messages.CONFIG_FILE_NOT_FOUND, RC_FILE_NAME);
+		}
+	} else if (options?.origin) {
+		config = await userFlowSteps.init({
 			origin: options.origin,
 			schemaPaths: options.schema,
 			ports: options.port,
 		});
-		return startMockServer.run(config.selectedSchemas);
-	}
-	if (options?.schema?.length) {
-		const config = await userFlowSteps.initWithSchemaPaths({
+	} else if (options?.schema?.length) {
+		config = await userFlowSteps.initWithSchemaPaths({
 			schemaPaths: options.schema,
 			ports: options.port,
 		});
-		return startMockServer.run(config.selectedSchemas);
+	} else if (configFileExists) {
+		config = await userFlowSteps.initWithConfigFile();
 	}
-	if (configFileExists) {
-		const config = await userFlowSteps.initWithConfigFile();
-		return startMockServer.run(config.selectedSchemas);
+	if (!config) {
+		config = await userFlowSteps.init();
 	}
-	const config = await userFlowSteps.init();
 	return startMockServer.run(config.selectedSchemas);
 };
+
+/**
+ * Get config from file.
+ * @function getConfigFromFile
+ * @returns {Config} Content of the config file.
+ */
+function getConfigFromFile() {
+	return /** @type {Config} */ (JSON.parse(fs.readFileSync(path.join(process.cwd(), RC_FILE_NAME), 'utf-8'))) || {};
+}
