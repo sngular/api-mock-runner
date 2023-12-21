@@ -25,7 +25,7 @@ import { messages } from '../utils/messages.js';
  * @returns {Promise<Config>} An object with the initial values from the user.
  */
 async function initWithConfigFile() {
-	const configFilePath = `${process.cwd()}/${RC_FILE_NAME}`;
+	const configFilePath = path.join(process.cwd(), RC_FILE_NAME);
 	const fileContent = fs.readFileSync(configFilePath, 'utf-8');
 	const existingConfig = /** @type {Config} */ (JSON.parse(fileContent)) || {};
 	Logger.info(messages.CURRENT_CONFIG, existingConfig);
@@ -102,7 +102,7 @@ async function init({ origin, schemaPaths, ports } = { schemaPaths: [], ports: [
 	/** @type {Config} */
 	const config = { schemasOrigin, selectedSchemas };
 
-	fs.writeFileSync(`${process.cwd()}/${RC_FILE_NAME}`, JSON.stringify(config, null, '\t'));
+	fs.writeFileSync(path.join(process.cwd(), RC_FILE_NAME), JSON.stringify(config, null, '\t'));
 	Logger.info(messages.SAVED_CONFIG, config);
 	await addToGitignore(RC_FILE_NAME);
 
@@ -120,7 +120,7 @@ async function initWithSchemaPaths({ schemaPaths, ports } = { schemaPaths: [], p
 	const selectedSchemas = ports?.length ? assignPorts(schemaPaths, ports) : await askForPorts(schemaPaths);
 	const config = { selectedSchemas };
 
-	fs.writeFileSync(`${process.cwd()}/${RC_FILE_NAME}`, JSON.stringify(config, null, '\t'));
+	fs.writeFileSync(path.join(process.cwd(), RC_FILE_NAME), JSON.stringify(config, null, '\t'));
 	Logger.info(messages.USING_PROVIDED_CONFIG, config);
 
 	return config;

@@ -1,5 +1,6 @@
 import { program } from 'commander';
 import fs from 'node:fs';
+import path from 'node:path';
 
 import { startMockServer } from './services/start-mock-server.js';
 import { userFlowSteps } from './services/user-flow-steps.js';
@@ -30,7 +31,7 @@ export const main = async () => {
 
 	/** @type {ProgramOptions} */
 	const options = program.opts();
-	const configFileExists = fs.existsSync(`${process.cwd()}/${RC_FILE_NAME}`);
+	const configFileExists = fs.existsSync(path.join(process.cwd(), RC_FILE_NAME));
 	if (options.runConfig && !configFileExists) {
 		Logger.warn(messages.CONFIG_FILE_NOT_FOUND, RC_FILE_NAME);
 		const config = await userFlowSteps.init();
@@ -38,7 +39,7 @@ export const main = async () => {
 	}
 	if (options.runConfig) {
 		const config =
-			/** @type {Config} */ (JSON.parse(fs.readFileSync(`${process.cwd()}/${RC_FILE_NAME}`, 'utf-8'))) || {};
+			/** @type {Config} */ (JSON.parse(fs.readFileSync(path.join(process.cwd(), RC_FILE_NAME), 'utf-8'))) || {};
 		return startMockServer.run(config.selectedSchemas);
 	}
 	if (options?.origin) {
