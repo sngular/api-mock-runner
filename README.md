@@ -5,11 +5,11 @@
 
 Run multiple mock servers from one or more [OpenAPI Specification](https://www.openapis.org/).
 
-Schemas could be provided from remote origin (https:// or git@) or local path.
+Schemas can be provided from a remote origin (https:// or git@) or a local path.
 
 Remote and circular references are allowed.
 
-## Usage
+## 📘 Usage
 
 You can use api-mock-runner in a three different ways. All of them starts a CLI guided journey:
 
@@ -60,3 +60,7 @@ The application will return the first response found in the schema by default. T
 ```
 prefer: statusCode=500
 ```
+
+## ❤️ Special thanks
+
+We would like to express our special thanks to [open-api-mocker](https://github.com/jormaechea/open-api-mocker), which is used to set up a mock server.
