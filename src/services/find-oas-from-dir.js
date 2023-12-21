@@ -2,8 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import readline from 'node:readline';
 
-import Logger from '../utils/logger.js';
-import { messages } from '../utils/messages.js';
+import Logger from '../helpers/logger.js';
+import { messages } from '../helpers/messages.js';
 
 /**
  * @typedef {import('../types/types.d.js').OasFile} OasFile

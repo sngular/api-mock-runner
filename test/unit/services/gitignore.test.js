@@ -4,8 +4,8 @@ import fs from 'node:fs';
 import { restore, stub, match } from 'sinon';
 import sinonChai from 'sinon-chai';
 
+import { messages } from '../../../src/helpers/messages.js';
 import { checkStringInFile } from '../../../src/services/check-string-in-file.js';
-import { messages } from '../../../src/utils/messages.js';
 
 use(sinonChai);
 

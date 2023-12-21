@@ -6,7 +6,7 @@ import { match, stub } from 'sinon';
 import sinonChai from 'sinon-chai';
 
 import { OpenApiSchemaNotFoundError } from '../../../src/errors/openapi-schema-not-found-error.js';
-import Logger from '../../../src/utils/logger.js';
+import Logger from '../../../src/helpers/logger.js';
 
 use(sinonChai);
 

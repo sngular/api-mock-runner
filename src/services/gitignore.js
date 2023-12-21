@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { checkStringInFile } from './check-string-in-file.js';
-import { messages } from '../utils/messages.js';
+import { messages } from '../helpers/messages.js';
 
 export const GITIGNORE_PATH = path.join(process.cwd(), '.gitignore');
 

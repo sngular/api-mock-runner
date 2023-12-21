@@ -1,5 +1,5 @@
 import { colours, paintText } from '../helpers/colours.js';
-import Logger from '../utils/logger.js';
+import Logger from '../helpers/logger.js';
 
 /**
  * The name of the config file.

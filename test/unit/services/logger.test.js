@@ -2,7 +2,7 @@ import { expect, use } from 'chai';
 import { stub } from 'sinon';
 import sinonChai from 'sinon-chai';
 
-import Logger from '../../../src/utils/logger.js';
+import Logger from '../../../src/helpers/logger.js';
 
 use(sinonChai);
 

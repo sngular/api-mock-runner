@@ -2,11 +2,11 @@ import { program } from 'commander';
 import fs from 'node:fs';
 import path from 'node:path';
 
+import Logger from './helpers/logger.js';
+import { messages } from './helpers/messages.js';
 import { startMockServer } from './services/start-mock-server.js';
 import { userFlowSteps } from './services/user-flow-steps.js';
 import { RC_FILE_NAME } from './services/utils.js';
-import Logger from './utils/logger.js';
-import { messages } from './utils/messages.js';
 
 /**
  * @typedef {import('./types/types.d.js').Config} Config

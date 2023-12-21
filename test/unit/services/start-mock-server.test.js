@@ -4,9 +4,9 @@ import fs from 'fs';
 import { stub, spy, match } from 'sinon';
 import sinonChai from 'sinon-chai';
 
+import Logger from '../../../src/helpers/logger.js';
+import { messages } from '../../../src/helpers/messages.js';
 import { userFlowSteps } from '../../../src/services/user-flow-steps.js';
-import Logger from '../../../src/utils/logger.js';
-import { messages } from '../../../src/utils/messages.js';
 
 use(sinonChai);
 

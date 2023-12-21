@@ -1,7 +1,7 @@
 import fs from 'fs';
 
 import { verifyRemoteOrigin } from './utils.js';
-import { messages } from '../utils/messages.js';
+import { messages } from '../helpers/messages.js';
 
 /**
  * @typedef {import('../types/types.d.js').Schema} Schema
