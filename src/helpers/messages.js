@@ -12,7 +12,14 @@ export const messages = Object.freeze({
 	SAVED_CONFIG: (/** @type {string} */ configFile) => `Configuration saved in ${configFile}:`,
 	SOME_SCHEMA_DOES_NOT_EXIST: 'Some schema does not exist.',
 	USING_PROVIDED_CONFIG: 'Using provided configuration:',
-	VALIDATION_INVALID_ORIGIN: 'Enter a valid remote origin (https:// or git@) or local path.',
-	VALIDATION_INVALID_PORT: 'Enter a valid port number between 0 and 65535.',
-	VALIDATION_PORT_IN_USE: 'Port already in use.',
+});
+
+export const validationErrorMessages = Object.freeze({
+	origin: {
+		INVALID: 'Enter a valid remote origin (https:// or git@) or local path.',
+	},
+	port: {
+		IN_USE: 'Port already in use.',
+		INVALID: 'Enter a valid port number between 0 and 65535.',
+	},
 });

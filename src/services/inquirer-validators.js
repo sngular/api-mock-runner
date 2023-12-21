@@ -1,21 +1,11 @@
 import fs from 'node:fs';
 
 import { verifyRemoteOrigin } from './utils.js';
-import { messages } from '../helpers/messages.js';
+import { validationErrorMessages } from '../helpers/messages.js';
 
 /**
  * @typedef {import('../types/types.d.js').Schema} Schema
  */
-
-export const errorMessages = Object.freeze({
-	origin: {
-		INVALID: messages.VALIDATION_INVALID_ORIGIN,
-	},
-	port: {
-		IN_USE: messages.VALIDATION_PORT_IN_USE,
-		INVALID: messages.VALIDATION_INVALID_PORT,
-	},
-});
 
 /**
  * Validate if the input is a valid local path or remote origin.
@@ -26,7 +16,7 @@ export const errorMessages = Object.freeze({
 export function originValidator(value) {
 	const isLocalPath = fs.existsSync(value);
 	const isRemoteOrigin = verifyRemoteOrigin(value);
-	const result = isLocalPath || isRemoteOrigin || errorMessages.origin.INVALID;
+	const result = isLocalPath || isRemoteOrigin || validationErrorMessages.origin.INVALID;
 	return result;
 }
 
@@ -41,11 +31,11 @@ export function portValidator(input, selectedSchemas) {
 	const numericInput = Number(input);
 	const isInteger = Number.isInteger(numericInput);
 	if (!isInteger || numericInput < 0 || numericInput > 65535) {
-		return errorMessages.port.INVALID;
+		return validationErrorMessages.port.INVALID;
 	}
 	const isPortAlreadySelected = selectedSchemas.some((schema) => schema.port === numericInput);
 	if (isPortAlreadySelected) {
-		return errorMessages.port.IN_USE;
+		return validationErrorMessages.port.IN_USE;
 	}
 	return true;
 }
