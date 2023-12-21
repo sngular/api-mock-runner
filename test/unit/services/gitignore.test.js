@@ -5,6 +5,8 @@ import { restore, stub, match } from 'sinon';
 import sinonChai from 'sinon-chai';
 
 import { checkStringInFile } from '../../../src/services/check-string-in-file.js';
+import { messages } from '../../../src/utils/messages.js';
+
 use(sinonChai);
 
 let confirmStub = stub();
@@ -66,7 +68,9 @@ describe('unit: addToGitignore', () => {
 		readFileSyncStub.returns(gitignoreContentNoNewline);
 		await addToGitignore(fileNameTest);
 		expect(existsSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH);
-		expect(confirmStub).to.have.been.calledOnceWith(match({ message: `Add ${fileNameTest} to .gitignore?` }));
+		expect(confirmStub).to.have.been.calledOnceWith(
+			match({ message: messages.CONFIRM_ADD_TO_GITIGNORE(fileNameTest) })
+		);
 		expect(readFileSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH, 'utf8');
 		expect(appendFileSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH, `\n${lineToAdd}`);
 	});
@@ -77,7 +81,9 @@ describe('unit: addToGitignore', () => {
 		readFileSyncStub.returns(`${gitignoreContentNoNewline}\n`);
 		await addToGitignore(fileNameTest);
 		expect(existsSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH);
-		expect(confirmStub).to.have.been.calledOnceWith(match({ message: `Add ${fileNameTest} to .gitignore?` }));
+		expect(confirmStub).to.have.been.calledOnceWith(
+			match({ message: messages.CONFIRM_ADD_TO_GITIGNORE(fileNameTest) })
+		);
 		expect(readFileSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH, 'utf8');
 		expect(appendFileSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH, `${lineToAdd}`);
 	});
@@ -87,7 +93,9 @@ describe('unit: addToGitignore', () => {
 		confirmStub.returns(true);
 		await addToGitignore(fileNameTest);
 		expect(existsSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH);
-		expect(confirmStub).to.have.been.calledOnceWith(match({ message: `Add ${fileNameTest} to .gitignore?` }));
+		expect(confirmStub).to.have.been.calledOnceWith(
+			match({ message: messages.CONFIRM_ADD_TO_GITIGNORE(fileNameTest) })
+		);
 		expect(readFileSyncStub).to.not.have.been.called;
 		expect(appendFileSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH, `${lineToAdd}`);
 	});

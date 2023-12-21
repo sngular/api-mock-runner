@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { checkStringInFile } from './check-string-in-file.js';
+import { messages } from '../utils/messages.js';
 
 export const GITIGNORE_PATH = path.join(process.cwd(), '.gitignore');
 
@@ -20,7 +21,7 @@ export default async function addToGitignore(fileName) {
 	const existsGitignoreFile = fs.existsSync(GITIGNORE_PATH);
 	if (
 		(!existsGitignoreFile || !(await isInGitignore(fileName))) &&
-		(await confirm({ message: `Add ${fileName} to .gitignore?` }))
+		(await confirm({ message: messages.CONFIRM_ADD_TO_GITIGNORE(fileName) }))
 	) {
 		const leadingCharacter = existsGitignoreFile ? getLeadingCharacter() : '';
 		fs.appendFileSync(GITIGNORE_PATH, `${leadingCharacter}${fileName}\n`);

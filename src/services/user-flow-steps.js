@@ -30,7 +30,7 @@ async function initWithConfigFile() {
 	const existingConfig = /** @type {Config} */ (JSON.parse(fileContent)) || {};
 	Logger.info(messages.CURRENT_CONFIG, existingConfig);
 	const useExistingConfig = await confirm({
-		message: 'Do you want to use the existing config?',
+		message: messages.CONFIRM_EXISTING_CONFIG,
 	});
 	return useExistingConfig ? existingConfig : userFlowSteps.init();
 }
@@ -62,7 +62,7 @@ async function getSchemas(origin) {
  */
 async function getOrigin() {
 	const schemasOrigin = await input({
-		message: 'Enter a remote origin (https:// or git@) or local path',
+		message: messages.INPUT_ORIGIN,
 		validate: originValidator,
 	});
 
@@ -91,7 +91,7 @@ async function init({ origin, schemaPaths, ports } = { schemaPaths: [], ports: [
 	const schemasToMock = schemaPathsAreAvailable
 		? schemaPaths
 		: await checkbox({
-				message: 'Select a schema',
+				message: messages.CHOOSE_FILES,
 				choices: schemas.map((schema) => {
 					return { value: schema.filePath };
 				}),
@@ -103,7 +103,7 @@ async function init({ origin, schemaPaths, ports } = { schemaPaths: [], ports: [
 	const config = { schemasOrigin, selectedSchemas };
 
 	fs.writeFileSync(path.join(process.cwd(), RC_FILE_NAME), JSON.stringify(config, null, '\t'));
-	Logger.info(messages.SAVED_CONFIG, config);
+	Logger.info(messages.SAVED_CONFIG(RC_FILE_NAME), config);
 	await addToGitignore(RC_FILE_NAME);
 
 	return config;
@@ -139,7 +139,7 @@ async function askForPorts(schemaPaths) {
 	let suggestedPort = 1234;
 	for (const schemaPath of schemaPaths) {
 		const port = await input({
-			message: `Select a port for ${schemaPath}`,
+			message: messages.INPUT_PORT(schemaPath),
 			default: suggestedPort.toString(),
 			validate: (input) => portValidator(input, selectedSchemas),
 		});

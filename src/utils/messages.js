@@ -1,9 +1,18 @@
 export const messages = Object.freeze({
-	CONFIG_FILE_NOT_FOUND: 'Could not find the configuration file',
+	CHOOSE_FILES: 'Choose the files you want to use:',
+	CONFIG_FILE_NOT_FOUND: 'Could not find the configuration file named:',
+	CONFIRM_ADD_TO_GITIGNORE: (/** @type {string} */ fileName) => `Add ${fileName} to .gitignore?:`,
+	CONFIRM_EXISTING_CONFIG: 'Do you want to use the existing config?:',
 	CURRENT_CONFIG: 'Current configuration:',
-	DIRECTORY_NOT_FOUND: 'Could not find the directory',
-	OPENAPI_SCHEMA_NOT_FOUND_ERROR_MSG: 'No OpenAPI schema found in the given directory',
-	SAVED_CONFIG: 'Saved configuration:',
-	SOME_SCHEMA_DOES_NOT_EXIST: 'Some schema does not exist',
+	DIRECTORY_NOT_FOUND: 'Could not find the directory named:',
+	INPUT_ORIGIN:
+		'Enter a remote origin (https:// or git@) or a local path where the OpenAPI Specification files are located:',
+	INPUT_PORT: (/** @type {string} */ schemaPath) => `Enter a port number for ${schemaPath}:`,
+	OPENAPI_SCHEMA_NOT_FOUND_ERROR_MSG: 'No OpenAPI schema found in the given directory.',
+	SAVED_CONFIG: (/** @type {string} */ configFile) => `Configuration saved in ${configFile}:`,
+	SOME_SCHEMA_DOES_NOT_EXIST: 'Some schema does not exist.',
 	USING_PROVIDED_CONFIG: 'Using provided configuration:',
+	VALIDATION_INVALID_ORIGIN: 'Enter a valid remote origin (https:// or git@) or local path.',
+	VALIDATION_INVALID_PORT: 'Enter a valid port number between 0 and 65535.',
+	VALIDATION_PORT_IN_USE: 'Port already in use.',
 });

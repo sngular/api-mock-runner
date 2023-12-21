@@ -1,6 +1,7 @@
 import fs from 'fs';
 
 import { verifyRemoteOrigin } from './utils.js';
+import { messages } from '../utils/messages.js';
 
 /**
  * @typedef {import('../types/types.d.js').Schema} Schema
@@ -8,11 +9,11 @@ import { verifyRemoteOrigin } from './utils.js';
 
 export const errorMessages = Object.freeze({
 	origin: {
-		INVALID: 'Enter a valid remote origin (https:// or git@) or local path',
+		INVALID: messages.VALIDATION_INVALID_ORIGIN,
 	},
 	port: {
-		IN_USE: 'Port already in use',
-		INVALID: 'Enter a valid port number between 0 and 65535',
+		IN_USE: messages.VALIDATION_PORT_IN_USE,
+		INVALID: messages.VALIDATION_INVALID_PORT,
 	},
 });
 
