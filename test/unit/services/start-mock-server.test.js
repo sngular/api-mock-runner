@@ -1,6 +1,6 @@
 import { expect, use } from 'chai';
 import esmock from 'esmock';
-import fs from 'fs';
+import fs from 'node:fs';
 import { stub, spy, match } from 'sinon';
 import sinonChai from 'sinon-chai';
 

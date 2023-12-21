@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'node:fs';
 
 import { verifyRemoteOrigin } from './utils.js';
 import { messages } from '../helpers/messages.js';

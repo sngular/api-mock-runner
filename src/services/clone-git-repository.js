@@ -1,7 +1,7 @@
-import child_process from 'child_process';
-import fs from 'fs';
-import path from 'path';
-import process from 'process';
+import child_process from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import process from 'node:process';
 
 /**
  * Clone a git repository.

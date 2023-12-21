@@ -1,5 +1,5 @@
 import { expect, use } from 'chai';
-import fs from 'fs';
+import fs from 'node:fs';
 import { stub } from 'sinon';
 import sinonChai from 'sinon-chai';
 
