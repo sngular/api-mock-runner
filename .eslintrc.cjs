@@ -1,9 +1,9 @@
 module.exports = {
 	extends: [
-		'@os3/eslint-config',
-		'@os3/eslint-config/jsdoc.cjs',
-		'@os3/eslint-config/type-information.cjs',
-		'@os3/eslint-config/prettier.cjs',
+		'@sngular/eslint-config',
+		'@sngular/eslint-config/jsdoc.cjs',
+		'@sngular/eslint-config/type-information.cjs',
+		'@sngular/eslint-config/prettier.cjs',
 	],
 	env: {
 		mocha: true,

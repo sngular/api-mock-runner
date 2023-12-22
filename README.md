@@ -15,13 +15,13 @@ You can use api-mock-runner in a three different ways. All of them starts a CLI 
 ### 1. NPX (No installation needed)
 
 ```sh
-npx @os3/api-mock-runner
+npx @sngular/api-mock-runner
 ```
 
 ### 2. Globally
 
 ```sh
-sudo npm install --global @os3/api-mock-runner
+sudo npm install --global @sngular/api-mock-runner
 ```
 
 To use: type `api-mock-runner` in the terminal.
@@ -29,7 +29,7 @@ To use: type `api-mock-runner` in the terminal.
 ### 3. Current project dev dependency
 
 ```sh
-npm i --save-dev @os3/api-mock-runner
+npm i --save-dev @sngular/api-mock-runner
 ```
 
 ### Manual options
@@ -38,7 +38,7 @@ You could avoid CLI interaction by using `api-mock-runner` with flags.
 To explore manual options, use -h flag:
 
 ```sh
-npx @os3/api-mock-runner -h
+npx @sngular/api-mock-runner -h
 ```
 
 ```sh

@@ -1,7 +1,7 @@
 {
-	"name": "api-mock-runner",
+	"name": "@sngular/api-mock-runner",
 	"version": "0.0.0",
-	"description": "Create mocks servers with its schemas",
+	"description": "Create mocks servers with its schemas from OpenAPI 3.0.0 spec files",
 	"main": "src/index.js",
 	"bin": "src/index.js",
 	"type": "module",
@@ -37,20 +37,20 @@
 		"check": "npm run lint:check && npm run format:check && npm run types:check && npm test"
 	},
 	"author": "",
-	"license": "MIT",
+	"license": "MPL-2.0",
 	"dependencies": {
 		"@inquirer/prompts": "^3.3.0",
-		"@os3/open-api-mocker": "^2.1.0",
+		"@sngular/open-api-mocker": "^1.0.0",
 		"commander": "^11.1.0"
 	},
 	"devDependencies": {
 		"@esm-bundle/chai": "^4.3.4-fix.0",
-		"@os3/commitlint-config": "^0.0.3",
-		"@os3/eslint-config": "^0.4.0",
-		"@os3/lint-staged-config": "^0.0.5",
-		"@os3/prettier-config": "^0.1.1",
-		"@os3/semantic-release-config": "^0.1.1",
-		"@os3/tsconfig": "^0.0.5",
+		"@sngular/commitlint-config": "^1.0.0",
+		"@sngular/eslint-config": "^1.0.0",
+		"@sngular/lint-staged-config": "^1.0.0",
+		"@sngular/prettier-config": "^1.0.0",
+		"@sngular/semantic-release-config": "^1.0.0",
+		"@sngular/tsconfig": "^1.0.0",
 		"@types/mocha": "^10.0.2",
 		"@types/sinon": "^10.0.19",
 		"@types/sinon-chai": "^3.2.10",
@@ -62,5 +62,8 @@
 		"mock-fs": "^5.2.0",
 		"sinon": "^16.1.0",
 		"sinon-chai": "^3.7.0"
-	}
+	},
+  "publishConfig": {
+    "access": "public"
+  }
 }

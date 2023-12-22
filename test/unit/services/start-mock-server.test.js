@@ -21,7 +21,7 @@ class FakeOpenApiMocker {
 }
 let fakeOpenApiMockerSpy = spy(FakeOpenApiMocker);
 const { startMockServer } = await esmock('../../../src/services/start-mock-server.js', import.meta.url, {
-	'@os3/open-api-mocker': {
+	'@sngular/open-api-mocker': {
 		default: fakeOpenApiMockerSpy,
 	},
 });

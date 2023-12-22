@@ -1,4 +1,4 @@
-import OpenApiMocker from '@os3/open-api-mocker';
+import OpenApiMocker from '@sngular/open-api-mocker';
 import fs from 'node:fs';
 
 import { userFlowSteps } from './user-flow-steps.js';

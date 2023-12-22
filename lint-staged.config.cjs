@@ -1,1 +1,1 @@
-module.exports = require('@os3/lint-staged-config/prettier.cjs');
+module.exports = require('@sngular/lint-staged-config/prettier.cjs');

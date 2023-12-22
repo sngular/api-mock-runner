@@ -1,3 +1,3 @@
-declare module '@os3/open-api-mocker';
-declare module '@os3/prettier-config';
-declare module '@os3/semantic-release-config';
+declare module '@sngular/open-api-mocker';
+declare module '@sngular/prettier-config';
+declare module '@sngular/semantic-release-config';
