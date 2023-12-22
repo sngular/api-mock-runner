@@ -3,8 +3,8 @@ import { stub, match } from 'sinon';
 import sinonChai from 'sinon-chai';
 
 import { MockRunnerError } from '../../../src/errors/mock-runner-error.js';
-import { colours } from '../../../src/helpers/colours.js';
-import Logger from '../../../src/helpers/logger.js';
+import { colourCodes } from '../../../src/helpers/colours.js';
+import { Logger } from '../../../src/helpers/logger.js';
 
 // Use Sinon-Chai assertions
 use(sinonChai);
@@ -49,7 +49,7 @@ describe('unit: MockRunnerError', () => {
 			error = new MockRunnerError('Test error', 500, 2, 'testEmitter');
 			error.showError();
 
-			expect(loggerErrorStub).to.have.been.calledWith(match((value) => value.includes(colours.fg.red)));
+			expect(loggerErrorStub).to.have.been.calledWith(match((value) => value.includes(colourCodes.fg.red)));
 			expect(loggerInfoStub).to.have.been.calledOnceWithExactly(error.stack);
 		});
 
@@ -57,7 +57,7 @@ describe('unit: MockRunnerError', () => {
 			error = new MockRunnerError('Test error', 500, 1, 'testEmitter');
 			error.showError();
 
-			expect(loggerErrorStub).to.have.been.calledWith(match((value) => value.includes(colours.fg.crimson)));
+			expect(loggerErrorStub).to.have.been.calledWith(match((value) => value.includes(colourCodes.fg.crimson)));
 			expect(loggerInfoStub).to.have.been.calledOnceWithExactly(error.stack);
 		});
 
@@ -65,7 +65,7 @@ describe('unit: MockRunnerError', () => {
 			error = new MockRunnerError('Test error', 500, undefined, 'testEmitter');
 			error.showError();
 
-			expect(loggerErrorStub).to.have.been.calledWith(match((value) => value.includes(colours.fg.cyan)));
+			expect(loggerErrorStub).to.have.been.calledWith(match((value) => value.includes(colourCodes.fg.cyan)));
 			expect(loggerInfoStub).to.have.been.calledOnceWithExactly(error.stack);
 		});
 	});

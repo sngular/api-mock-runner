@@ -17,7 +17,7 @@ export const GITIGNORE_PATH = path.join(process.cwd(), '.gitignore');
  * @param {string} fileName - The file or folder name to append to .gitignore.
  * @returns {Promise<void>}
  */
-export default async function addToGitignore(fileName) {
+async function addToGitignore(fileName) {
 	const existsGitignoreFile = fs.existsSync(GITIGNORE_PATH);
 	const isInGitignoreFile = existsGitignoreFile && (await isInGitignore(fileName));
 	const shouldAddToGitignore = !existsGitignoreFile || !isInGitignoreFile;
@@ -49,3 +49,5 @@ function getLeadingCharacter() {
 	const lastFileCharacter = fs.readFileSync(GITIGNORE_PATH, 'utf8').slice(-1);
 	return lastFileCharacter === '\n' ? '' : '\n';
 }
+
+export const gitignore = { addToGitignore };

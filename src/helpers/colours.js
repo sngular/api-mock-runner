@@ -1,14 +1,4 @@
-/**
- * Paints a given text with the given color and then resets the color palette.
- * @param {string} text - The text to paint.
- * @param {string} color - The desired color to paint the text.
- * @returns {string} - The painted text.
- */
-export function paintText(text, color) {
-	return `${color}${text}${colours.reset}`;
-}
-
-export const colours = Object.freeze({
+export const colourCodes = Object.freeze({
 	reset: '\x1b[0m',
 	bright: '\x1b[1m',
 	dim: '\x1b[2m',
@@ -41,3 +31,15 @@ export const colours = Object.freeze({
 		crimson: '\x1b[48m',
 	},
 });
+
+/**
+ * Paints a given text with the given color and then resets the color palette.
+ * @param {string} text - The text to paint.
+ * @param {string} color - The desired color to paint the text.
+ * @returns {string} - The painted text.
+ */
+function paintText(text, color) {
+	return `${color}${text}${colourCodes.reset}`;
+}
+
+export const colourHelper = { paintText };

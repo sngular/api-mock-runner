@@ -5,7 +5,7 @@ import path from 'node:path';
 import readline from 'node:readline';
 import { stub, spy, restore } from 'sinon';
 
-import { findOasFromDir, findOasFromDirRecursive, oasUtils } from '../../../src/services/find-oas-from-dir.js';
+import { oas } from '../../../src/services/find-oas-from-dir.js';
 
 describe('unit: find-oas-from-dir', () => {
 	describe('findOasFromDir', () => {
@@ -16,7 +16,7 @@ describe('unit: find-oas-from-dir', () => {
 		beforeEach(() => {
 			existsSyncStub = stub(fs, 'existsSync');
 			readdirSyncStub = stub(fs, 'readdirSync');
-			isOasStub = stub(oasUtils, 'isOas');
+			isOasStub = stub(oas, 'isOas');
 			joinStub = stub(path, 'join');
 		});
 
@@ -28,7 +28,7 @@ describe('unit: find-oas-from-dir', () => {
 			const logStub = stub(console, 'log');
 			logStub.returns();
 			existsSyncStub.returns(false);
-			const result = await findOasFromDir('foo');
+			const result = await oas.findOasFromDir('foo');
 			expect(result).to.be.an('array').that.is.empty;
 		});
 
@@ -37,7 +37,7 @@ describe('unit: find-oas-from-dir', () => {
 			readdirSyncStub.returns(['foo.yaml', 'bar.yaml']);
 			isOasStub.returns(true);
 			joinStub.returns('foo/bar.yaml');
-			const result = await findOasFromDir('path/to/dir');
+			const result = await oas.findOasFromDir('path/to/dir');
 			expect(result).to.be.an('array').that.has.lengthOf(2);
 		});
 		it('should return an empty array if no oas files', async () => {
@@ -45,7 +45,7 @@ describe('unit: find-oas-from-dir', () => {
 			readdirSyncStub.returns(['foo.yaml', 'bar.yaml']);
 			isOasStub.returns(false);
 			joinStub.returns('foo/bar.yaml');
-			const result = await findOasFromDir('path/to/dir');
+			const result = await oas.findOasFromDir('path/to/dir');
 			expect(result).to.be.an('array').that.is.empty;
 		});
 
@@ -54,7 +54,7 @@ describe('unit: find-oas-from-dir', () => {
 			readdirSyncStub.returns(['foo.txt', 'bar.yaml']);
 			isOasStub.returns(true);
 			joinStub.returns('foo/bar.yaml');
-			const result = await findOasFromDir('path/to/dir');
+			const result = await oas.findOasFromDir('path/to/dir');
 			expect(result).to.be.an('array').that.has.lengthOf(1);
 		});
 	});
@@ -68,7 +68,7 @@ describe('unit: find-oas-from-dir', () => {
 		beforeEach(() => {
 			existsSyncStub = stub(fs, 'existsSync');
 			readdirSyncStub = stub(fs, 'readdirSync');
-			isOasStub = stub(oasUtils, 'isOas');
+			isOasStub = stub(oas, 'isOas');
 			joinStub = stub(path, 'join');
 			lstatSyncStub = stub(fs, 'lstatSync');
 		});
@@ -81,7 +81,7 @@ describe('unit: find-oas-from-dir', () => {
 			const logStub = stub(console, 'log');
 			logStub.returns();
 			existsSyncStub.returns(false);
-			const result = await findOasFromDirRecursive('foo');
+			const result = await oas.findOasFromDirRecursive('foo');
 			expect(result).to.be.an('array').that.is.empty;
 		});
 
@@ -94,7 +94,7 @@ describe('unit: find-oas-from-dir', () => {
 			lstatSyncStub.onCall(2).returns({ isDirectory: () => false });
 			isOasStub.returns(true);
 			joinStub.returns('foo/bar.yaml');
-			const result = await findOasFromDirRecursive('path/to/dir');
+			const result = await oas.findOasFromDirRecursive('path/to/dir');
 			expect(result).to.be.an('array').that.has.lengthOf(2);
 		});
 
@@ -108,7 +108,7 @@ describe('unit: find-oas-from-dir', () => {
 			isOasStub.onCall(0).returns(true);
 			isOasStub.onCall(1).returns(false);
 			joinStub.returns('foo/bar.yaml');
-			const result = await findOasFromDirRecursive('path/to/dir');
+			const result = await oas.findOasFromDirRecursive('path/to/dir');
 			expect(result).to.be.an('array').that.has.lengthOf(1);
 		});
 
@@ -121,7 +121,7 @@ describe('unit: find-oas-from-dir', () => {
 			lstatSyncStub.onCall(2).returns({ isDirectory: () => false });
 			isOasStub.returns(true);
 			joinStub.returns('foo/bar.yaml');
-			const result = await findOasFromDirRecursive('path/to/dir');
+			const result = await oas.findOasFromDirRecursive('path/to/dir');
 			expect(result).to.be.an('array').that.has.lengthOf(1);
 		});
 
@@ -131,7 +131,7 @@ describe('unit: find-oas-from-dir', () => {
 			lstatSyncStub.returns({ isDirectory: () => false });
 			isOasStub.returns(true);
 			joinStub.returns('path/to/valid.yaml');
-			const result = await findOasFromDirRecursive('path/to/dir');
+			const result = await oas.findOasFromDirRecursive('path/to/dir');
 			expect(result).to.be.an('array').that.has.lengthOf(1);
 			expect(result[0]).to.deep.equal({
 				fileName: 'valid.yaml',
@@ -146,7 +146,7 @@ describe('unit: find-oas-from-dir', () => {
 		const filePath = 'path/to/file.yaml';
 
 		beforeEach(() => {
-			getFirstLineStub = stub(oasUtils, 'getFirstLine');
+			getFirstLineStub = stub(oas, 'getFirstLine');
 		});
 
 		afterEach(() => {
@@ -155,19 +155,19 @@ describe('unit: find-oas-from-dir', () => {
 
 		it('should return true if the first line starts with "openapi"', async () => {
 			getFirstLineStub.resolves('openapi 3.0.0');
-			const result = await oasUtils.isOas(filePath);
+			const result = await oas.isOas(filePath);
 			expect(result).to.be.true;
 		});
 
 		it('should return false if the first line does not start with "openapi"', async () => {
 			getFirstLineStub.resolves('swagger: "2.0"');
-			const result = await oasUtils.isOas(filePath);
+			const result = await oas.isOas(filePath);
 			expect(result).to.be.false;
 		});
 
 		it('should return false if the first line is empty', async () => {
 			getFirstLineStub.resolves('');
-			const result = await oasUtils.isOas(filePath);
+			const result = await oas.isOas(filePath);
 			expect(result).to.be.false;
 		});
 	});
@@ -198,14 +198,14 @@ describe('unit: find-oas-from-dir', () => {
 		});
 
 		it('should return the first line of the file', async () => {
-			const result = await oasUtils.getFirstLine(filePath);
+			const result = await oas.getFirstLine(filePath);
 			expect(result).to.equal(firstLine);
 			expect(createReadStreamStub).to.have.been.calledOnceWithExactly(filePath);
 			expect(createInterfaceStub).to.have.been.calledOnce;
 		});
 
 		it('should return undefined if the file is empty', async () => {
-			const result = await oasUtils.getFirstLine(emptyFilePath);
+			const result = await oas.getFirstLine(emptyFilePath);
 			expect(result).to.be.undefined;
 			expect(createReadStreamStub).to.have.been.calledOnceWithExactly(emptyFilePath);
 			expect(createInterfaceStub).to.have.been.calledOnce;

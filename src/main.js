@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { RC_FILE_NAME } from './helpers/constants.js';
-import Logger from './helpers/logger.js';
+import { Logger } from './helpers/logger.js';
 import { messages } from './helpers/messages.js';
 import { startMockServer } from './services/start-mock-server.js';
 import { userFlowSteps } from './services/user-flow-steps.js';
@@ -16,10 +16,10 @@ import { userFlowSteps } from './services/user-flow-steps.js';
 /**
  * Main function to start the mock server.
  * @async
- * @function main
+ * @function run
  * @returns {Promise<void>}
  */
-export const main = async () => {
+const run = async () => {
 	program
 		.option('-o, --origin <origin>', 'path or repo containing schemas')
 		.option('-s, --schema [schemaPaths...]', 'path to schemas')
@@ -63,3 +63,5 @@ export const main = async () => {
 function getConfigFromFile() {
 	return /** @type {Config} */ (JSON.parse(fs.readFileSync(path.join(process.cwd(), RC_FILE_NAME), 'utf-8'))) || {};
 }
+
+export const main = { run };

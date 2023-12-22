@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import { stub } from 'sinon';
 import sinonChai from 'sinon-chai';
 
-import cloneGitRepository from '../../../src/services/clone-git-repository.js';
+import { git } from '../../../src/services/clone-git-repository.js';
 
 use(sinonChai);
 
@@ -32,7 +32,7 @@ describe('unit: clone-git-repository mocking git clone and fs I/O', () => {
 
 	it('should reset temp dir and clone repository', () => {
 		existsSyncStub.returns(true);
-		cloneGitRepository(repositoryURL, dirName);
+		git.cloneRepository(repositoryURL, dirName);
 		expect(existsSyncStub).to.have.been.called;
 		expect(rmSync).to.have.been.called;
 		expect(mkdirSyncStub).to.have.been.called;
@@ -41,7 +41,7 @@ describe('unit: clone-git-repository mocking git clone and fs I/O', () => {
 
 	it('should create temp dir and clone repository', () => {
 		existsSyncStub.returns(false);
-		cloneGitRepository(repositoryURL, dirName);
+		git.cloneRepository(repositoryURL, dirName);
 		expect(existsSyncStub).to.have.been.called;
 		expect(rmSync).to.not.have.been.called; // not called
 		expect(mkdirSyncStub).to.have.been.called;

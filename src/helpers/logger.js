@@ -19,7 +19,7 @@ const logType = Object.freeze({
 /**
  * A utility class for logging messages to the console.
  */
-export default class Logger {
+export class Logger {
 	/* eslint-disable no-console */
 
 	/**

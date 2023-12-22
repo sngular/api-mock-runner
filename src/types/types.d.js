@@ -39,4 +39,5 @@
  * @property {string} schema - The path to the schema.
  * @property {boolean} watch - Watch for changes in the schema.
  */
+
 export {};

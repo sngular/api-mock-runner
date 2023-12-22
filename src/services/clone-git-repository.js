@@ -5,13 +5,13 @@ import process from 'node:process';
 
 /**
  * Clone a git repository.
- * @function cloneGitRepository
+ * @function cloneRepository
  * @param {string} repositoryURL - The URL of the git repository.
  * @param {string} dirName - The name of the directory where the repository will be cloned.
  */
-function cloneGitRepository(repositoryURL, dirName) {
+function cloneRepository(repositoryURL, dirName) {
 	resetDirectory(dirName);
-	cloneRepository(repositoryURL, dirName);
+	clone(repositoryURL, dirName);
 }
 
 /**
@@ -36,15 +36,15 @@ function removeDirectory(dirName) {
 }
 
 /**
- * Clone a git repository.
- * @function cloneRepository
+ * Execute git clone command.
+ * @function clone
  * @param {string} repositoryURL - The URL of the git repository.
  * @param {string} dirName - The name of the directory where the repository will be cloned.
  */
-function cloneRepository(repositoryURL, dirName) {
+function clone(repositoryURL, dirName) {
 	child_process.execSync(`git clone ${repositoryURL} .`, {
 		cwd: path.resolve(process.cwd(), dirName), // path to where you want to save the file
 	});
 }
 
-export default cloneGitRepository;
+export const git = { cloneRepository };

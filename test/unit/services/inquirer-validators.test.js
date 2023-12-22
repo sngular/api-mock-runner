@@ -4,7 +4,7 @@ import { stub } from 'sinon';
 import sinonChai from 'sinon-chai';
 
 import { validationErrorMessages } from '../../../src/helpers/messages.js';
-import { originValidator, portValidator } from '../../../src/services/inquirer-validators.js';
+import { inquirerValidators } from '../../../src/services/inquirer-validators.js';
 
 use(sinonChai);
 
@@ -17,44 +17,56 @@ describe('unit: inquirer-validators', () => {
 		it('should return true if the value is a valid local path', () => {
 			let existsSyncStub = stub(fs, 'existsSync');
 			existsSyncStub.withArgs(validLocalPath).returns(true);
-			expect(originValidator(validLocalPath)).to.be.true;
+			expect(inquirerValidators.originValidator(validLocalPath)).to.be.true;
 			existsSyncStub.restore();
 		});
 
 		it('should return true if the value is a valid remote origin with https', () => {
-			expect(originValidator(validRemoteHttpsOrigin)).to.be.true;
+			expect(inquirerValidators.originValidator(validRemoteHttpsOrigin)).to.be.true;
 		});
 
 		it('should return true if the value is a valid remote origin with git@', () => {
-			expect(originValidator(validRemoteGitOrigin)).to.be.true;
+			expect(inquirerValidators.originValidator(validRemoteGitOrigin)).to.be.true;
 		});
 
 		it('should return an error message if the value is not a valid local path nor remote origin', () => {
-			expect(originValidator('invalid-value')).to.equal(validationErrorMessages.origin.INVALID);
+			expect(inquirerValidators.originValidator('invalid-value')).to.equal(validationErrorMessages.origin.INVALID);
 		});
 
 		it('should return an error message if the value is a valid remote origin with a starting space', () => {
-			expect(originValidator(` ${validRemoteGitOrigin}`)).to.equal(validationErrorMessages.origin.INVALID);
+			expect(inquirerValidators.originValidator(` ${validRemoteGitOrigin}`)).to.equal(
+				validationErrorMessages.origin.INVALID
+			);
 		});
 
 		it('should return an error message if the value is a valid remote origin with a starting tab', () => {
-			expect(originValidator(`\t${validRemoteGitOrigin}`)).to.equal(validationErrorMessages.origin.INVALID);
+			expect(inquirerValidators.originValidator(`\t${validRemoteGitOrigin}`)).to.equal(
+				validationErrorMessages.origin.INVALID
+			);
 		});
 
 		it('should return an error message if the value is a valid remote origin with a starting newline character', () => {
-			expect(originValidator(`\n${validRemoteGitOrigin}`)).to.equal(validationErrorMessages.origin.INVALID);
+			expect(inquirerValidators.originValidator(`\n${validRemoteGitOrigin}`)).to.equal(
+				validationErrorMessages.origin.INVALID
+			);
 		});
 
 		it('should return an error message if the value is a valid remote origin with an ending space', () => {
-			expect(originValidator(`${validRemoteGitOrigin} `)).to.equal(validationErrorMessages.origin.INVALID);
+			expect(inquirerValidators.originValidator(`${validRemoteGitOrigin} `)).to.equal(
+				validationErrorMessages.origin.INVALID
+			);
 		});
 
 		it('should return an error message if the value is a valid remote origin with an ending tab', () => {
-			expect(originValidator(`${validRemoteGitOrigin}\t`)).to.equal(validationErrorMessages.origin.INVALID);
+			expect(inquirerValidators.originValidator(`${validRemoteGitOrigin}\t`)).to.equal(
+				validationErrorMessages.origin.INVALID
+			);
 		});
 
 		it('should return an error message if the value is a valid remote origin with an ending newline character', () => {
-			expect(originValidator(`${validRemoteGitOrigin}\n`)).to.equal(validationErrorMessages.origin.INVALID);
+			expect(inquirerValidators.originValidator(`${validRemoteGitOrigin}\n`)).to.equal(
+				validationErrorMessages.origin.INVALID
+			);
 		});
 	});
 
@@ -65,28 +77,32 @@ describe('unit: inquirer-validators', () => {
 		];
 
 		it('should return true if the value is an integer between 0 and 65535 and not already selected', () => {
-			expect(portValidator('0', selectedSchemas)).to.be.true;
-			expect(portValidator('65535', selectedSchemas)).to.be.true;
-			expect(portValidator('5002', selectedSchemas)).to.be.true;
+			expect(inquirerValidators.portValidator('0', selectedSchemas)).to.be.true;
+			expect(inquirerValidators.portValidator('65535', selectedSchemas)).to.be.true;
+			expect(inquirerValidators.portValidator('5002', selectedSchemas)).to.be.true;
 		});
 
 		it('should return an error message if the value is not an integer', () => {
-			expect(portValidator('not an integer', selectedSchemas)).to.equal(validationErrorMessages.port.INVALID);
-			expect(portValidator('3.14', selectedSchemas)).to.equal(validationErrorMessages.port.INVALID);
+			expect(inquirerValidators.portValidator('not an integer', selectedSchemas)).to.equal(
+				validationErrorMessages.port.INVALID
+			);
+			expect(inquirerValidators.portValidator('3.14', selectedSchemas)).to.equal(validationErrorMessages.port.INVALID);
 		});
 
 		it('should return an error message if the value is less than 0', () => {
-			expect(portValidator('-1', selectedSchemas)).to.equal(validationErrorMessages.port.INVALID);
-			expect(portValidator('-100', selectedSchemas)).to.equal(validationErrorMessages.port.INVALID);
+			expect(inquirerValidators.portValidator('-1', selectedSchemas)).to.equal(validationErrorMessages.port.INVALID);
+			expect(inquirerValidators.portValidator('-100', selectedSchemas)).to.equal(validationErrorMessages.port.INVALID);
 		});
 
 		it('should return an error message if the value is greater than 65535', () => {
-			expect(portValidator('65536', selectedSchemas)).to.equal(validationErrorMessages.port.INVALID);
-			expect(portValidator('100000', selectedSchemas)).to.equal(validationErrorMessages.port.INVALID);
+			expect(inquirerValidators.portValidator('65536', selectedSchemas)).to.equal(validationErrorMessages.port.INVALID);
+			expect(inquirerValidators.portValidator('100000', selectedSchemas)).to.equal(
+				validationErrorMessages.port.INVALID
+			);
 		});
 
 		it('should return an error message if the value is already selected', () => {
-			expect(portValidator('5000', selectedSchemas)).to.equal(validationErrorMessages.port.IN_USE);
+			expect(inquirerValidators.portValidator('5000', selectedSchemas)).to.equal(validationErrorMessages.port.IN_USE);
 		});
 	});
 });

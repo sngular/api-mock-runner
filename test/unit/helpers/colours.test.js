@@ -1,7 +1,7 @@
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
 
-import { colours, paintText } from '../../../src/helpers/colours.js';
+import { colourHelper, colourCodes } from '../../../src/helpers/colours.js';
 
 use(sinonChai);
 
@@ -11,7 +11,7 @@ describe('unit: colours', () => {
 	afterEach(() => {});
 
 	it('should have the correct colours', () => {
-		expect(colours).to.deep.equal({
+		expect(colourCodes).to.deep.equal({
 			reset: '\x1b[0m',
 			bright: '\x1b[1m',
 			dim: '\x1b[2m',
@@ -49,9 +49,9 @@ describe('unit: colours', () => {
 	describe('paintText', () => {
 		it('should return the text with the specified color', () => {
 			const text = 'Hello, World!';
-			const color = colours.fg.red;
-			const expected = `${color}${text}${colours.reset}`;
-			const result = paintText(text, color);
+			const color = colourCodes.fg.red;
+			const expected = `${color}${text}${colourCodes.reset}`;
+			const result = colourHelper.paintText(text, color);
 			expect(result).to.equal(expected);
 		});
 	});

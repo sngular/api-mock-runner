@@ -2,15 +2,15 @@ import { checkbox, confirm, input } from '@inquirer/prompts';
 import fs from 'node:fs';
 import path from 'node:path';
 
-import addToGitignore from './gitignore.js';
-import { originValidator, portValidator } from './inquirer-validators.js';
+import { gitignore } from './gitignore.js';
+import { inquirerValidators } from './inquirer-validators.js';
 import { OpenApiSchemaNotFoundError } from '../errors/openapi-schema-not-found-error.js';
 import { RC_FILE_NAME, TEMP_FOLDER_NAME } from '../helpers/constants.js';
-import Logger from '../helpers/logger.js';
+import { Logger } from '../helpers/logger.js';
 import { messages } from '../helpers/messages.js';
-import { verifyRemoteOrigin } from '../helpers/verify-remote-origin.js';
-import cloneGitRepository from '../services/clone-git-repository.js';
-import { findOasFromDir, findOasFromDirRecursive } from '../services/find-oas-from-dir.js';
+import { verifyHelper } from '../helpers/verify-remote-origin.js';
+import { git } from '../services/clone-git-repository.js';
+import { oas } from '../services/find-oas-from-dir.js';
 
 /**
  * @typedef {import('../types/types.d.js').Config} Config
@@ -44,14 +44,16 @@ async function initWithConfigFile() {
  * @returns {Promise<OasFile[]>} An array of schemas.
  */
 async function getSchemas(origin) {
-	const isOriginRemote = verifyRemoteOrigin(origin);
+	const isOriginRemote = verifyHelper.verifyRemoteOrigin(origin);
 
 	if (isOriginRemote) {
-		cloneGitRepository(origin, TEMP_FOLDER_NAME);
-		await addToGitignore(TEMP_FOLDER_NAME);
+		git.cloneRepository(origin, TEMP_FOLDER_NAME);
+		await gitignore.addToGitignore(TEMP_FOLDER_NAME);
 	}
 
-	const schemas = isOriginRemote ? await findOasFromDirRecursive(TEMP_FOLDER_NAME) : await findOasFromDir(origin);
+	const schemas = isOriginRemote
+		? await oas.findOasFromDirRecursive(TEMP_FOLDER_NAME)
+		: await oas.findOasFromDir(origin);
 	return schemas;
 }
 
@@ -64,10 +66,10 @@ async function getSchemas(origin) {
 async function getOrigin() {
 	const schemasOrigin = await input({
 		message: messages.INPUT_ORIGIN,
-		validate: originValidator,
+		validate: inquirerValidators.originValidator,
 	});
 
-	return verifyRemoteOrigin(schemasOrigin) ? schemasOrigin : path.resolve(schemasOrigin);
+	return verifyHelper.verifyRemoteOrigin(schemasOrigin) ? schemasOrigin : path.resolve(schemasOrigin);
 }
 
 /**
@@ -105,7 +107,7 @@ async function init({ origin, schemaPaths, ports } = { schemaPaths: [], ports: [
 
 	fs.writeFileSync(path.join(process.cwd(), RC_FILE_NAME), JSON.stringify(config, null, '\t'));
 	Logger.info(messages.SAVED_CONFIG(RC_FILE_NAME), config);
-	await addToGitignore(RC_FILE_NAME);
+	await gitignore.addToGitignore(RC_FILE_NAME);
 
 	return config;
 }
@@ -142,7 +144,7 @@ async function askForPorts(schemaPaths) {
 		const port = await input({
 			message: messages.INPUT_PORT(schemaPath),
 			default: suggestedPort.toString(),
-			validate: (input) => portValidator(input, selectedSchemas),
+			validate: (input) => inquirerValidators.portValidator(input, selectedSchemas),
 		});
 		const portNumber = parseInt(port);
 		const schema = { path: schemaPath, port: portNumber };
@@ -165,4 +167,5 @@ function assignPorts(schemaPaths, ports) {
 		return { path: schemaPath, port: portNumber };
 	});
 }
+
 export const userFlowSteps = { initWithConfigFile, initWithSchemaPaths, init };

@@ -4,7 +4,7 @@
  * @param {string} origin - The origin to verify.
  * @returns {boolean} True if the origin is remote, false otherwise.
  */
-export function verifyRemoteOrigin(origin) {
+function verifyRemoteOrigin(origin) {
 	/*
 	 * NOTE: Regex explanation
 	 * - /^(git@|https:\/\/)/: This part of the regex specifies that the string must start with either "git@" or "https://".
@@ -16,3 +16,5 @@ export function verifyRemoteOrigin(origin) {
 	const isOriginRemote = isOriginRemoteRegex.test(origin);
 	return isOriginRemote;
 }
+
+export const verifyHelper = { verifyRemoteOrigin };

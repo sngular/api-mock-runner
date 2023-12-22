@@ -18,4 +18,5 @@ async function check(stringToCheck, filePath) {
 	}
 	return false;
 }
+
 export const checkStringInFile = { check };

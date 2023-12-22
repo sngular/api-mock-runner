@@ -6,32 +6,21 @@ import { match, stub } from 'sinon';
 import sinonChai from 'sinon-chai';
 
 import { OpenApiSchemaNotFoundError } from '../../../src/errors/openapi-schema-not-found-error.js';
-import Logger from '../../../src/helpers/logger.js';
+import { Logger } from '../../../src/helpers/logger.js';
+import { git } from '../../../src/services/clone-git-repository.js';
+import { oas } from '../../../src/services/find-oas-from-dir.js';
+import { gitignore } from '../../../src/services/gitignore.js';
 
 use(sinonChai);
 
 let inquirerInputStub = stub();
 let inquirerCheckboxStub = stub();
 let inquirerConfirmStub = stub();
-let gitignoreStub = stub();
-let cloneGitRepositoryStub = stub();
-let findOasFromDirStub = stub();
-let findOasFromDirRecursiveStub = stub();
 const { userFlowSteps } = await esmock('../../../src/services/user-flow-steps.js', import.meta.url, {
 	'@inquirer/prompts': {
 		input: (...args) => inquirerInputStub(...args),
 		checkbox: (...args) => inquirerCheckboxStub(...args),
 		confirm: (...args) => inquirerConfirmStub(...args),
-	},
-	'../../../src/services/gitignore.js': {
-		default: gitignoreStub,
-	},
-	'../../../src/services/clone-git-repository.js': {
-		default: cloneGitRepositoryStub,
-	},
-	'../../../src/services/find-oas-from-dir.js': {
-		findOasFromDir: findOasFromDirStub,
-		findOasFromDirRecursive: findOasFromDirRecursiveStub,
 	},
 });
 
@@ -49,23 +38,33 @@ describe('unit: user-flow-steps', () => {
 		selectedSchemas: [{ path: '/path/to/oas.yml', port: 1234 }],
 	};
 
+	let cloneGitRepositoryStub;
+	let findOasFromDirStub;
+	let findOasFromDirRecursiveStub;
 	let fsReadFileSyncStub;
 	let fsWriteFileSyncStub;
+	let addToGitignoreStub;
 	let loggerInfoStub;
 	let pathResolveStub;
 
 	beforeEach(() => {
+		cloneGitRepositoryStub = stub(git, 'cloneRepository');
+		findOasFromDirStub = stub(oas, 'findOasFromDir');
+		findOasFromDirRecursiveStub = stub(oas, 'findOasFromDirRecursive');
 		fsReadFileSyncStub = stub(fs, 'readFileSync');
 		fsWriteFileSyncStub = stub(fs, 'writeFileSync');
+		addToGitignoreStub = stub(gitignore, 'addToGitignore');
 		loggerInfoStub = stub(Logger, 'info');
 		pathResolveStub = stub(path, 'resolve');
 	});
 
 	afterEach(() => {
-		cloneGitRepositoryStub.reset();
+		cloneGitRepositoryStub.restore();
+		findOasFromDirStub.restore();
+		findOasFromDirRecursiveStub.restore();
 		fsReadFileSyncStub.restore();
 		fsWriteFileSyncStub.restore();
-		gitignoreStub.reset();
+		addToGitignoreStub.restore();
 		inquirerCheckboxStub.reset();
 		inquirerConfirmStub.reset();
 		inquirerInputStub.reset();
@@ -105,7 +104,7 @@ describe('unit: user-flow-steps', () => {
 			expect(findOasFromDirStub).to.have.been.calledWith(localSchema.path);
 			expect(fsWriteFileSyncStub).to.have.been.calledWith(match.string, match.string);
 			expect(loggerInfoStub).to.have.been.calledWith(match.string, match.object);
-			expect(gitignoreStub).to.have.been.calledWith(match.string);
+			expect(addToGitignoreStub).to.have.been.calledWith(match.string);
 			expect(config).to.deep.equal(expectedConfigMock);
 		});
 

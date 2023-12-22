@@ -60,6 +60,10 @@ The application will return the first response found in the schema by default. T
 prefer: statusCode=500
 ```
 
+## Architectural Decision Record (ADR)
+
+Here you can find [architectural decisions records](docs/adr/)
+
 ## ❤️ Special thanks
 
 We would like to express our special thanks to [open-api-mocker](https://github.com/jormaechea/open-api-mocker), which is used to set up a mock server.

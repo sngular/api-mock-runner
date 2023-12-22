@@ -5,7 +5,7 @@ import { stub } from 'sinon';
 import sinonChai from 'sinon-chai';
 
 import { RC_FILE_NAME } from '../../src/helpers/constants.js';
-import Logger from '../../src/helpers/logger.js';
+import { Logger } from '../../src/helpers/logger.js';
 import { messages } from '../../src/helpers/messages.js';
 import { main } from '../../src/main.js';
 import { startMockServer } from '../../src/services/start-mock-server.js';
@@ -13,7 +13,7 @@ import { userFlowSteps } from '../../src/services/user-flow-steps.js';
 
 use(sinonChai);
 
-describe('unit: index', () => {
+describe('unit: main', () => {
 	let commanderOptsStub;
 	let commanderParseStub;
 	let fsExistsSyncStub;
@@ -59,7 +59,7 @@ describe('unit: index', () => {
 		commanderOptsStub.returns({ runConfig: true });
 		fsExistsSyncStub.returns(false);
 		userFlowStepsInitStub.resolves(expectedConfigMock);
-		await main();
+		await main.run();
 		expect(commanderParseStub).to.have.been.calledOnce;
 		expect(commanderOptsStub).to.have.been.calledOnce;
 		expect(fsExistsSyncStub).to.have.been.calledOnce;
@@ -72,7 +72,7 @@ describe('unit: index', () => {
 		commanderOptsStub.returns({ runConfig: true });
 		fsExistsSyncStub.returns(true);
 		fsReadFileSyncStub.returns(JSON.stringify(expectedConfigMock));
-		await main();
+		await main.run();
 		expect(commanderParseStub).to.have.been.calledOnce;
 		expect(commanderOptsStub).to.have.been.calledOnce;
 		expect(fsExistsSyncStub).to.have.been.calledOnce;
@@ -84,7 +84,7 @@ describe('unit: index', () => {
 		fsExistsSyncStub.returns(true);
 		fsReadFileSyncStub.returns(JSON.stringify(expectedConfigMock));
 		userFlowStepsInitStub.resolves(expectedConfigMock);
-		await main();
+		await main.run();
 		expect(commanderParseStub).to.have.been.calledOnce;
 		expect(commanderOptsStub).to.have.been.calledOnce;
 		expect(fsExistsSyncStub).to.have.been.calledOnce;
@@ -101,7 +101,7 @@ describe('unit: index', () => {
 		fsExistsSyncStub.returns(true);
 		fsReadFileSyncStub.returns(JSON.stringify(expectedConfigMock));
 		userFlowStepsInitWithSchemaPathsStub.resolves(expectedConfigMock);
-		await main();
+		await main.run();
 		expect(commanderParseStub).to.have.been.calledOnce;
 		expect(commanderOptsStub).to.have.been.calledOnce;
 		expect(fsExistsSyncStub).to.have.been.calledOnce;
@@ -117,7 +117,7 @@ describe('unit: index', () => {
 		fsExistsSyncStub.returns(true);
 		fsReadFileSyncStub.returns(JSON.stringify(expectedConfigMock));
 		userFlowStepsInitWithConfigFileStub.resolves(expectedConfigMock);
-		await main();
+		await main.run();
 		expect(commanderParseStub).to.have.been.calledOnce;
 		expect(commanderOptsStub).to.have.been.calledOnce;
 		expect(fsExistsSyncStub).to.have.been.calledOnce;
@@ -130,7 +130,7 @@ describe('unit: index', () => {
 		fsExistsSyncStub.returns(false);
 		fsReadFileSyncStub.returns(JSON.stringify(expectedConfigMock));
 		userFlowStepsInitStub.resolves(expectedConfigMock);
-		await main();
+		await main.run();
 		expect(commanderParseStub).to.have.been.calledOnce;
 		expect(commanderOptsStub).to.have.been.calledOnce;
 		expect(fsExistsSyncStub).to.have.been.calledOnce;
