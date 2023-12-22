@@ -1,6 +1,6 @@
 #!/usr/bin/env node
+import { MockRunnerError } from './errors/mock-runner-error.js';
 import { main } from './main.js';
-import { MockRunnerError } from './services/utils.js';
 
 try {
 	await main();

@@ -2,9 +2,9 @@ import { expect, use } from 'chai';
 import { stub, match } from 'sinon';
 import sinonChai from 'sinon-chai';
 
+import { MockRunnerError } from '../../../src/errors/mock-runner-error.js';
 import { colours } from '../../../src/helpers/colours.js';
 import Logger from '../../../src/helpers/logger.js';
-import { MockRunnerError } from '../../../src/services/utils.js';
 
 // Use Sinon-Chai assertions
 use(sinonChai);

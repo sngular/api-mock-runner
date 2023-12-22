@@ -4,10 +4,11 @@ import path from 'node:path';
 
 import addToGitignore from './gitignore.js';
 import { originValidator, portValidator } from './inquirer-validators.js';
-import { RC_FILE_NAME, TEMP_FOLDER_NAME, verifyRemoteOrigin } from './utils.js';
 import { OpenApiSchemaNotFoundError } from '../errors/openapi-schema-not-found-error.js';
+import { RC_FILE_NAME, TEMP_FOLDER_NAME } from '../helpers/constants.js';
 import Logger from '../helpers/logger.js';
 import { messages } from '../helpers/messages.js';
+import { verifyRemoteOrigin } from '../helpers/verify-remote-origin.js';
 import cloneGitRepository from '../services/clone-git-repository.js';
 import { findOasFromDir, findOasFromDirRecursive } from '../services/find-oas-from-dir.js';
 

@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 
-import { verifyRemoteOrigin } from './utils.js';
 import { validationErrorMessages } from '../helpers/messages.js';
+import { verifyRemoteOrigin } from '../helpers/verify-remote-origin.js';
 
 /**
  * @typedef {import('../types/types.d.js').Schema} Schema
