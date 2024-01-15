@@ -1,6 +1,6 @@
 {
 	"name": "@sngular/api-mock-runner",
-	"version": "0.0.0",
+	"version": "1.0.0",
 	"description": "Create mocks servers with its schemas from OpenAPI 3.0.0 spec files",
 	"main": "src/index.js",
 	"bin": "src/index.js",
@@ -63,7 +63,7 @@
 		"sinon": "^16.1.0",
 		"sinon-chai": "^3.7.0"
 	},
-  "publishConfig": {
-    "access": "public"
-  }
+	"publishConfig": {
+		"access": "public"
+	}
 }
