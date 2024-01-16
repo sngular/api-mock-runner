@@ -3,7 +3,9 @@
 	"version": "1.0.0",
 	"description": "Create mocks servers with its schemas from OpenAPI 3.0.0 spec files",
 	"main": "src/index.js",
-	"bin": "src/index.js",
+	"bin": {
+		"api-mock-runner": "src/index.js"
+	},
 	"type": "module",
 	"exports": {
 		".": {
@@ -36,7 +38,7 @@
 		"reset": "rm -rf .apimockrc && rm -rf .api-mock-runner",
 		"check": "npm run lint:check && npm run format:check && npm run types:check && npm test"
 	},
-	"author": "",
+	"author": "SNGULAR",
 	"license": "MPL-2.0",
 	"dependencies": {
 		"@inquirer/prompts": "^3.3.0",
@@ -65,5 +67,26 @@
 	},
 	"publishConfig": {
 		"access": "public"
-	}
+	},
+	"directories": {
+		"doc": "docs",
+		"test": "tests"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/sngular/api-mock-runner.git"
+	},
+	"keywords": [
+		"api",
+		"openApi",
+		"mock",
+		"mocking",
+		"mock-server",
+		"microservices",
+		"schema"
+	],
+	"bugs": {
+		"url": "https://github.com/sngular/api-mock-runner/issues"
+	},
+	"homepage": "https://github.com/sngular/api-mock-runner#readme"
 }

@@ -1,7 +1,5 @@
 # Welcome to api-mock-runner 👋
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
 Run multiple mock servers from one or more [OpenAPI Specification](https://www.openapis.org/).
 
 Schemas can be provided from a remote origin (https:// or git@) or a local path.
