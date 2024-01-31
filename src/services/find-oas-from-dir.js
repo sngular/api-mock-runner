@@ -1,6 +1,6 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import readline from 'node:readline';
+import { createReadStream, existsSync, lstatSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { createInterface } from 'node:readline';
 
 import { Logger } from '../helpers/logger.js';
 import { messages } from '../helpers/messages.js';
@@ -15,8 +15,8 @@ import { messages } from '../helpers/messages.js';
  * @returns {Promise<string>} The first line of the file.
  */
 export async function getFirstLine(filePath) {
-	const input = fs.createReadStream(filePath);
-	const reader = readline.createInterface({ input });
+	const input = createReadStream(filePath);
+	const reader = createInterface({ input });
 	const iterator = reader[Symbol.asyncIterator]();
 	/** @type {IteratorResult<string, string>} */
 	const line = await iterator.next();
@@ -42,17 +42,17 @@ export async function isOas(filePath) {
  * @returns {Promise<OasFile[]>} An array of OpenAPI specifications.
  */
 export const findOasFromDir = async (startPath) => {
-	if (!fs.existsSync(startPath)) {
+	if (!existsSync(startPath)) {
 		Logger.warn(messages.DIRECTORY_NOT_FOUND, startPath);
 		return [];
 	}
 
-	const files = fs.readdirSync(startPath);
+	const files = readdirSync(startPath);
 	/** @type {OasFile[]} */
 	const oasFiles = [];
 
 	for (const file of files) {
-		const filePath = path.join(startPath, file);
+		const filePath = join(startPath, file);
 		if ((file.endsWith('.yaml') || file.endsWith('.yml')) && (await isOas(filePath))) {
 			oasFiles.push({
 				fileName: file,
@@ -73,17 +73,17 @@ export const findOasFromDir = async (startPath) => {
  * @returns {Promise<OasFile[]>} An array of OpenAPI specifications.
  */
 export const findOasFromDirRecursive = async (startPath, oasFiles = []) => {
-	if (!fs.existsSync(startPath)) {
+	if (!existsSync(startPath)) {
 		Logger.warn(messages.DIRECTORY_NOT_FOUND, startPath);
 		return [];
 	}
 
-	const files = fs.readdirSync(startPath);
+	const files = readdirSync(startPath);
 
 	for (const file of files) {
 		if (file.startsWith('.')) continue;
-		const filePath = path.join(startPath, file);
-		const stat = fs.lstatSync(filePath);
+		const filePath = join(startPath, file);
+		const stat = lstatSync(filePath);
 		if (stat.isDirectory()) {
 			await findOasFromDirRecursive(filePath, oasFiles);
 		} else if ((file.endsWith('.yaml') || file.endsWith('.yml')) && (await isOas(filePath))) {

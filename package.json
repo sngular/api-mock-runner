@@ -41,30 +41,32 @@
 	"author": "SNGULAR",
 	"license": "MPL-2.0",
 	"dependencies": {
-		"@inquirer/prompts": "^3.3.0",
+		"@inquirer/checkbox": "^1.0.0",
+		"@inquirer/confirm": "^2.0.0",
+		"@inquirer/input": "^1.0.0",
 		"@sngular/open-api-mocker": "^1.0.0",
-		"commander": "^11.1.0"
+		"commander": "^11.0.0"
 	},
 	"devDependencies": {
-		"@esm-bundle/chai": "^4.3.4-fix.0",
+		"@esm-bundle/chai": "^4.0.0",
 		"@sngular/commitlint-config": "^1.0.0",
 		"@sngular/eslint-config": "^1.0.0",
 		"@sngular/lint-staged-config": "^1.0.0",
 		"@sngular/prettier-config": "^1.0.0",
 		"@sngular/semantic-release-config": "^1.0.0",
 		"@sngular/tsconfig": "^1.0.0",
-		"@types/mocha": "^10.0.2",
-		"@types/sinon": "^10.0.19",
-		"@types/sinon-chai": "^3.2.10",
-		"c8": "^8.0.1",
-		"chai-as-promised": "^7.1.1",
+		"@types/mocha": "^10.0.0",
+		"@types/sinon": "^10.0.0",
+		"@types/sinon-chai": "^3.0.0",
+		"c8": "^8.0.0",
+		"chai-as-promised": "^7.0.0",
 		"eslint-config-prettier": "^9.0.0",
-		"esmock": "^2.6.3",
+		"esmock": "^2.0.0",
 		"husky": "^8.0.0",
-		"mocha": "^10.2.0",
-		"mock-fs": "^5.2.0",
-		"sinon": "^16.1.0",
-		"sinon-chai": "^3.7.0"
+		"mocha": "^10.0.0",
+		"mock-fs": "^5.0.0",
+		"sinon": "^16.0.0",
+		"sinon-chai": "^3.0.0"
 	},
 	"publishConfig": {
 		"access": "public"

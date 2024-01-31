@@ -15,7 +15,7 @@ class Logger {
 }
 
 const mocks = {
-	'@inquirer/prompts': { confirm },
+	'@inquirer/confirm': confirm,
 	'../../helpers/logger.js': { Logger },
 	'../../services/user-flow-steps/init.js': { init },
 };

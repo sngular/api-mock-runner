@@ -24,7 +24,7 @@ const portValidator = sandbox.stub();
 const originValidator = sandbox.stub();
 
 const mocks = {
-	'@inquirer/prompts': { input },
+	'@inquirer/input': input,
 	'../../helpers/logger.js': { Logger },
 	'../../helpers/verify-remote-origin.js': { verifyRemoteOrigin },
 	'../clone-git-repository.js': { cloneRepository },

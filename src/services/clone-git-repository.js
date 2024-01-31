@@ -1,7 +1,7 @@
-import child_process from 'node:child_process';
-import fs from 'node:fs';
-import path from 'node:path';
-import process from 'node:process';
+import { execSync } from 'node:child_process';
+import { mkdirSync, existsSync, rmSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { cwd } from 'node:process';
 
 /**
  * Clone a git repository.
@@ -21,7 +21,7 @@ export function cloneRepository(repositoryURL, dirName) {
  */
 function resetDirectory(dirName) {
 	removeDirectory(dirName);
-	fs.mkdirSync(dirName);
+	mkdirSync(dirName);
 }
 
 /**
@@ -30,8 +30,8 @@ function resetDirectory(dirName) {
  * @param {string} dirName - The name of the directory to remove.
  */
 function removeDirectory(dirName) {
-	if (fs.existsSync(dirName)) {
-		fs.rmSync(dirName, { recursive: true });
+	if (existsSync(dirName)) {
+		rmSync(dirName, { recursive: true });
 	}
 }
 
@@ -42,7 +42,7 @@ function removeDirectory(dirName) {
  * @param {string} dirName - The name of the directory where the repository will be cloned.
  */
 function clone(repositoryURL, dirName) {
-	child_process.execSync(`git clone ${repositoryURL} .`, {
-		cwd: path.resolve(process.cwd(), dirName), // path to where you want to save the file
+	execSync(`git clone ${repositoryURL} .`, {
+		cwd: resolve(cwd(), dirName), // path to where you want to save the file
 	});
 }

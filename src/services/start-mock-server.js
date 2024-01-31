@@ -1,5 +1,5 @@
 import OpenApiMocker from '@sngular/open-api-mocker';
-import fs from 'node:fs';
+import { existsSync } from 'node:fs';
 
 import { init } from './user-flow-steps/init.js';
 import { Logger } from '../helpers/logger.js';
@@ -44,7 +44,7 @@ export async function startMockServer(schemas) {
  * @returns {Promise<Schema[]>} - An array of valid schemas.
  */
 async function validateSchemas(schemas) {
-	const allSchemasExists = schemas.every((schema) => fs.existsSync(schema.path));
+	const allSchemasExists = schemas.every((schema) => existsSync(schema.path));
 
 	if (!allSchemasExists) {
 		Logger.warn(messages.SOME_SCHEMA_DOES_NOT_EXIST);
