@@ -3,7 +3,7 @@ import esmock from 'esmock';
 import { createSandbox, match } from 'sinon';
 import sinonChai from 'sinon-chai';
 
-import { colourCodes } from '../../../src/helpers/colours.js';
+import { colorCodes } from '../../../src/helpers/colors.js';
 import { globalMocksFactory } from '../../helpers/global-mocks-factory.js';
 
 use(sinonChai);
@@ -14,12 +14,11 @@ class Logger {
 }
 
 const mocks = {
-	'../helpers/logger.js': { Logger },
+	'../../../src/helpers/logger.js': { Logger },
 };
 const globalMocks = globalMocksFactory(sandbox);
 const fileToTest = '../../../src/errors/mock-runner-error.js';
-const absolutePath = new URL(fileToTest, import.meta.url).pathname;
-const { MockRunnerError } = await esmock(absolutePath, absolutePath, mocks, globalMocks);
+const { MockRunnerError } = await esmock(fileToTest, import.meta.url, mocks, globalMocks);
 
 // Use Sinon-Chai assertions
 use(sinonChai);
@@ -50,7 +49,7 @@ describe('unit: MockRunnerError', () => {
 			const error = new MockRunnerError('Test error', 500, 2, 'testEmitter');
 			error.showError();
 
-			expect(Logger.error).to.have.been.calledWith(match((value) => value.includes(colourCodes.fg.red)));
+			expect(Logger.error).to.have.been.calledWith(match((value) => value.includes(colorCodes.fg.red)));
 			expect(Logger.info).to.have.been.calledOnceWithExactly(error.stack);
 		});
 
@@ -58,7 +57,7 @@ describe('unit: MockRunnerError', () => {
 			const error = new MockRunnerError('Test error', 500, 1, 'testEmitter');
 			error.showError();
 
-			expect(Logger.error).to.have.been.calledWith(match((value) => value.includes(colourCodes.fg.crimson)));
+			expect(Logger.error).to.have.been.calledWith(match((value) => value.includes(colorCodes.fg.crimson)));
 			expect(Logger.info).to.have.been.calledOnceWithExactly(error.stack);
 		});
 
@@ -66,7 +65,7 @@ describe('unit: MockRunnerError', () => {
 			const error = new MockRunnerError('Test error', 500, undefined, 'testEmitter');
 			error.showError();
 
-			expect(Logger.error).to.have.been.calledWith(match((value) => value.includes(colourCodes.fg.cyan)));
+			expect(Logger.error).to.have.been.calledWith(match((value) => value.includes(colorCodes.fg.cyan)));
 			expect(Logger.info).to.have.been.calledOnceWithExactly(error.stack);
 		});
 	});

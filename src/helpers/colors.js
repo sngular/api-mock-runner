@@ -1,4 +1,4 @@
-export const colourCodes = Object.freeze({
+export const colorCodes = Object.freeze({
 	reset: '\x1b[0m',
 	bright: '\x1b[1m',
 	dim: '\x1b[2m',
@@ -39,5 +39,5 @@ export const colourCodes = Object.freeze({
  * @returns {string} - The painted text.
  */
 export function paintText(text, color) {
-	return `${color}${text}${colourCodes.reset}`;
+	return `${color}${text}${colorCodes.reset}`;
 }
