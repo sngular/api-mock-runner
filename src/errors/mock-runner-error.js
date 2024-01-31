@@ -1,4 +1,4 @@
-import { paintText, colourCodes } from '../helpers/colours.js';
+import { paintText, colorCodes } from '../helpers/colors.js';
 import { Logger } from '../helpers/logger.js';
 
 export class MockRunnerError extends Error {
@@ -29,19 +29,19 @@ export class MockRunnerError extends Error {
 		let type = '';
 		switch (this.level) {
 			case 2:
-				type = colourCodes.fg.red;
+				type = colorCodes.fg.red;
 				break;
 			case 1:
-				type = colourCodes.fg.crimson;
+				type = colorCodes.fg.crimson;
 				break;
 			default:
-				type = colourCodes.fg.cyan;
+				type = colorCodes.fg.cyan;
 		}
 		Logger.error(
 			`Error of level ${paintText(this.level.toString(), type)}, type ${paintText(
 				this.code.toString(),
-				colourCodes.fg.gray
-			)} over ${paintText(this.emitter, colourCodes.fg.blue)}`
+				colorCodes.fg.gray
+			)} over ${paintText(this.emitter, colorCodes.fg.blue)}`
 		);
 		Logger.info(`${this.stack}`);
 	}
