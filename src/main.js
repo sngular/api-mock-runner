@@ -1,6 +1,7 @@
 import { program } from 'commander';
-import fs from 'node:fs';
-import path from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { cwd } from 'node:process';
 
 import { RC_FILE_NAME } from './helpers/constants.js';
 import { Logger } from './helpers/logger.js';
@@ -29,8 +30,9 @@ export const main = async () => {
 		.option('-p, --port [ports...]', 'port to serve each schema')
 		.option('-r, --run-config', 'use saved config');
 	program.parse();
-	const options = /** @type {ProgramOptions} */ (program.opts());
-	const configFileExists = fs.existsSync(path.join(process.cwd(), RC_FILE_NAME));
+	/** @type {ProgramOptions} */
+	const options = program.opts();
+	const configFileExists = existsSync(join(cwd(), RC_FILE_NAME));
 	let config;
 	if (options.runConfig) {
 		if (configFileExists) {
@@ -64,5 +66,5 @@ export const main = async () => {
  * @returns {Config} Content of the config file.
  */
 function getConfigFromFile() {
-	return /** @type {Config} */ (JSON.parse(fs.readFileSync(path.join(process.cwd(), RC_FILE_NAME), 'utf-8'))) || {};
+	return /** @type {Config} */ (JSON.parse(readFileSync(join(cwd(), RC_FILE_NAME), 'utf-8'))) || {};
 }

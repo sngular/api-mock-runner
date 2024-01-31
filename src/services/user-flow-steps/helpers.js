@@ -1,6 +1,7 @@
-import { input } from '@inquirer/prompts';
-import fs from 'node:fs';
-import path from 'node:path';
+import input from '@inquirer/input';
+import { writeFileSync } from 'node:fs';
+import { resolve, join } from 'node:path';
+import { cwd } from 'node:process';
 
 import { RC_FILE_NAME, TEMP_FOLDER_NAME } from '../../helpers/constants.js';
 import { Logger } from '../../helpers/logger.js';
@@ -51,7 +52,7 @@ export async function getOrigin() {
 		validate: originValidator,
 	});
 
-	return verifyRemoteOrigin(schemasOrigin) ? schemasOrigin : path.resolve(schemasOrigin);
+	return verifyRemoteOrigin(schemasOrigin) ? schemasOrigin : resolve(schemasOrigin);
 }
 
 /**
@@ -102,7 +103,7 @@ export function assignPorts(schemaPaths, ports) {
  * @returns {Promise<void>} Promise object represents the void return.
  */
 export async function saveRuntimeConfig(config) {
-	fs.writeFileSync(path.join(process.cwd(), RC_FILE_NAME), JSON.stringify(config, null, '\t'));
+	writeFileSync(join(cwd(), RC_FILE_NAME), JSON.stringify(config, null, '\t'));
 	Logger.info(messages.SAVED_CONFIG(RC_FILE_NAME), config);
 	await addToGitignore(RC_FILE_NAME);
 }

@@ -12,7 +12,7 @@ const confirm = sandbox.stub();
 const check = sandbox.stub();
 
 const mocks = {
-	'@inquirer/prompts': { confirm },
+	'@inquirer/confirm': confirm,
 	'../services/check-string-in-file.js': { check },
 };
 const globalMocks = globalMocksFactory(sandbox);

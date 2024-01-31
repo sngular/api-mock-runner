@@ -1,4 +1,4 @@
-import fs from 'node:fs';
+import { existsSync } from 'node:fs';
 
 import { validationErrorMessages } from '../helpers/messages.js';
 import { verifyRemoteOrigin } from '../helpers/verify-remote-origin.js';
@@ -14,7 +14,7 @@ import { verifyRemoteOrigin } from '../helpers/verify-remote-origin.js';
  * @returns {boolean|string} True if the value is valid, otherwise a string with the error message.
  */
 export function originValidator(value) {
-	const isLocalPath = fs.existsSync(value);
+	const isLocalPath = existsSync(value);
 	const isRemoteOrigin = verifyRemoteOrigin(value);
 	const result = isLocalPath || isRemoteOrigin || validationErrorMessages.origin.INVALID;
 	return result;

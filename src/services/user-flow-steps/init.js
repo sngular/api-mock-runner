@@ -1,4 +1,4 @@
-import { checkbox } from '@inquirer/prompts';
+import checkbox from '@inquirer/checkbox';
 
 import { askForPorts, assignPorts, getOrigin, getSchemas, saveRuntimeConfig } from './helpers.js';
 import { OpenApiSchemaNotFoundError } from '../../errors/openapi-schema-not-found-error.js';

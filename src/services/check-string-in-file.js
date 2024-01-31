@@ -1,5 +1,5 @@
-import fs from 'node:fs';
-import readline from 'node:readline';
+import { createReadStream } from 'node:fs';
+import { createInterface } from 'node:readline';
 
 /**
  * Check if a string is in a file.
@@ -10,8 +10,8 @@ import readline from 'node:readline';
  * @returns {Promise<boolean>} True if the string is in the file, false otherwise.
  */
 export async function check(stringToCheck, filePath) {
-	const input = fs.createReadStream(filePath);
-	const reader = readline.createInterface({ input });
+	const input = createReadStream(filePath);
+	const reader = createInterface({ input });
 	for await (const line of reader) {
 		if (line === stringToCheck) {
 			return true;

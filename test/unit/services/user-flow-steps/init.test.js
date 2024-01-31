@@ -23,7 +23,7 @@ class OpenApiSchemaNotFoundError extends Error {}
 const addToGitignore = sandbox.stub();
 
 const mocks = {
-	'@inquirer/prompts': { checkbox },
+	'@inquirer/checkbox': checkbox,
 	'../../helpers/logger.js': { Logger },
 	'../../errors/openapi-schema-not-found-error.js': { OpenApiSchemaNotFoundError },
 	'../../services/user-flow-steps/helpers.js': { getOrigin, getSchemas, askForPorts, saveRuntimeConfig },
