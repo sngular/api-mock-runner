@@ -38,8 +38,6 @@ export const colourCodes = Object.freeze({
  * @param {string} color - The desired color to paint the text.
  * @returns {string} - The painted text.
  */
-function paintText(text, color) {
+export function paintText(text, color) {
 	return `${color}${text}${colourCodes.reset}`;
 }
-
-export const colourHelper = { paintText };

@@ -6,7 +6,10 @@ import { RC_FILE_NAME } from './helpers/constants.js';
 import { Logger } from './helpers/logger.js';
 import { messages } from './helpers/messages.js';
 import { startMockServer } from './services/start-mock-server.js';
-import { userFlowSteps } from './services/user-flow-steps.js';
+import { initWithConfigFile } from './services/user-flow-steps/init-with-config-file.js';
+import { initWithSchemaPaths } from './services/user-flow-steps/init-with-schema-paths.js';
+import { init } from './services/user-flow-steps/init.js';
+
 /**
  * @typedef {import('./types/types.d.js').Config} Config
  * @typedef {import('./types/types.d.js').Options} Options
@@ -19,7 +22,7 @@ import { userFlowSteps } from './services/user-flow-steps.js';
  * @function run
  * @returns {Promise<void>}
  */
-const run = async () => {
+export const main = async () => {
 	program
 		.option('-o, --origin <origin>', 'path or repo containing schemas')
 		.option('-s, --schema [schemaPaths...]', 'path to schemas')
@@ -36,23 +39,23 @@ const run = async () => {
 			Logger.warn(messages.CONFIG_FILE_NOT_FOUND, RC_FILE_NAME);
 		}
 	} else if (options?.origin) {
-		config = await userFlowSteps.init({
+		config = await init({
 			origin: options.origin,
 			schemaPaths: options.schema,
 			ports: options.port,
 		});
 	} else if (options?.schema?.length) {
-		config = await userFlowSteps.initWithSchemaPaths({
+		config = await initWithSchemaPaths({
 			schemaPaths: options.schema,
 			ports: options.port,
 		});
 	} else if (configFileExists) {
-		config = await userFlowSteps.initWithConfigFile();
+		config = await initWithConfigFile();
 	}
 	if (!config) {
-		config = await userFlowSteps.init();
+		config = await init();
 	}
-	return startMockServer.run(config.selectedSchemas);
+	return startMockServer(config.selectedSchemas);
 };
 
 /**
@@ -63,5 +66,3 @@ const run = async () => {
 function getConfigFromFile() {
 	return /** @type {Config} */ (JSON.parse(fs.readFileSync(path.join(process.cwd(), RC_FILE_NAME), 'utf-8'))) || {};
 }
-
-export const main = { run };

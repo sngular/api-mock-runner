@@ -14,11 +14,12 @@ import { messages } from '../helpers/messages.js';
  * @param {string} filePath - The path to the file.
  * @returns {Promise<string>} The first line of the file.
  */
-async function getFirstLine(filePath) {
-	const reader = readline.createInterface({ input: fs.createReadStream(filePath) });
-	const it = reader[Symbol.asyncIterator]();
+export async function getFirstLine(filePath) {
+	const input = fs.createReadStream(filePath);
+	const reader = readline.createInterface({ input });
+	const iterator = reader[Symbol.asyncIterator]();
 	/** @type {IteratorResult<string, string>} */
-	const line = await it.next();
+	const line = await iterator.next();
 	return line.value;
 }
 
@@ -27,8 +28,8 @@ async function getFirstLine(filePath) {
  * @param {string} filePath - The path to the file.
  * @returns {Promise<boolean>} True if the file is an OpenAPI specification, false otherwise.
  */
-async function isOas(filePath) {
-	const firstLine = await oas.getFirstLine(filePath);
+export async function isOas(filePath) {
+	const firstLine = await getFirstLine(filePath);
 	const oasRegEx = /^openapi/i;
 	return oasRegEx.test(firstLine);
 }
@@ -40,7 +41,7 @@ async function isOas(filePath) {
  * @param {string} startPath - The path to the directory.
  * @returns {Promise<OasFile[]>} An array of OpenAPI specifications.
  */
-const findOasFromDir = async (startPath) => {
+export const findOasFromDir = async (startPath) => {
 	if (!fs.existsSync(startPath)) {
 		Logger.warn(messages.DIRECTORY_NOT_FOUND, startPath);
 		return [];
@@ -52,7 +53,7 @@ const findOasFromDir = async (startPath) => {
 
 	for (const file of files) {
 		const filePath = path.join(startPath, file);
-		if ((file.endsWith('.yaml') || file.endsWith('.yml')) && (await oas.isOas(filePath))) {
+		if ((file.endsWith('.yaml') || file.endsWith('.yml')) && (await isOas(filePath))) {
 			oasFiles.push({
 				fileName: file,
 				path: startPath,
@@ -71,7 +72,7 @@ const findOasFromDir = async (startPath) => {
  * @param {OasFile[]} [oasFiles] - An array of OpenAPI specifications.
  * @returns {Promise<OasFile[]>} An array of OpenAPI specifications.
  */
-const findOasFromDirRecursive = async (startPath, oasFiles = []) => {
+export const findOasFromDirRecursive = async (startPath, oasFiles = []) => {
 	if (!fs.existsSync(startPath)) {
 		Logger.warn(messages.DIRECTORY_NOT_FOUND, startPath);
 		return [];
@@ -84,8 +85,8 @@ const findOasFromDirRecursive = async (startPath, oasFiles = []) => {
 		const filePath = path.join(startPath, file);
 		const stat = fs.lstatSync(filePath);
 		if (stat.isDirectory()) {
-			await oas.findOasFromDirRecursive(filePath, oasFiles);
-		} else if ((file.endsWith('.yaml') || file.endsWith('.yml')) && (await oas.isOas(filePath))) {
+			await findOasFromDirRecursive(filePath, oasFiles);
+		} else if ((file.endsWith('.yaml') || file.endsWith('.yml')) && (await isOas(filePath))) {
 			oasFiles.push({
 				fileName: file,
 				path: startPath,
@@ -95,5 +96,3 @@ const findOasFromDirRecursive = async (startPath, oasFiles = []) => {
 	}
 	return oasFiles;
 };
-
-export const oas = { isOas, getFirstLine, findOasFromDir, findOasFromDirRecursive };

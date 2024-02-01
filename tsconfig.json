@@ -2,8 +2,8 @@
 	"extends": "@sngular/tsconfig",
 	"compilerOptions": {
 		"outDir": "./dist-types",
-		"rootDir": "./src"
+		"rootDir": "./src",
 	},
 	"include": ["src"],
-	"exclude": ["dist-types", "node_modules", "test"]
+	"exclude": ["dist-types", "node_modules", "test"],
 }

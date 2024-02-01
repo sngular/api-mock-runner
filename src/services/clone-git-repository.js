@@ -9,7 +9,7 @@ import process from 'node:process';
  * @param {string} repositoryURL - The URL of the git repository.
  * @param {string} dirName - The name of the directory where the repository will be cloned.
  */
-function cloneRepository(repositoryURL, dirName) {
+export function cloneRepository(repositoryURL, dirName) {
 	resetDirectory(dirName);
 	clone(repositoryURL, dirName);
 }
@@ -46,5 +46,3 @@ function clone(repositoryURL, dirName) {
 		cwd: path.resolve(process.cwd(), dirName), // path to where you want to save the file
 	});
 }
-
-export const git = { cloneRepository };
