@@ -1,52 +1,45 @@
 import { expect, use } from 'chai';
 import esmock from 'esmock';
-import fs from 'node:fs';
-import { stub, spy, match } from 'sinon';
+import { createSandbox, match } from 'sinon';
 import sinonChai from 'sinon-chai';
 
-import { Logger } from '../../../src/helpers/logger.js';
 import { messages } from '../../../src/helpers/messages.js';
-import { userFlowSteps } from '../../../src/services/user-flow-steps.js';
+import { globalMocksFactory } from '../../helpers/global-mocks-factory.js';
 
 use(sinonChai);
+const sandbox = createSandbox();
 
-let validateStub = stub();
-let mockStub = stub();
-class FakeOpenApiMocker {
-	constructor(options) {
-		this.options = options;
-		this.validate = validateStub;
-		this.mock = mockStub;
-	}
+const init = sandbox.stub();
+const validateStub = sandbox.stub();
+const mockStub = sandbox.stub();
+class Logger {
+	static warn = sandbox.stub();
+	static emptyLine = sandbox.stub();
 }
-let fakeOpenApiMockerSpy = spy(FakeOpenApiMocker);
-const { startMockServer } = await esmock('../../../src/services/start-mock-server.js', import.meta.url, {
-	'@sngular/open-api-mocker': {
-		default: fakeOpenApiMockerSpy,
-	},
-});
+const opeApiMocker = sandbox.spy(
+	class {
+		constructor(options) {
+			this.options = options;
+			this.validate = validateStub;
+			this.mock = mockStub;
+		}
+	}
+);
+
+const mocks = {
+	'@sngular/open-api-mocker': { default: opeApiMocker },
+	'../helpers/logger.js': { Logger },
+	'../services/user-flow-steps/init.js': { init },
+};
+const globalMocks = globalMocksFactory(sandbox);
+const { fs } = globalMocks;
+const fileToTest = '../../../src/services/start-mock-server.js';
+const absolutePath = new URL(fileToTest, import.meta.url).pathname;
+const { startMockServer } = await esmock(absolutePath, absolutePath, mocks, globalMocks);
 
 describe('unit: start-mock-server', () => {
-	let fsExistsSyncStub;
-	let initStub;
-	let loggerEmptyLineStub;
-	let loggerWarnStub;
-
-	beforeEach(() => {
-		fsExistsSyncStub = stub(fs, 'existsSync');
-		initStub = stub(userFlowSteps, 'init');
-		loggerEmptyLineStub = stub(Logger, 'emptyLine');
-		loggerWarnStub = stub(Logger, 'warn');
-	});
-
 	afterEach(() => {
-		fakeOpenApiMockerSpy.resetHistory();
-		validateStub.resetHistory();
-		mockStub.resetHistory();
-		fsExistsSyncStub.restore();
-		initStub.restore();
-		loggerEmptyLineStub.restore();
-		loggerWarnStub.restore();
+		sandbox.reset();
 	});
 
 	it('should start a mock server with valid schemas', async () => {
@@ -54,15 +47,15 @@ describe('unit: start-mock-server', () => {
 			{ port: 3000, path: '/path/to/schema' },
 			{ port: 4000, path: '/anotherpath/to/schema' },
 		];
-		fsExistsSyncStub.returns(true);
-		await startMockServer.run(schemas);
-		expect(fakeOpenApiMockerSpy).to.have.been.calledWith(
+		fs.existsSync.returns(true);
+		await startMockServer(schemas);
+		expect(opeApiMocker).to.have.been.calledWith(
 			match({
 				port: 3000,
 				schema: '/path/to/schema',
 			})
 		);
-		expect(fakeOpenApiMockerSpy).to.have.been.calledWith(
+		expect(opeApiMocker).to.have.been.calledWith(
 			match({
 				port: 4000,
 				schema: '/anotherpath/to/schema',
@@ -70,24 +63,24 @@ describe('unit: start-mock-server', () => {
 		);
 		expect(validateStub).to.have.been.calledTwice;
 		expect(mockStub).to.have.been.calledTwice;
-		expect(loggerEmptyLineStub).to.have.been.calledTwice;
+		expect(Logger.emptyLine).to.have.been.calledTwice;
 	});
 
 	it('should init user flow when some schemas do not exist', async () => {
 		const schemas = [{ port: 3000, path: '/path/to/schema' }];
-		fsExistsSyncStub.returns(false);
-		initStub.resolves({ selectedSchemas: schemas });
-		await startMockServer.run(schemas);
-		expect(fakeOpenApiMockerSpy).to.have.been.calledWith(
+		fs.existsSync.returns(false);
+		init.resolves({ selectedSchemas: schemas });
+		await startMockServer(schemas);
+		expect(opeApiMocker).to.have.been.calledWith(
 			match({
 				port: 3000,
 				schema: '/path/to/schema',
 			})
 		);
-		expect(initStub).to.have.been.calledOnce;
+		expect(init).to.have.been.calledOnce;
 		expect(validateStub).to.have.been.calledOnce;
 		expect(mockStub).to.have.been.calledOnce;
-		expect(loggerEmptyLineStub).to.have.been.calledOnce;
-		expect(loggerWarnStub).to.have.been.calledOnceWithExactly(messages.SOME_SCHEMA_DOES_NOT_EXIST);
+		expect(Logger.emptyLine).to.have.been.calledOnce;
+		expect(Logger.warn).to.have.been.calledOnceWithExactly(messages.SOME_SCHEMA_DOES_NOT_EXIST);
 	});
 });

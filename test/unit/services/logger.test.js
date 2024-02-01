@@ -1,20 +1,28 @@
 import { expect, use } from 'chai';
-import { stub } from 'sinon';
+import esmock from 'esmock';
+import { createSandbox } from 'sinon';
 import sinonChai from 'sinon-chai';
 
-import { Logger } from '../../../src/helpers/logger.js';
+import { globalMocksFactory } from '../../helpers/global-mocks-factory.js';
 
 use(sinonChai);
+const sandbox = createSandbox();
+
+const mocks = {};
+const globalMocks = globalMocksFactory(sandbox);
+const fileToTest = '../../../src/helpers/logger.js';
+const absolutePath = new URL(fileToTest, import.meta.url).pathname;
+const { Logger } = await esmock(absolutePath, absolutePath, mocks, globalMocks);
 
 describe('unit: logger', () => {
 	let consoleSpy;
 
 	beforeEach(() => {
-		consoleSpy = stub(console, 'log');
+		consoleSpy = sandbox.stub(console, 'log');
 	});
 
 	afterEach(() => {
-		consoleSpy.restore();
+		sandbox.restore();
 	});
 
 	it('should log an informational message to the console with no extra', () => {

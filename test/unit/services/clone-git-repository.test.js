@@ -1,50 +1,45 @@
 import { expect, use } from 'chai';
-import child_process from 'node:child_process';
-import fs from 'node:fs';
-import { stub } from 'sinon';
+import esmock from 'esmock';
+import { createSandbox } from 'sinon';
 import sinonChai from 'sinon-chai';
 
-import { git } from '../../../src/services/clone-git-repository.js';
+import { globalMocksFactory } from '../../helpers/global-mocks-factory.js';
+
+use(sinonChai);
+const sandbox = createSandbox();
+
+const mocks = {};
+const globalMocks = globalMocksFactory(sandbox);
+const { fs, child_process } = globalMocks;
+const fileToTest = '../../../src/services/clone-git-repository.js';
+const absolutePath = new URL(fileToTest, import.meta.url).pathname;
+const { cloneRepository } = await esmock(absolutePath, absolutePath, mocks, globalMocks);
 
 use(sinonChai);
 
 describe('unit: clone-git-repository mocking git clone and fs I/O', () => {
 	const dirName = '';
 	const repositoryURL = '';
-	let execSyncStub;
-	let existsSyncStub;
-	let mkdirSyncStub;
-	let rmSync;
-
-	beforeEach(() => {
-		execSyncStub = stub(child_process, 'execSync');
-		existsSyncStub = stub(fs, 'existsSync');
-		mkdirSyncStub = stub(fs, 'mkdirSync');
-		rmSync = stub(fs, 'rmSync');
-	});
 
 	afterEach(() => {
-		execSyncStub.restore();
-		existsSyncStub.restore();
-		mkdirSyncStub.restore();
-		rmSync.restore();
+		sandbox.reset();
 	});
 
 	it('should reset temp dir and clone repository', () => {
-		existsSyncStub.returns(true);
-		git.cloneRepository(repositoryURL, dirName);
-		expect(existsSyncStub).to.have.been.called;
-		expect(rmSync).to.have.been.called;
-		expect(mkdirSyncStub).to.have.been.called;
-		expect(execSyncStub).to.have.been.called;
+		fs.existsSync.returns(true);
+		cloneRepository(repositoryURL, dirName);
+		expect(fs.existsSync).to.have.been.called;
+		expect(fs.rmSync).to.have.been.called;
+		expect(fs.mkdirSync).to.have.been.called;
+		expect(child_process.execSync).to.have.been.called;
 	});
 
 	it('should create temp dir and clone repository', () => {
-		existsSyncStub.returns(false);
-		git.cloneRepository(repositoryURL, dirName);
-		expect(existsSyncStub).to.have.been.called;
-		expect(rmSync).to.not.have.been.called; // not called
-		expect(mkdirSyncStub).to.have.been.called;
-		expect(execSyncStub).to.have.been.called;
+		fs.existsSync.returns(false);
+		cloneRepository(repositoryURL, dirName);
+		expect(fs.existsSync).to.have.been.called;
+		expect(fs.rmSync).to.not.have.been.called;
+		expect(fs.mkdirSync).to.have.been.called;
+		expect(child_process.execSync).to.have.been.called;
 	});
 });

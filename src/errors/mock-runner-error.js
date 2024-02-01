@@ -1,4 +1,4 @@
-import { colourHelper, colourCodes } from '../helpers/colours.js';
+import { paintText, colourCodes } from '../helpers/colours.js';
 import { Logger } from '../helpers/logger.js';
 
 export class MockRunnerError extends Error {
@@ -38,10 +38,10 @@ export class MockRunnerError extends Error {
 				type = colourCodes.fg.cyan;
 		}
 		Logger.error(
-			`Error of level ${colourHelper.paintText(this.level.toString(), type)}, type ${colourHelper.paintText(
+			`Error of level ${paintText(this.level.toString(), type)}, type ${paintText(
 				this.code.toString(),
 				colourCodes.fg.gray
-			)} over ${colourHelper.paintText(this.emitter, colourCodes.fg.blue)}`
+			)} over ${paintText(this.emitter, colourCodes.fg.blue)}`
 		);
 		Logger.info(`${this.stack}`);
 	}

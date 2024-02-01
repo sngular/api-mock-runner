@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 
 import { validationErrorMessages } from '../helpers/messages.js';
-import { verifyHelper } from '../helpers/verify-remote-origin.js';
+import { verifyRemoteOrigin } from '../helpers/verify-remote-origin.js';
 
 /**
  * @typedef {import('../types/types.d.js').Schema} Schema
@@ -13,9 +13,9 @@ import { verifyHelper } from '../helpers/verify-remote-origin.js';
  * @param {string} value - The value to validate.
  * @returns {boolean|string} True if the value is valid, otherwise a string with the error message.
  */
-function originValidator(value) {
+export function originValidator(value) {
 	const isLocalPath = fs.existsSync(value);
-	const isRemoteOrigin = verifyHelper.verifyRemoteOrigin(value);
+	const isRemoteOrigin = verifyRemoteOrigin(value);
 	const result = isLocalPath || isRemoteOrigin || validationErrorMessages.origin.INVALID;
 	return result;
 }
@@ -27,7 +27,7 @@ function originValidator(value) {
  * @param {Schema[]} selectedSchemas - The current schema.
  * @returns {boolean|string} True if the value is valid, otherwise a string with the error message.
  */
-function portValidator(input, selectedSchemas) {
+export function portValidator(input, selectedSchemas) {
 	const numericInput = Number(input);
 	const isInteger = Number.isInteger(numericInput);
 	if (!isInteger || numericInput < 0 || numericInput > 65535) {
@@ -39,5 +39,3 @@ function portValidator(input, selectedSchemas) {
 	}
 	return true;
 }
-
-export const inquirerValidators = { originValidator, portValidator };

@@ -1,98 +1,85 @@
 import { expect, use } from 'chai';
 import esmock from 'esmock';
-import fs from 'node:fs';
-import { restore, stub, match } from 'sinon';
+import { createSandbox, match } from 'sinon';
 import sinonChai from 'sinon-chai';
 
 import { messages } from '../../../src/helpers/messages.js';
-import { checkStringInFile } from '../../../src/services/check-string-in-file.js';
+import { globalMocksFactory } from '../../helpers/global-mocks-factory.js';
 
 use(sinonChai);
+const sandbox = createSandbox();
+const confirm = sandbox.stub();
+const check = sandbox.stub();
 
-let confirmStub = stub();
-const { gitignore, GITIGNORE_PATH } = await esmock('../../../src/services/gitignore.js', import.meta.url, {
-	'@inquirer/prompts': {
-		confirm: (...args) => confirmStub(...args),
-	},
-});
+const mocks = {
+	'@inquirer/prompts': { confirm },
+	'../services/check-string-in-file.js': { check },
+};
+const globalMocks = globalMocksFactory(sandbox);
+const { fs } = globalMocks;
+const fileToTest = '../../../src/services/gitignore.js';
+const absolutePath = new URL(fileToTest, import.meta.url).pathname;
+const { addToGitignore, GITIGNORE_PATH } = await esmock(absolutePath, absolutePath, mocks, globalMocks);
 
 describe('unit: addToGitignore', () => {
 	const gitignoreContentNoNewline = 'fileContentTest';
 	const fileNameTest = 'fileNameTest';
 	const lineToAdd = `${fileNameTest}\n`;
-	let appendFileSyncStub;
-	let checkStringInFileStub;
-	let existsSyncStub;
-	let readFileSyncStub;
-
-	beforeEach(() => {
-		appendFileSyncStub = stub(fs, 'appendFileSync');
-		checkStringInFileStub = stub(checkStringInFile, 'check');
-		confirmStub = stub();
-		existsSyncStub = stub(fs, 'existsSync');
-		readFileSyncStub = stub(fs, 'readFileSync');
-	});
 
 	afterEach(() => {
-		restore();
+		sandbox.reset();
 	});
 
 	it('should not add filename when already is in it', async () => {
-		existsSyncStub.returns(true);
-		checkStringInFileStub.returns(true);
-		await gitignore.addToGitignore(fileNameTest);
-		expect(existsSyncStub).to.have.been.calledWith(GITIGNORE_PATH);
-		expect(checkStringInFileStub).to.have.been.calledWith(fileNameTest, GITIGNORE_PATH);
-		expect(confirmStub).to.not.have.been.called;
-		expect(readFileSyncStub).to.not.have.been.called;
-		expect(appendFileSyncStub).to.not.have.been.called;
+		fs.existsSync.returns(true);
+		check.returns(true);
+		await addToGitignore(fileNameTest);
+		expect(fs.existsSync).to.have.been.calledWith(GITIGNORE_PATH);
+		expect(check).to.have.been.calledWith(fileNameTest, GITIGNORE_PATH);
+		expect(confirm).to.not.have.been.called;
+		expect(fs.readFileSync).to.not.have.been.called;
+		expect(fs.appendFileSync).to.not.have.been.called;
 	});
 
 	it('should not add filename when user refuses', async () => {
-		existsSyncStub.returns(false);
-		confirmStub.resolves(false);
-		await gitignore.addToGitignore(fileNameTest);
-		expect(existsSyncStub).to.have.been.called;
-		expect(confirmStub).to.have.been.called;
-		expect(readFileSyncStub).to.not.have.been.called;
-		expect(appendFileSyncStub).to.not.have.been.called;
+		fs.existsSync.returns(false);
+		confirm.resolves(false);
+		await addToGitignore(fileNameTest);
+		expect(fs.existsSync).to.have.been.called;
+		expect(confirm).to.have.been.called;
+		expect(fs.readFileSync).to.not.have.been.called;
+		expect(fs.appendFileSync).to.not.have.been.called;
 	});
 
 	it('should add newline and filename to existing .gitignore when user accepts', async () => {
-		existsSyncStub.returns(true);
-		confirmStub.resolves(true);
-		readFileSyncStub.returns(gitignoreContentNoNewline);
-		await gitignore.addToGitignore(fileNameTest);
-		expect(existsSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH);
-		expect(confirmStub).to.have.been.calledOnceWith(
-			match({ message: messages.CONFIRM_ADD_TO_GITIGNORE(fileNameTest) })
-		);
-		expect(readFileSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH, 'utf8');
-		expect(appendFileSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH, `\n${lineToAdd}`);
+		fs.existsSync.returns(true);
+		confirm.resolves(true);
+		fs.readFileSync.returns(gitignoreContentNoNewline);
+		await addToGitignore(fileNameTest);
+		expect(fs.existsSync).to.have.been.calledOnceWith(GITIGNORE_PATH);
+		expect(confirm).to.have.been.calledOnceWith(match({ message: messages.CONFIRM_ADD_TO_GITIGNORE(fileNameTest) }));
+		expect(fs.readFileSync).to.have.been.calledOnceWith(GITIGNORE_PATH, 'utf8');
+		expect(fs.appendFileSync).to.have.been.calledOnceWith(GITIGNORE_PATH, `\n${lineToAdd}`);
 	});
 
 	it('should add filename to existing .gitignore when user accepts', async () => {
-		existsSyncStub.returns(true);
-		confirmStub.returns(true);
-		readFileSyncStub.returns(`${gitignoreContentNoNewline}\n`);
-		await gitignore.addToGitignore(fileNameTest);
-		expect(existsSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH);
-		expect(confirmStub).to.have.been.calledOnceWith(
-			match({ message: messages.CONFIRM_ADD_TO_GITIGNORE(fileNameTest) })
-		);
-		expect(readFileSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH, 'utf8');
-		expect(appendFileSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH, `${lineToAdd}`);
+		fs.existsSync.returns(true);
+		confirm.returns(true);
+		fs.readFileSync.returns(`${gitignoreContentNoNewline}\n`);
+		await addToGitignore(fileNameTest);
+		expect(fs.existsSync).to.have.been.calledOnceWith(GITIGNORE_PATH);
+		expect(confirm).to.have.been.calledOnceWith(match({ message: messages.CONFIRM_ADD_TO_GITIGNORE(fileNameTest) }));
+		expect(fs.readFileSync).to.have.been.calledOnceWith(GITIGNORE_PATH, 'utf8');
+		expect(fs.appendFileSync).to.have.been.calledOnceWith(GITIGNORE_PATH, `${lineToAdd}`);
 	});
 
 	it('should add filename to missing .gitignore when user accepts', async () => {
-		existsSyncStub.returns(false);
-		confirmStub.returns(true);
-		await gitignore.addToGitignore(fileNameTest);
-		expect(existsSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH);
-		expect(confirmStub).to.have.been.calledOnceWith(
-			match({ message: messages.CONFIRM_ADD_TO_GITIGNORE(fileNameTest) })
-		);
-		expect(readFileSyncStub).to.not.have.been.called;
-		expect(appendFileSyncStub).to.have.been.calledOnceWith(GITIGNORE_PATH, `${lineToAdd}`);
+		fs.existsSync.returns(false);
+		confirm.returns(true);
+		await addToGitignore(fileNameTest);
+		expect(fs.existsSync).to.have.been.calledOnceWith(GITIGNORE_PATH);
+		expect(confirm).to.have.been.calledOnceWith(match({ message: messages.CONFIRM_ADD_TO_GITIGNORE(fileNameTest) }));
+		expect(fs.readFileSync).to.not.have.been.called;
+		expect(fs.appendFileSync).to.have.been.calledOnceWith(GITIGNORE_PATH, `${lineToAdd}`);
 	});
 });

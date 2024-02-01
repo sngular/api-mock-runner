@@ -9,8 +9,9 @@ import readline from 'node:readline';
  * @param {string} filePath - The path to the file.
  * @returns {Promise<boolean>} True if the string is in the file, false otherwise.
  */
-async function check(stringToCheck, filePath) {
-	const reader = readline.createInterface({ input: fs.createReadStream(filePath) });
+export async function check(stringToCheck, filePath) {
+	const input = fs.createReadStream(filePath);
+	const reader = readline.createInterface({ input });
 	for await (const line of reader) {
 		if (line === stringToCheck) {
 			return true;
@@ -18,5 +19,3 @@ async function check(stringToCheck, filePath) {
 	}
 	return false;
 }
-
-export const checkStringInFile = { check };

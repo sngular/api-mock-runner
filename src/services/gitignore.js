@@ -2,7 +2,7 @@ import { confirm } from '@inquirer/prompts';
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { checkStringInFile } from './check-string-in-file.js';
+import { check } from './check-string-in-file.js';
 import { messages } from '../helpers/messages.js';
 
 export const GITIGNORE_PATH = path.join(process.cwd(), '.gitignore');
@@ -17,7 +17,7 @@ export const GITIGNORE_PATH = path.join(process.cwd(), '.gitignore');
  * @param {string} fileName - The file or folder name to append to .gitignore.
  * @returns {Promise<void>}
  */
-async function addToGitignore(fileName) {
+export async function addToGitignore(fileName) {
 	const existsGitignoreFile = fs.existsSync(GITIGNORE_PATH);
 	const isInGitignoreFile = existsGitignoreFile && (await isInGitignore(fileName));
 	const shouldAddToGitignore = !existsGitignoreFile || !isInGitignoreFile;
@@ -36,7 +36,7 @@ async function addToGitignore(fileName) {
  * @returns {Promise<boolean>} True if the text is in .gitignore, false otherwise.
  */
 async function isInGitignore(textToCheck) {
-	const result = await checkStringInFile.check(textToCheck, GITIGNORE_PATH);
+	const result = await check(textToCheck, GITIGNORE_PATH);
 	return result;
 }
 
@@ -49,5 +49,3 @@ function getLeadingCharacter() {
 	const lastFileCharacter = fs.readFileSync(GITIGNORE_PATH, 'utf8').slice(-1);
 	return lastFileCharacter === '\n' ? '' : '\n';
 }
-
-export const gitignore = { addToGitignore };

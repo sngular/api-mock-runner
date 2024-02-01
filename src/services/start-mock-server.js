@@ -1,7 +1,7 @@
 import OpenApiMocker from '@sngular/open-api-mocker';
 import fs from 'node:fs';
 
-import { userFlowSteps } from './user-flow-steps.js';
+import { init } from './user-flow-steps/init.js';
 import { Logger } from '../helpers/logger.js';
 import { messages } from '../helpers/messages.js';
 
@@ -17,7 +17,7 @@ import { messages } from '../helpers/messages.js';
  * @param {Schema[]} schemas - An array of schemas.
  * @returns {Promise<void>}
  */
-async function run(schemas) {
+export async function startMockServer(schemas) {
 	const validatedSchemas = await validateSchemas(schemas);
 	for (const schema of validatedSchemas) {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
@@ -48,10 +48,8 @@ async function validateSchemas(schemas) {
 
 	if (!allSchemasExists) {
 		Logger.warn(messages.SOME_SCHEMA_DOES_NOT_EXIST);
-		const config = await userFlowSteps.init();
+		const config = await init();
 		return config.selectedSchemas;
 	}
 	return schemas;
 }
-
-export const startMockServer = { run };

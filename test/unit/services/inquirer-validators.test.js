@@ -1,12 +1,20 @@
 import { expect, use } from 'chai';
-import fs from 'node:fs';
-import { stub } from 'sinon';
+import esmock from 'esmock';
+import { createSandbox } from 'sinon';
 import sinonChai from 'sinon-chai';
 
 import { validationErrorMessages } from '../../../src/helpers/messages.js';
-import { inquirerValidators } from '../../../src/services/inquirer-validators.js';
+import { globalMocksFactory } from '../../helpers/global-mocks-factory.js';
 
 use(sinonChai);
+const sandbox = createSandbox();
+
+const mocks = {};
+const globalMocks = globalMocksFactory(sandbox);
+const { fs } = globalMocks;
+const fileToTest = '../../../src/services/inquirer-validators.js';
+const absolutePath = new URL(fileToTest, import.meta.url).pathname;
+const { originValidator, portValidator } = await esmock(absolutePath, absolutePath, mocks, globalMocks);
 
 describe('unit: inquirer-validators', () => {
 	describe('originValidator', () => {
@@ -14,59 +22,49 @@ describe('unit: inquirer-validators', () => {
 		const validRemoteGitOrigin = 'git@github.com:user/repo.git';
 		const validLocalPath = '/path/to/local';
 
+		afterEach(() => {
+			sandbox.reset();
+		});
+
 		it('should return true if the value is a valid local path', () => {
-			let existsSyncStub = stub(fs, 'existsSync');
-			existsSyncStub.withArgs(validLocalPath).returns(true);
-			expect(inquirerValidators.originValidator(validLocalPath)).to.be.true;
-			existsSyncStub.restore();
+			fs.existsSync.withArgs(validLocalPath).returns(true);
+			expect(originValidator(validLocalPath)).to.be.true;
 		});
 
 		it('should return true if the value is a valid remote origin with https', () => {
-			expect(inquirerValidators.originValidator(validRemoteHttpsOrigin)).to.be.true;
+			expect(originValidator(validRemoteHttpsOrigin)).to.be.true;
 		});
 
 		it('should return true if the value is a valid remote origin with git@', () => {
-			expect(inquirerValidators.originValidator(validRemoteGitOrigin)).to.be.true;
+			expect(originValidator(validRemoteGitOrigin)).to.be.true;
 		});
 
 		it('should return an error message if the value is not a valid local path nor remote origin', () => {
-			expect(inquirerValidators.originValidator('invalid-value')).to.equal(validationErrorMessages.origin.INVALID);
+			expect(originValidator('invalid-value')).to.equal(validationErrorMessages.origin.INVALID);
 		});
 
 		it('should return an error message if the value is a valid remote origin with a starting space', () => {
-			expect(inquirerValidators.originValidator(` ${validRemoteGitOrigin}`)).to.equal(
-				validationErrorMessages.origin.INVALID
-			);
+			expect(originValidator(` ${validRemoteGitOrigin}`)).to.equal(validationErrorMessages.origin.INVALID);
 		});
 
 		it('should return an error message if the value is a valid remote origin with a starting tab', () => {
-			expect(inquirerValidators.originValidator(`\t${validRemoteGitOrigin}`)).to.equal(
-				validationErrorMessages.origin.INVALID
-			);
+			expect(originValidator(`\t${validRemoteGitOrigin}`)).to.equal(validationErrorMessages.origin.INVALID);
 		});
 
 		it('should return an error message if the value is a valid remote origin with a starting newline character', () => {
-			expect(inquirerValidators.originValidator(`\n${validRemoteGitOrigin}`)).to.equal(
-				validationErrorMessages.origin.INVALID
-			);
+			expect(originValidator(`\n${validRemoteGitOrigin}`)).to.equal(validationErrorMessages.origin.INVALID);
 		});
 
 		it('should return an error message if the value is a valid remote origin with an ending space', () => {
-			expect(inquirerValidators.originValidator(`${validRemoteGitOrigin} `)).to.equal(
-				validationErrorMessages.origin.INVALID
-			);
+			expect(originValidator(`${validRemoteGitOrigin} `)).to.equal(validationErrorMessages.origin.INVALID);
 		});
 
 		it('should return an error message if the value is a valid remote origin with an ending tab', () => {
-			expect(inquirerValidators.originValidator(`${validRemoteGitOrigin}\t`)).to.equal(
-				validationErrorMessages.origin.INVALID
-			);
+			expect(originValidator(`${validRemoteGitOrigin}\t`)).to.equal(validationErrorMessages.origin.INVALID);
 		});
 
 		it('should return an error message if the value is a valid remote origin with an ending newline character', () => {
-			expect(inquirerValidators.originValidator(`${validRemoteGitOrigin}\n`)).to.equal(
-				validationErrorMessages.origin.INVALID
-			);
+			expect(originValidator(`${validRemoteGitOrigin}\n`)).to.equal(validationErrorMessages.origin.INVALID);
 		});
 	});
 
@@ -77,32 +75,28 @@ describe('unit: inquirer-validators', () => {
 		];
 
 		it('should return true if the value is an integer between 0 and 65535 and not already selected', () => {
-			expect(inquirerValidators.portValidator('0', selectedSchemas)).to.be.true;
-			expect(inquirerValidators.portValidator('65535', selectedSchemas)).to.be.true;
-			expect(inquirerValidators.portValidator('5002', selectedSchemas)).to.be.true;
+			expect(portValidator('0', selectedSchemas)).to.be.true;
+			expect(portValidator('65535', selectedSchemas)).to.be.true;
+			expect(portValidator('5002', selectedSchemas)).to.be.true;
 		});
 
 		it('should return an error message if the value is not an integer', () => {
-			expect(inquirerValidators.portValidator('not an integer', selectedSchemas)).to.equal(
-				validationErrorMessages.port.INVALID
-			);
-			expect(inquirerValidators.portValidator('3.14', selectedSchemas)).to.equal(validationErrorMessages.port.INVALID);
+			expect(portValidator('not an integer', selectedSchemas)).to.equal(validationErrorMessages.port.INVALID);
+			expect(portValidator('3.14', selectedSchemas)).to.equal(validationErrorMessages.port.INVALID);
 		});
 
 		it('should return an error message if the value is less than 0', () => {
-			expect(inquirerValidators.portValidator('-1', selectedSchemas)).to.equal(validationErrorMessages.port.INVALID);
-			expect(inquirerValidators.portValidator('-100', selectedSchemas)).to.equal(validationErrorMessages.port.INVALID);
+			expect(portValidator('-1', selectedSchemas)).to.equal(validationErrorMessages.port.INVALID);
+			expect(portValidator('-100', selectedSchemas)).to.equal(validationErrorMessages.port.INVALID);
 		});
 
 		it('should return an error message if the value is greater than 65535', () => {
-			expect(inquirerValidators.portValidator('65536', selectedSchemas)).to.equal(validationErrorMessages.port.INVALID);
-			expect(inquirerValidators.portValidator('100000', selectedSchemas)).to.equal(
-				validationErrorMessages.port.INVALID
-			);
+			expect(portValidator('65536', selectedSchemas)).to.equal(validationErrorMessages.port.INVALID);
+			expect(portValidator('100000', selectedSchemas)).to.equal(validationErrorMessages.port.INVALID);
 		});
 
 		it('should return an error message if the value is already selected', () => {
-			expect(inquirerValidators.portValidator('5000', selectedSchemas)).to.equal(validationErrorMessages.port.IN_USE);
+			expect(portValidator('5000', selectedSchemas)).to.equal(validationErrorMessages.port.IN_USE);
 		});
 	});
 });
