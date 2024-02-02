@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/sngular/api-mock-runner/compare/v1.0.0...v1.0.1) (2024-02-02)
+
+
+### Bug Fixes
+
+* handle errors reading config ([2e27d0b](https://github.com/sngular/api-mock-runner/commit/2e27d0b0368c590e4b9f4062937e958241e90800))
+
 # 1.0.0 (2024-01-15)
 
 

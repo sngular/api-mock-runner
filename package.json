@@ -1,6 +1,6 @@
 {
 	"name": "@sngular/api-mock-runner",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Create mocks servers with its schemas from OpenAPI 3.0.0 spec files",
 	"main": "src/index.js",
 	"bin": {
