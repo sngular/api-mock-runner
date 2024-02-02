@@ -1,11 +1,6 @@
 import { program } from 'commander';
-import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { cwd } from 'node:process';
 
-import { RC_FILE_NAME } from './helpers/constants.js';
-import { Logger } from './helpers/logger.js';
-import { messages } from './helpers/messages.js';
+import { getConfigFromFile } from './helpers/config-file.js';
 import { startMockServer } from './services/start-mock-server.js';
 import { initWithConfigFile } from './services/user-flow-steps/init-with-config-file.js';
 import { initWithSchemaPaths } from './services/user-flow-steps/init-with-schema-paths.js';
@@ -32,14 +27,9 @@ export const main = async () => {
 	program.parse();
 	/** @type {ProgramOptions} */
 	const options = program.opts();
-	const configFileExists = existsSync(join(cwd(), RC_FILE_NAME));
 	let config;
 	if (options.runConfig) {
-		if (configFileExists) {
-			config = getConfigFromFile();
-		} else {
-			Logger.warn(messages.CONFIG_FILE_NOT_FOUND, RC_FILE_NAME);
-		}
+		config = getConfigFromFile();
 	} else if (options?.origin) {
 		config = await init({
 			origin: options.origin,
@@ -51,7 +41,7 @@ export const main = async () => {
 			schemaPaths: options.schema,
 			ports: options.port,
 		});
-	} else if (configFileExists) {
+	} else {
 		config = await initWithConfigFile();
 	}
 	if (!config) {
@@ -59,12 +49,3 @@ export const main = async () => {
 	}
 	return startMockServer(config.selectedSchemas);
 };
-
-/**
- * Get config from file.
- * @function getConfigFromFile
- * @returns {Config} Content of the config file.
- */
-function getConfigFromFile() {
-	return /** @type {Config} */ (JSON.parse(readFileSync(join(cwd(), RC_FILE_NAME), 'utf-8'))) || {};
-}

@@ -1,10 +1,8 @@
 import input from '@inquirer/input';
-import { writeFileSync } from 'node:fs';
-import { resolve, join } from 'node:path';
-import { cwd } from 'node:process';
+import { resolve } from 'node:path';
 
+import { saveConfigToFile } from '../../helpers/config-file.js';
 import { RC_FILE_NAME, TEMP_FOLDER_NAME } from '../../helpers/constants.js';
-import { Logger } from '../../helpers/logger.js';
 import { messages } from '../../helpers/messages.js';
 import { verifyRemoteOrigin } from '../../helpers/verify-remote-origin.js';
 import { cloneRepository } from '../clone-git-repository.js';
@@ -103,7 +101,6 @@ export function assignPorts(schemaPaths, ports) {
  * @returns {Promise<void>} Promise object represents the void return.
  */
 export async function saveRuntimeConfig(config) {
-	writeFileSync(join(cwd(), RC_FILE_NAME), JSON.stringify(config, null, '\t'));
-	Logger.info(messages.SAVED_CONFIG(RC_FILE_NAME), config);
+	saveConfigToFile(config);
 	await addToGitignore(RC_FILE_NAME);
 }

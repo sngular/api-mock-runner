@@ -1,10 +1,10 @@
 import { expect, use } from 'chai';
 import esmock from 'esmock';
 import { URL } from 'node:url';
-import { createSandbox, match } from 'sinon';
+import { createSandbox } from 'sinon';
 import sinonChai from 'sinon-chai';
 
-import { RC_FILE_NAME, TEMP_FOLDER_NAME } from '../../../../src/helpers/constants.js';
+import { TEMP_FOLDER_NAME } from '../../../../src/helpers/constants.js';
 import { messages } from '../../../../src/helpers/messages.js';
 import { globalMocksFactory } from '../../../helpers/global-mocks-factory.js';
 
@@ -16,6 +16,7 @@ class Logger {
 	static info = sandbox.stub();
 }
 const verifyRemoteOrigin = sandbox.stub();
+const saveConfigToFile = sandbox.stub();
 const cloneRepository = sandbox.stub();
 const findOasFromDir = sandbox.stub();
 const findOasFromDirRecursive = sandbox.stub();
@@ -27,6 +28,7 @@ const mocks = {
 	'@inquirer/input': input,
 	'../../helpers/logger.js': { Logger },
 	'../../helpers/verify-remote-origin.js': { verifyRemoteOrigin },
+	'../../helpers/config-file.js': { saveConfigToFile },
 	'../clone-git-repository.js': { cloneRepository },
 	'../find-oas-from-dir.js': { findOasFromDir, findOasFromDirRecursive },
 	'../gitignore.js': { addToGitignore },
@@ -167,11 +169,8 @@ describe('unit: user-flow-steps', () => {
 		describe('saveRuntimeConfig', () => {
 			it('should save the config', async () => {
 				const config = { test: 'test' };
-				const rcFilePath = `path/to/${RC_FILE_NAME}`;
-				path.join.returns(rcFilePath);
 				await saveRuntimeConfig(config);
-				expect(globalMocks.fs.writeFileSync).to.have.been.calledWithMatch(rcFilePath, match.string);
-				expect(Logger.info).to.have.been.calledWithMatch(messages.SAVED_CONFIG(RC_FILE_NAME), config);
+				expect(saveConfigToFile).to.have.been.calledWithMatch(config);
 				expect(addToGitignore).to.have.been.called;
 			});
 		});

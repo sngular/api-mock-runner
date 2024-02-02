@@ -14,8 +14,6 @@ import { askForPorts, assignPorts, saveRuntimeConfig } from './helpers.js';
 export async function initWithSchemaPaths({ schemaPaths, ports } = { schemaPaths: [], ports: [] }) {
 	const selectedSchemas = ports?.length ? assignPorts(schemaPaths, ports) : await askForPorts(schemaPaths);
 	const config = { selectedSchemas };
-
 	await saveRuntimeConfig(config);
-
 	return config;
 }
