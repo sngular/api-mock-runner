@@ -1,6 +1,7 @@
 export const messages = Object.freeze({
 	CHOOSE_FILES: 'Choose the files you want to use:',
 	CONFIG_FILE_NOT_FOUND: 'Could not find the configuration file named:',
+	CONFIG_FILE_INVALID: (/** @type {string} */ configFile) => `The configuration file ${configFile} is invalid.`,
 	CONFIRM_ADD_TO_GITIGNORE: (/** @type {string} */ fileName) => `Add ${fileName} to .gitignore?:`,
 	CONFIRM_EXISTING_CONFIG: 'Do you want to use the existing config?:',
 	CURRENT_CONFIG: 'Current configuration:',
